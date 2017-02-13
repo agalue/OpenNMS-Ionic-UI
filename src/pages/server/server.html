@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ mode }} OpenNMS Server</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="serverForm" (ngSubmit)="onSave()">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item>
+            <ion-label floating>Name</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>URL</ion-label>
+            <ion-input formControlName="url"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Username</ion-label>
+            <ion-input formControlName="username"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Password</ion-label>
+            <ion-input formControlName="password" type="password"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block color="secondary" type="submit">Save</button>
+      </ion-col>
+      <ion-col *ngIf="server">
+        <button ion-button block color="danger" type="button" (click)="onDelete()" [disabled]="server.isDefault">Delete</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  </form>
+</ion-content>

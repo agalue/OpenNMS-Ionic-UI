@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Setup</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h1>Welcome to the OpenNMS UI</h1>
+        <p>In order to start using this application, you need to have at least one server configured.</p>
+        <p>Please click on the button below to add a new server.</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block outline (click)="onAddServer()">Add a Server</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onAddServer()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>OpenNMS Servers</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item-sliding *ngFor="let server of servers; let i = index">
+      <button ion-item (click)="onEditServer(server, i)">
+        <h2>
+          <ion-icon name="checkmark" *ngIf="server.isDefault"></ion-icon>
+          {{ server.name }}
+        </h2>
+        <p>
+          {{ server.type }} {{ server.version }}
+        </p>
+      </button>
+      <ion-item-options side="right" (ionSwipe)="onSetDefault(i)">
+        <button ion-button expandable (click)="onSetDefault(i)">Mark as Default</button>
+      </ion-item-options>    
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

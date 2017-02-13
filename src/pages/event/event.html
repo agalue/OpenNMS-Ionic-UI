@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Event</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content [class]="event.severity" padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h3><b>UEI</b></h3>
+        <p>{{ event.uei }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Event Time</b></h3>
+        <p>{{ event.eventTime | date:'medium' }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Event Create Time</b></h3>
+        <p>{{ event.createTime | date:'medium' }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Severity</b></h3>
+        <p>{{ event.severity }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.nodeLabel">
+      <ion-col>
+        <h3><b>Node</b></h3>
+        <p>{{ event.nodeLabel }} ({{ event.nodeId }})</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.ipAddress">
+      <ion-col>
+        <h3><b>IP Address</b></h3>
+        <p>{{ event.ipAddress }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.serviceName">
+      <ion-col>
+        <h3><b>Service Name</b></h3>
+        <p>{{ event.serviceName }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Log Message</b></h3>
+        <p [innerHTML]="event.logMessage"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Description</b></h3>
+        <p [innerHTML]="event.description"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.parameters.length > 0">
+      <ion-col>
+        <h3><b>Parameters</b></h3>
+        <ion-grid>
+          <ion-row *ngFor="let parameter of event.parameters">
+            <ion-col><b>{{ parameter.name }}</b></ion-col>
+            <ion-col>{{ parameter.value }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

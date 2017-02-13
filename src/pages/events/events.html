@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onRefresh()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Events</ion-title>
+  </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchEvents($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
+</ion-header>
+
+<ion-content no-padding>
+  <ion-grid *ngIf="noEvents">
+    <ion-row>
+      <ion-col>
+        <h2>There are no events, please try again later...</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list [virtualScroll]="events">
+    <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
+      <h2>{{ formatUei(event.uei) }}</h2>
+      <div class="event-time">{{ event.eventTime | date:'medium' }}</div>
+      <br>
+      <p>{{ event.logMessage }}</p>
+      <ion-icon name="alert" item-left [color]="getIconColor(event)"></ion-icon>
+    </button>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more events...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
