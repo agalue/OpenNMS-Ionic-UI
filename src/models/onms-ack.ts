@@ -3,7 +3,7 @@ export class OnmsAck {
     constructor(
         public id: number,
         public ackType: string,
-        public ackTime: string,
+        public ackTime: number,
         public ackAction: string,
         public refId: number,
         public ackUser: string

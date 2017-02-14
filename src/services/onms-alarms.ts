@@ -42,7 +42,7 @@ export class OnmsAlarmsService {
   }
 
   private requestAcknodwledge(server: OnmsServer, alarmId: number, action: string) : Promise<OnmsAck> {
-    let ackRequest = { alarmId: alarmId, action: action };
+    let ackRequest = `alarmId=${alarmId}&action=${action}`;
     return this.httpUtils.post(server, '/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
       .map((response: Response) =>  OnmsAck.importAck(response.json()))
       .toPromise();

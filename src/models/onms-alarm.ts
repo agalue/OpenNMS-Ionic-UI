@@ -1,4 +1,5 @@
 import { OnmsEvent } from './onms-event';
+import { OnmsAck } from './onms-ack';
 import { OnmsParameter } from './onms-parameter';
 import { ONMS_SEVERITIES } from './onms-severities';
 
@@ -22,20 +23,39 @@ export class OnmsAlarm {
         public severity: string,
         public suppressedUntil: number,
         public suppressedTime: number,
-        public ackId: number,
+        public ackTime: number,
+        public ackUser: string,
         public ifIndex: number,
         public parameters: OnmsParameter[] = []
     ) {}
 
-    clear() {
-        this.severity = 'Cleared';
+    update(ack: OnmsAck) {
+        if (ack.ackType != 'ALARM') {
+            return;
+        }
+        switch (ack.ackAction) {
+            case 'ACKNOWLEDGE':
+                this.ackTime = ack.ackTime;
+                this.ackUser = ack.ackUser;
+                break;
+            case 'UNACKNOWLEDGE':
+                this.ackTime = null;
+                this.ackUser = null;
+                break;
+            case 'CLEAR':
+                this.severity = 'Cleared';
+                break;
+            case 'ESCALATE':
+                const current = this.getSeverityIndex();
+                if (current < 7) {
+                    this.severity = ONMS_SEVERITIES[current + 1];
+                }
+                break;
+        }
     }
 
-    escalate() {
-        const current = this.getSeverityIndex();
-        if (current < 7) {
-            this.severity = ONMS_SEVERITIES[current + 1];
-        }
+    isAcknowledged() : boolean {
+        return this.ackTime != null;
     }
 
     getSeverityIndex() {
@@ -64,7 +84,8 @@ export class OnmsAlarm {
             OnmsEvent.capitalize(e['severity']),
             e['suppressedUntil'],
             e['suppressedTime'],
-            e['ackId'],
+            e['ackTime'],
+            e['ackUser'],
             e['ifIndex']
         );
         if (e['parameters'] && e['parameters'].length > 0) {

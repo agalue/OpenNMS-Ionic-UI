@@ -29,15 +29,16 @@
   <ion-list [virtualScroll]="alarms">
     <ion-item-sliding *virtualItem="let alarm">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
-        <h2><ion-icon *ngIf="alarm.ackId" name="checkmark"></ion-icon>&nbsp;&nbsp;{{ formatUei(alarm.uei) }}</h2>
-        <div class="event-time">{{ alarm.lastEventTime | date:'medium' }}</div>
+        <h2>{{ formatUei(alarm.uei) }}</h2>
+        <div class="event-time">generated at {{ alarm.lastEventTime | date:'medium' }}</div>
+        <div class="event-time" *ngIf="alarm.isAcknowledged()">acknowledged by {{ alarm.ackUser }} at {{ alarm.ackTime | date:'medium' }}</div>
         <br>
         <div class="event-message">{{ alarm.logMessage }}</div>
         <ion-icon item-left [name]="getIcon(alarm)" [color]="getIconColor(alarm)"></ion-icon>
       </button>
       <ion-item-options>
-        <button ion-button expandable color="Normal_"   (click)="onAckAlarm(alarm)"   *ngIf="!alarm.ackId">Ack</button>
-        <button ion-button expandable color="Normal_"   (click)="onUnackAlarm(alarm)" *ngIf="alarm.ackId">Unack</button>
+        <button ion-button expandable color="Normal_"   (click)="onAckAlarm(alarm)"   *ngIf="!alarm.isAcknowledged()">Ack</button>
+        <button ion-button expandable color="Normal_"   (click)="onUnackAlarm(alarm)" *ngIf="alarm.isAcknowledged()">Unack</button>
         <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">Clear</button>
         <button ion-button expandable color="Critical_" (click)="onEscalateAlarm(alarm)">Escalate</button>
       </ion-item-options>

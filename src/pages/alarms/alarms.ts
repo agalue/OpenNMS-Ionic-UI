@@ -89,6 +89,41 @@ export class AlarmsPage {
     }
   }
 
+  onAckAlarm(alarm: OnmsAlarm) {
+    this.alarmsService.acknowledgeAlarm(this.onmsServer, alarm)
+      .then((ack: OnmsAck) => {
+        alarm.update(ack);
+        this.toast('Alarm acknowledged!');
+      })
+      .catch(error => this.alert('Ack Error', error.message));
+  }
+
+  onUnackAlarm(alarm: OnmsAlarm) {
+    this.alarmsService.unacknowledgeAlarm(this.onmsServer, alarm)
+      .then((ack: OnmsAck) => {
+        alarm.update(ack);
+        this.toast('Alarm unacknowledged!');
+      })
+      .catch(error => this.alert('Unack Error', error.message));
+  }
+
+  onClearAlarm(alarm: OnmsAlarm) {
+    this.alarmsService.clearAlarm(this.onmsServer, alarm)
+      .then((ack: OnmsAck) => {
+        alarm.update(ack);
+        this.toast('Alarm cleared!');
+      })
+      .catch(error => this.alert('Clear Error', error.message));
+  }
+
+  onEscalateAlarm(alarm: OnmsAlarm) {
+    this.alarmsService.escalateAlarm(this.onmsServer, alarm)
+      .then((ack: OnmsAck) => {
+        alarm.update(ack);
+        this.toast('Alarm escalated!');
+      })
+      .catch(error => this.alert('Escalate Error', error.message));
+  }
   doInfinite(infiniteScroll: any) {
     console.log('doInfinite, start is currently ' + this.start);
     this.start += 10;
@@ -112,42 +147,6 @@ export class AlarmsPage {
     if (index > 3)
       return 'warning';
     return 'alert';
-  }
-
-  onAckAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.acknowledgeAlarm(this.onmsServer, alarm)
-      .then((ack: OnmsAck) => {
-        alarm.ackId = ack.id;
-        this.toast('Alarm acknowledged!');
-      })
-      .catch(error => this.alert('Ack Error', error.message));
-  }
-
-  onUnackAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.unacknowledgeAlarm(this.onmsServer, alarm)
-      .then((ack: OnmsAck) => {
-        alarm.ackId = null;
-        this.toast('Alarm unacknowledged!');
-      })
-      .catch(error => this.alert('Unack Error', error.message));
-  }
-
-  onClearAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.clearAlarm(this.onmsServer, alarm)
-      .then((ack: OnmsAck) => {
-        alarm.clear();
-        this.toast('Alarm cleared!');
-      })
-      .catch(error => this.alert('Clear Error', error.message));
-  }
-
-  onEscalateAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.acknowledgeAlarm(this.onmsServer, alarm)
-      .then((ack: OnmsAck) => {
-        alarm.escalate();
-        this.toast('Alarm escalated!');
-      })
-      .catch(error => this.alert('Escalate Error', error.message));
   }
 
   private toast(message: string) {

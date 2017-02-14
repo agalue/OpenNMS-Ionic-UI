@@ -23,20 +23,24 @@ export class HttpUtilsService {
     return this.http.get(server.url + url, options);
   }
 
-  put(server: OnmsServer, url: string, data: Object) : Observable<Response> {
+  put(server: OnmsServer, url: string, contentType: string, data: any) : Observable<Response> {
     let headers = new Headers();
     this.appendAuth(server, headers);
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    let options: RequestOptions = new RequestOptions({ headers: headers });
-    return this.http.put(server.url + url, JSON.stringify(data), options);    
-  }
-
-  post(server: OnmsServer, url: string, contentType: string, data: Object) : Observable<Response> {
-    let headers = new Headers();
-    this.appendAuth(server, headers);
+    headers.append('Accept', 'application/json');
     headers.append('Content-Type', contentType);
     let options: RequestOptions = new RequestOptions({ headers: headers });
-    return this.http.post(server.url + url, JSON.stringify(data), options);    
+    let body = typeof data === "string" ? data : JSON.stringify(data);
+    return this.http.put(server.url + url, body, options);
+  }
+
+  post(server: OnmsServer, url: string, contentType: string, data: any) : Observable<Response> {
+    let headers = new Headers();
+    this.appendAuth(server, headers);
+    headers.append('Accept', 'application/json');
+    headers.append('Content-Type', contentType);
+    let options: RequestOptions = new RequestOptions({ headers: headers });
+    let body = typeof data === "string" ? data : JSON.stringify(data);
+    return this.http.post(server.url + url, body, options);
   }
 
 }

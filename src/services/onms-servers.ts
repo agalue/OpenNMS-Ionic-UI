@@ -79,11 +79,13 @@ export class OnmsServersService {
       const currentDefault: number = this.servers.findIndex(s => s.isDefault);
       this.servers[currentDefault].isDefault = false;
       this.servers[index].isDefault = true;
+      this.defaultServer = this.servers[index];
       this.storage.set('onms-servers', this.servers)
         .then(() => resolve())
         .catch(error => {
           this.servers[currentDefault].isDefault = true;
           this.servers[index].isDefault = false;
+          this.defaultServer = this.servers[currentDefault];
           reject(error);
         });      
     });
