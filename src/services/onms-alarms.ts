@@ -10,13 +10,13 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsAlarmsService {
 
-  eventsPerPage: number = 10;
+  alarmsPerPage: number = 10;
 
   constructor(private httpUtils: HttpUtilsService) {}
 
   // FIXME: Potential problem here is how to filter ack vs unack
   getAlarms(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsAlarm[]> {
-    let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${this.eventsPerPage}`;
+    let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${this.alarmsPerPage}`;
     if (filter) {
       url += `&comparator=ilike&description=${filter}`;
     }

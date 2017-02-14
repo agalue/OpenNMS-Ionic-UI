@@ -27,6 +27,9 @@ export class OnmsAlarm {
     ) {}
 
     static importAlarm(e: Object): OnmsAlarm {
+        if (!e) {
+            return null;
+        }
         let alarm = new OnmsAlarm(
             e['id'],
             e['uei'],
@@ -53,7 +56,7 @@ export class OnmsAlarm {
                 alarm.parameters.push(new OnmsParameter(p['name'], p['value'], p['type']));
             })
         }
-        return alarm;        
+        return alarm;
     }
 
     static importAlarms(rawAlarms: Object[]): OnmsAlarm[] {

@@ -45,7 +45,7 @@ export class AlarmsPage {
     loading.present();
     this.alarms = [];
     this.start = 0;
-    this.loadEvents()
+    this.loadAlarms()
       .then(() => {
         loading.dismiss();
         this.noAlarms = this.alarms.length == 0
@@ -53,11 +53,11 @@ export class AlarmsPage {
       .catch(() => loading.dismiss());
   }
 
-  loadEvents() {
+  loadAlarms() {
     return new Promise(resolve => {
       this.alarmsService.getAlarms(this.onmsServer, this.start, this.alarmFilter)
-        .then(events => {
-          events.forEach(e => this.alarms.push(e));
+        .then(alarms => {
+          alarms.forEach(e => this.alarms.push(e));
           resolve(true);
         });
     });
@@ -67,8 +67,8 @@ export class AlarmsPage {
     this.navCtrl.push(AlarmPage, {alarm: alarm});
   }
 
-  onSearchAlarms(alarm: any) {
-    this.alarmFilter = alarm.target.value;
+  onSearchAlarms(event: any) {
+    this.alarmFilter = event.target.value;
     this.onRefresh();
   }
 
@@ -82,7 +82,7 @@ export class AlarmsPage {
   doInfinite(infiniteScroll: any) {
     console.log('doInfinite, start is currently ' + this.start);
     this.start += 10;
-    this.loadEvents().then(() => infiniteScroll.complete());
+    this.loadAlarms().then(() => infiniteScroll.complete());
   }
 
   formatUei(uei: string) {

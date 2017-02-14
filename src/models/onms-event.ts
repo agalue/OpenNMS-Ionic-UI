@@ -21,6 +21,9 @@ export class OnmsEvent {
     ) {}
 
     static importEvent(e: Object): OnmsEvent {
+        if (!e) {
+            return null;
+        }
         let event = new OnmsEvent(
             e['id'],
             e['uei'],
