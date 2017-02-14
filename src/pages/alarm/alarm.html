@@ -6,6 +6,10 @@
 
 <ion-content [class]="alarm.severity" padding>
   <ion-grid>
+    <ion-card *ngIf="alarm.isAcknowledged()">
+      <ion-card-header>Acknowledged</ion-card-header>
+      <ion-card-content>by {{ alarm.ackUser }} at {{ alarm.ackTime | date:'medium' }}</ion-card-content>
+    </ion-card>
     <ion-row>
       <ion-col>
         <h3><b>UEI</b></h3>
@@ -64,6 +68,20 @@
             <ion-col>{{ parameter.value }}</ion-col>
           </ion-row>
         </ion-grid>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col *ngIf="!alarm.isAcknowledged()">
+        <button ion-button block outline type="button" (click)="onAckAlarm()">Ack</button>
+      </ion-col>
+      <ion-col *ngIf="alarm.isAcknowledged()">
+        <button ion-button block outline type="button" (click)="onUnackAlarm()">Unack</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block outline type="button" (click)="onClearAlarm()">Clear</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block outline type="button" (click)="onEscalateAlarm()">Escalate</button>
       </ion-col>
     </ion-row>
   </ion-grid>
