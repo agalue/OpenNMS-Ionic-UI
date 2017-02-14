@@ -4,5 +4,39 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content [class]="getIconColor()" padding>
+  <ion-grid>
+    <ion-row *ngIf="outage.nodeLabel">
+      <ion-col>
+        <h3><b>Node</b></h3>
+        <p>{{ outage.nodeLabel }} ({{ outage.nodeId }})</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="outage.ipAddress">
+      <ion-col>
+        <h3><b>IP Address</b></h3>
+        <p>{{ outage.ipAddress }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="outage.serviceName">
+      <ion-col>
+        <h3><b>Service Name</b></h3>
+        <p>{{ outage.serviceName }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Lost Event</b></h3>
+        <p>{{ outage.ifLostService | date:'medium' }}</p>
+        <button ion-button block outline (click)="onShowLostEvent()">Show Lost Event</button>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="outage.ifRegainedService">
+      <ion-col>
+        <h3><b>Regained Event</b></h3>
+        <p>{{ outage.ifRegainedService | date:'medium' }}</p>
+        <button ion-button block outline (click)="onShowRegainedEvent()">Show Regained Event</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

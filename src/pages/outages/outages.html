@@ -12,7 +12,30 @@
     </ion-buttons>
     <ion-title>Outages</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchOutages($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
+  <ion-grid *ngIf="noOutages">
+    <ion-row>
+      <ion-col>
+        <h2>There are no outages, please try again later...</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list [virtualScroll]="outages">
+    <button ion-item text-wrap [color]="getIconColor(outage)" *virtualItem="let outage" (click)="onShowOutage(outage)">
+      <h2>{{ outage.nodeLabel }}</h2>
+      <div class="event-time">{{ formatUei(outage.serviceLostEvent.uei) }}</div>
+      <div class="event-time">{{ outage.serviceName }} lost on {{ outage.ipAddress }} at {{ outage.ifLostService | date:'medium' }}</div>
+      <div class="event-time" *ngIf="outage.ifRegainedService">regained at {{ outage.ifRegainedService | date:'medium' }}</div>
+      <ion-icon name="alert" item-left [color]="getIconColor(outage, true)"></ion-icon>
+    </button>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more outages...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
