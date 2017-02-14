@@ -20,7 +20,7 @@ export class OnmsEventsService {
       url += `&comparator=ilike&eventLogMsg=${filter}&eventDescr=${filter}`;
     }
     return this.httpUtils.get(server, url)
-      .map((response: Response) =>  OnmsEvent.import(response.json().event))
+      .map((response: Response) =>  OnmsEvent.importEvents(response.json().event))
       .toPromise();
   }
 

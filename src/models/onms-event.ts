@@ -20,36 +20,38 @@ export class OnmsEvent {
         public parameters: OnmsParameter[] = []
     ) {}
 
-    static import(rawEvents: Object[]): OnmsEvent[] {
+    static importEvent(e: Object): OnmsEvent {
+        let event = new OnmsEvent(
+            e['id'],
+            e['uei'],
+            e['nodeId'],
+            e['nodeLabel'],
+            e['ipAddress'],
+            e['serviceType'] ? e['serviceType']['name'] : null,
+            e['time'],
+            e['createTime'],
+            e['logMessage'],
+            e['description'],
+            OnmsEvent.capitalize(e['severity']),
+            e['host'],
+            e['source'],
+            e['ifIndex']
+        );
+        if (e['parameters'] && e['parameters'].length > 0) {
+            e['parameters'].forEach(p => {
+                event.parameters.push(new OnmsParameter(p['name'], p['value'], p['type']));
+            })
+        }
+        return event;
+    }
+
+    static importEvents(rawEvents: Object[]): OnmsEvent[] {
         let events: OnmsEvent[] = [];
-        rawEvents.forEach(e => {
-            let event = new OnmsEvent(
-                e['id'],
-                e['uei'],
-                e['nodeId'],
-                e['nodeLabel'],
-                e['ipAddress'],
-                e['serviceType'] ? e['serviceType']['name'] : null,
-                e['time'],
-                e['createTime'],
-                e['logMessage'],
-                e['description'],
-                OnmsEvent.capitalize(e['severity']),
-                e['host'],
-                e['source'],
-                e['ifIndex']
-            );
-            if (e['parameters'] && e['parameters'].length > 0) {
-                e['parameters'].forEach(p => {
-                    event.parameters.push(new OnmsParameter(p['name'], p['value'], p['type']));
-                })
-            }
-            events.push(event);
-        });
+        rawEvents.forEach(e => events.push(OnmsEvent.importEvent(e)));
         return events;
     }
 
-    private static capitalize(text: string = 'Indeterminate') : string {
+    static capitalize(text: string = 'Indeterminate') : string {
         return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     }
 }

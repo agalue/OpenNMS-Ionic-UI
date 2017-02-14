@@ -44,6 +44,7 @@ export class EventsPage {
     });
     loading.present();
     this.events = [];
+    this.start = 0;
     this.loadEvents()
       .then(() => {
         loading.dismiss();
