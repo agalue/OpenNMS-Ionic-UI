@@ -28,8 +28,8 @@
       <h2>{{ formatUei(event.uei) }}</h2>
       <div class="event-time">{{ event.eventTime | date:'medium' }}</div>
       <br>
-      <p>{{ event.logMessage }}</p>
-      <ion-icon name="alert" item-left [color]="getIconColor(event)"></ion-icon>
+      <div class="event-message">{{ event.logMessage }}</div>
+      <ion-icon item-left [name]="getIcon(event)" [color]="getIconColor(event)"></ion-icon>
     </button>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">

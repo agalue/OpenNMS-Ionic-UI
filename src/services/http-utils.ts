@@ -31,10 +31,10 @@ export class HttpUtilsService {
     return this.http.put(server.url + url, JSON.stringify(data), options);    
   }
 
-  post(server: OnmsServer, url: string, data: Object) : Observable<Response> {
+  post(server: OnmsServer, url: string, contentType: string, data: Object) : Observable<Response> {
     let headers = new Headers();
     this.appendAuth(server, headers);
-    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Type', contentType);
     let options: RequestOptions = new RequestOptions({ headers: headers });
     return this.http.post(server.url + url, JSON.stringify(data), options);    
   }

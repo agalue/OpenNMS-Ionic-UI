@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 
 import { OnmsServer } from '../models/onms-server';
 import { OnmsAlarm } from '../models/onms-alarm';
+import { OnmsAck } from '../models/onms-ack';
 import { HttpUtilsService } from './http-utils';
 
 import 'rxjs/Rx';
@@ -14,7 +15,6 @@ export class OnmsAlarmsService {
 
   constructor(private httpUtils: HttpUtilsService) {}
 
-  // FIXME: Potential problem here is how to filter ack vs unack
   getAlarms(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsAlarm[]> {
     let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${this.alarmsPerPage}`;
     if (filter) {
@@ -25,24 +25,27 @@ export class OnmsAlarmsService {
       .toPromise();
   }
 
-  acknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) {
-    let url = `/rest/alarms/${alarm.id}`;
-    return this.httpUtils.put(server, url, {limit: 0, ack: true});
+  acknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(server, alarm.id, 'ack');
   }
 
-  unacknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) {
-    let url = `/rest/alarms/${alarm.id}`;
-    return this.httpUtils.put(server, url, {limit: 0, ack: false});
+  unacknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(server, alarm.id, 'unack');
   }
 
-  clearAlarm(server: OnmsServer, alarm: OnmsAlarm) {
-    let url = `/rest/alarms/${alarm.id}`;
-    return this.httpUtils.put(server, url, {limit: 0, clear: true});
+  clearAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(server, alarm.id, 'clear');
   }
 
-  escalateAlarm(server: OnmsServer, alarm: OnmsAlarm) {
-    let url = `/rest/alarms/${alarm.id}`;
-    return this.httpUtils.put(server, url, {limit: 0, escalate: true});
+  escalateAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(server, alarm.id, 'esc');
+  }
+
+  private requestAcknodwledge(server: OnmsServer, alarmId: number, action: string) : Promise<OnmsAck> {
+    let ackRequest = { alarmId: alarmId, action: action };
+    return this.httpUtils.post(server, '/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
+      .map((response: Response) =>  OnmsAck.importAck(response.json()))
+      .toPromise();
   }
 
 }

@@ -1,4 +1,5 @@
 import { OnmsParameter } from './onms-parameter';
+import { ONMS_SEVERITIES } from './onms-severities';
 
 export class OnmsEvent {
 
@@ -19,6 +20,10 @@ export class OnmsEvent {
         public ifIndex: number,
         public parameters: OnmsParameter[] = []
     ) {}
+
+    getSeverityIndex() {
+        return ONMS_SEVERITIES.indexOf(this.severity);
+    }
 
     static importEvent(e: Object): OnmsEvent {
         if (!e) {

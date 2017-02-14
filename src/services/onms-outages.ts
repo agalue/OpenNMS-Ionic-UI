@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 
 import { OnmsServer } from '../models/onms-server';
 import { OnmsOutage } from '../models/onms-outage';
+import { OnmsOutageSummary } from '../models/onms-outage-summary';
 import { HttpUtilsService } from './http-utils';
 
 import 'rxjs/Rx';
@@ -21,6 +22,13 @@ export class OnmsOutagesService {
     }
     return this.httpUtils.get(server, url)
       .map((response: Response) =>  OnmsOutage.importOutages(response.json().outage))
+      .toPromise();
+  }
+
+  getSumaries(server: OnmsServer, start: number = 0) : Promise<OnmsOutageSummary[]> {
+    let url = `/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`;
+    return this.httpUtils.get(server, url)
+      .map((response: Response) =>  OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
       .toPromise();
   }
 

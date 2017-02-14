@@ -5,17 +5,20 @@
         <ion-icon name="menu"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="onRefresh()">
-        <ion-icon name="refresh"></ion-icon>
-      </button>
-    </ion-buttons>
     <ion-title>Alarms</ion-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchAlarms($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content no-padding>
+ <ion-refresher (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to retrieve the latest alarms"
+      refreshingSpinner="circles"
+      refreshingText="Reloading alarms...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-grid *ngIf="noAlarms">
     <ion-row>
       <ion-col>
@@ -24,13 +27,21 @@
     </ion-row>
   </ion-grid>
   <ion-list [virtualScroll]="alarms">
-    <button ion-item text-wrap [color]="alarm.severity" *virtualItem="let alarm" (click)="onShowAlarm(alarm)">
-      <h2>{{ formatUei(alarm.uei) }}</h2>
-      <div class="event-time">{{ alarm.lastEventTime | date:'medium' }}</div>
-      <br>
-      <p>{{ alarm.logMessage }}</p>
-      <ion-icon name="alert" item-left [color]="getIconColor(alarm)"></ion-icon>
-    </button>
+    <ion-item-sliding *virtualItem="let alarm">
+      <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
+        <h2><ion-icon *ngIf="alarm.ackId" name="checkmark"></ion-icon>&nbsp;&nbsp;{{ formatUei(alarm.uei) }}</h2>
+        <div class="event-time">{{ alarm.lastEventTime | date:'medium' }}</div>
+        <br>
+        <div class="event-message">{{ alarm.logMessage }}</div>
+        <ion-icon item-left [name]="getIcon(alarm)" [color]="getIconColor(alarm)"></ion-icon>
+      </button>
+      <ion-item-options>
+        <button ion-button expandable color="Normal_"   (click)="onAckAlarm(alarm)"   *ngIf="!alarm.ackId">Ack</button>
+        <button ion-button expandable color="Normal_"   (click)="onUnackAlarm(alarm)" *ngIf="alarm.ackId">Unack</button>
+        <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">Clear</button>
+        <button ion-button expandable color="Critical_" (click)="onEscalateAlarm(alarm)">Escalate</button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content

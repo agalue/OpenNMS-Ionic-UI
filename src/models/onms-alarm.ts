@@ -1,5 +1,6 @@
 import { OnmsEvent } from './onms-event';
 import { OnmsParameter } from './onms-parameter';
+import { ONMS_SEVERITIES } from './onms-severities';
 
 export class OnmsAlarm {
 
@@ -25,6 +26,21 @@ export class OnmsAlarm {
         public ifIndex: number,
         public parameters: OnmsParameter[] = []
     ) {}
+
+    clear() {
+        this.severity = 'Cleared';
+    }
+
+    escalate() {
+        const current = this.getSeverityIndex();
+        if (current < 7) {
+            this.severity = ONMS_SEVERITIES[current + 1];
+        }
+    }
+
+    getSeverityIndex() {
+        return ONMS_SEVERITIES.indexOf(this.severity);
+    }
 
     static importAlarm(e: Object): OnmsAlarm {
         if (!e) {

@@ -18,13 +18,9 @@
   <ion-list>
     <ion-item-sliding *ngFor="let server of servers; let i = index">
       <button ion-item (click)="onEditServer(server, i)">
-        <h2>
-          <ion-icon name="checkmark" *ngIf="server.isDefault"></ion-icon>
-          {{ server.name }}
-        </h2>
-        <p>
-          {{ server.type }} {{ server.version }}
-        </p>
+        <h2>{{ server.name }}</h2>
+        <p>{{ server.type }} {{ server.version }}</p>
+        <ion-icon item-left [name]="server.isDefault ? 'checkmark' : ''"></ion-icon>
       </button>
       <ion-item-options side="right" (ionSwipe)="onSetDefault(i)">
         <button ion-button expandable (click)="onSetDefault(i)">Mark as Default</button>

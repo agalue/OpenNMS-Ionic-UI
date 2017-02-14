@@ -22,6 +22,9 @@
     <ion-segment-button value="Alarms">
       Alarms
     </ion-segment-button>
+    <ion-segment-button value="Outages">
+      Outages
+    </ion-segment-button>
   </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'Availability'">
@@ -39,6 +42,9 @@
       </ion-grid>
     </div>
     <div *ngSwitchCase="'Alarms'">
+      <p>Comming Soon!</p>
+    </div>
+    <div *ngSwitchCase="'Outages'">
       <p>Comming Soon!</p>
     </div>
   </div>

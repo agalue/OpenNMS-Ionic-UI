@@ -1,10 +1,10 @@
 page-alarms {
     .event-time {
         font-size: 11px;
-        opacity: 0.85;
+        opacity: 0.70;
     }
-    p {
-        color: black;
-        opacity: 0.9;
+    .event-message {
+        font-size: 10px;
+        opacity: 0.85;
     }
 }

@@ -1,0 +1,1 @@
+export const ONMS_SEVERITIES = ['-', 'Indeterminate', 'Cleared', 'Normal', 'Warning', 'Minor', 'Major', 'Critical'];

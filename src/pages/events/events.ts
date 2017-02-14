@@ -91,6 +91,15 @@ export class EventsPage {
     return ret.charAt(0).toUpperCase() + ret.slice(1);
   }
 
+  getIcon(event: OnmsEvent) {
+    const index = event.getSeverityIndex();
+    if (index > 5)
+      return 'flame';
+    if (index > 3)
+      return 'warning';
+    return 'alert';
+  }
+
   getIconColor(event: OnmsEvent) {
     return event.severity + '_';
   }
