@@ -1,5 +1,5 @@
 {
-  "name": "OpenNMS Mobile",
+  "name": "opennms-mobile",
   "author": "Alejandro Galue <agalue@opennms.org>",
   "homepage": "https://github.com/agalue/OpenNMS-Ionic2-UI",
   "private": true,
