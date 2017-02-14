@@ -63,18 +63,8 @@ export class AlarmsPage {
       .catch(() => loading.dismiss());
   }
 
-  loadAlarms() {
-    return new Promise(resolve => {
-      this.alarmsService.getAlarms(this.onmsServer, this.start, this.alarmFilter)
-        .then(alarms => {
-          alarms.forEach(e => this.alarms.push(e));
-          resolve(true);
-        });
-    });
-  }
-
   onShowAlarm(alarm: OnmsAlarm) {
-    this.navCtrl.push(AlarmPage, {alarm: alarm});
+    this.navCtrl.push(AlarmPage, {server: this.onmsServer, alarm: alarm});
   }
 
   onSearchAlarms(event: any) {
@@ -124,10 +114,13 @@ export class AlarmsPage {
       })
       .catch(error => this.alert('Escalate Error', error.message));
   }
-  doInfinite(infiniteScroll: any) {
-    console.log('doInfinite, start is currently ' + this.start);
+
+  onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadAlarms().then(() => infiniteScroll.complete());
+    this.loadAlarms().then((canScroll: boolean) => {
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    });
   }
 
   formatUei(uei: string) {
@@ -147,6 +140,16 @@ export class AlarmsPage {
     if (index > 3)
       return 'warning';
     return 'alert';
+  }
+
+  private loadAlarms() : Promise<boolean> {
+    return new Promise(resolve => {
+      this.alarmsService.getAlarms(this.onmsServer, this.start, this.alarmFilter)
+        .then((alarms: OnmsAlarm[]) => {
+          alarms.forEach(e => this.alarms.push(e));
+          resolve(alarms.length > 0);
+        });
+    });
   }
 
   private toast(message: string) {

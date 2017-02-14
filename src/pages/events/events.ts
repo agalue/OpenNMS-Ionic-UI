@@ -53,16 +53,6 @@ export class EventsPage {
       .catch(() => loading.dismiss());
   }
 
-  loadEvents() {
-    return new Promise(resolve => {
-      this.eventsService.getEvents(this.onmsServer, this.start, this.eventFilter)
-        .then(events => {
-          events.forEach(e => this.events.push(e));
-          resolve(true);
-        });
-    });
-  }
-
   onShowEvent(event: OnmsEvent) {
     this.navCtrl.push(EventPage, {event: event});
   }
@@ -79,10 +69,12 @@ export class EventsPage {
     }
   }
 
-  doInfinite(infiniteScroll: any) {
-    console.log('doInfinite, start is currently ' + this.start);
+  onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadEvents().then(() => infiniteScroll.complete());
+    this.loadEvents().then((canScroll: boolean) => {
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    });
   }
 
   formatUei(uei: string) {
@@ -102,6 +94,16 @@ export class EventsPage {
 
   getIconColor(event: OnmsEvent) {
     return event.severity + '_';
+  }
+
+  private loadEvents() : Promise<boolean> {
+    return new Promise(resolve => {
+      this.eventsService.getEvents(this.onmsServer, this.start, this.eventFilter)
+        .then((events: OnmsEvent[]) => {
+          events.forEach(e => this.events.push(e));
+          resolve(events.length > 0);
+        });
+    });
   }
 
 }

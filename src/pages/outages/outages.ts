@@ -53,16 +53,6 @@ export class OutagesPage {
       .catch(() => loading.dismiss());
   }
 
-  loadOutages() {
-    return new Promise(resolve => {
-      this.outagesService.getOutages(this.onmsServer, this.start, this.outageFilter)
-        .then(outages => {
-          outages.forEach(e => this.outages.push(e));
-          resolve(true);
-        });
-    });
-  }
-
   onShowOutage(outage: OnmsOutage) {
     this.navCtrl.push(OutagePage, {outage: outage});
   }
@@ -79,10 +69,12 @@ export class OutagesPage {
     }
   }
 
-  doInfinite(infiniteScroll: any) {
-    console.log('doInfinite, start is currently ' + this.start);
+  onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadOutages().then(() => infiniteScroll.complete());
+    this.loadOutages().then((canScroll: boolean) => {
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    });
   }
 
   formatUei(uei: string) {
@@ -94,4 +86,15 @@ export class OutagesPage {
   getIconColor(outage: OnmsOutage, strong: boolean = false) {
     return (outage.serviceRegainedEvent ? 'Normal' : 'Major') + (strong ? '_' : '');
   }
+
+  private loadOutages() {
+    return new Promise(resolve => {
+      this.outagesService.getOutages(this.onmsServer, this.start, this.outageFilter)
+        .then(outages => {
+          outages.forEach(e => this.outages.push(e));
+          resolve(true);
+        });
+    });
+  }
+
 }

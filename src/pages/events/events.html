@@ -32,7 +32,7 @@
       <ion-icon item-left [name]="getIcon(event)" [color]="getIconColor(event)"></ion-icon>
     </button>
   </ion-list>
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+  <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more events...">
