@@ -11,14 +11,32 @@ export class HttpUtilsService {
 
   constructor(private http: Http) {}
 
-  getOptions(server: OnmsServer) : RequestOptions {
-    let headers = new Headers();
+  private appendAuth(server: OnmsServer, headers: Headers) {
     headers.append('Authorization', 'Basic ' + btoa(server.username + ':' + server.password));
-    headers.append('Accept', "application/json");
-    return new RequestOptions({ headers: headers });
   }
 
   get(server: OnmsServer, url: string) : Observable<Response> {
-    return this.http.get(server.url + url, this.getOptions(server));
+    let headers = new Headers();
+    this.appendAuth(server, headers);
+    headers.append('Accept', 'application/json');
+    let options: RequestOptions = new RequestOptions({ headers: headers });
+    return this.http.get(server.url + url, options);
   }
+
+  put(server: OnmsServer, url: string, data: Object) : Observable<Response> {
+    let headers = new Headers();
+    this.appendAuth(server, headers);
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    let options: RequestOptions = new RequestOptions({ headers: headers });
+    return this.http.put(server.url + url, JSON.stringify(data), options);    
+  }
+
+  post(server: OnmsServer, url: string, data: Object) : Observable<Response> {
+    let headers = new Headers();
+    this.appendAuth(server, headers);
+    headers.append('Content-Type', 'application/json');
+    let options: RequestOptions = new RequestOptions({ headers: headers });
+    return this.http.post(server.url + url, JSON.stringify(data), options);    
+  }
+
 }

@@ -17,7 +17,7 @@ export class OnmsEventsService {
   getEvents(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsEvent[]> {
     let url = `/rest/events?order=desc&orderBy=eventTime&offset=${start}&limit=${this.eventsPerPage}`;
     if (filter) {
-      url += `&comparator=ilike&eventLogMsg=${filter}&eventDescr=${filter}`;
+      url += `&comparator=ilike&eventDescr=${filter}`;
     }
     return this.httpUtils.get(server, url)
       .map((response: Response) =>  OnmsEvent.importEvents(response.json().event))

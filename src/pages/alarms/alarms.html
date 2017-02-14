@@ -12,7 +12,30 @@
     </ion-buttons>
     <ion-title>Alarms</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchAlarms($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
+  <ion-grid *ngIf="noAlarms">
+    <ion-row>
+      <ion-col>
+        <h2>There are no alarms, please try again later...</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list [virtualScroll]="alarms">
+    <button ion-item text-wrap [color]="alarm.severity" *virtualItem="let alarm" (click)="onShowAlarm(alarm)">
+      <h2>{{ formatUei(alarm.uei) }}</h2>
+      <div class="event-time">{{ alarm.lastEventTime | date:'medium' }}</div>
+      <br>
+      <p>{{ alarm.logMessage }}</p>
+      <ion-icon name="alert" item-left [color]="getIconColor(alarm)"></ion-icon>
+    </button>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more alarms...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

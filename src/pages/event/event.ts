@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavParams } from 'ionic-angular';
 
 import { OnmsEvent } from '../../models/onms-event';
 
@@ -11,7 +11,7 @@ export class EventPage {
 
   event: OnmsEvent;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navParams: NavParams) {
     this.event = navParams.get('event');
   }
 

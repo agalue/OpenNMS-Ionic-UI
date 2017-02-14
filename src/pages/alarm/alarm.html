@@ -4,5 +4,67 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content [class]="alarm.severity" padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h3><b>UEI</b></h3>
+        <p>{{ alarm.uei }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Last Event Time</b></h3>
+        <p>{{ alarm.lastEventTime | date:'medium' }}</p>
+        <button ion-button block outline (click)="onShowEvent()">Show Last Event</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Severity</b></h3>
+        <p>{{ alarm.severity }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="alarm.nodeLabel">
+      <ion-col>
+        <h3><b>Node</b></h3>
+        <p>{{ alarm.nodeLabel }} ({{ alarm.nodeId }})</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="alarm.ipAddress">
+      <ion-col>
+        <h3><b>IP Address</b></h3>
+        <p>{{ alarm.ipAddress }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="alarm.serviceName">
+      <ion-col>
+        <h3><b>Service Name</b></h3>
+        <p>{{ alarm.serviceName }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Log Message</b></h3>
+        <p [innerHTML]="alarm.logMessage"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Description</b></h3>
+        <p [innerHTML]="alarm.description"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="alarm.parameters.length > 0">
+      <ion-col>
+        <h3><b>Parameters</b></h3>
+        <ion-grid>
+          <ion-row *ngFor="let parameter of alarm.parameters">
+            <ion-col><b>{{ parameter.name }}</b></ion-col>
+            <ion-col>{{ parameter.value }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
