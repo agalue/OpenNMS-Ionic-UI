@@ -4,5 +4,72 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content [class]="notification.severity" padding>
+  <ion-grid>
+    <ion-card *ngIf="notification.isAcknowledged()">
+      <ion-card-header>Acknowledged</ion-card-header>
+      <ion-card-content>by {{ notification.ackUser }} at {{ notification.ackTime | date:'medium' }}</ion-card-content>
+    </ion-card>
+    <ion-row>
+      <ion-col>
+        <h3><b>Name</b></h3>
+        <p>{{ notification.name }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>UEI</b></h3>
+        <p>{{ notification.uei }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Notification Time</b></h3>
+        <p>{{ notification.pageTime | date:'medium' }}</p>
+        <button ion-button block outline (click)="onShowEvent()">Show Event</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Severity</b></h3>
+        <p>{{ notification.severity }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="notification.nodeLabel">
+      <ion-col>
+        <h3><b>Node</b></h3>
+        <p>{{ notification.nodeLabel }} ({{ notification.nodeId }})</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Subject</b></h3>
+        <p [innerHTML]="notification.subject"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h3><b>Description</b></h3>
+        <p [innerHTML]="notification.textMessage"></p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="notification.destinations.length > 0">
+      <ion-col>
+        <h3><b>Destinations</b></h3>
+        <ul>
+          <li *ngFor="let destination of notification.destinations">
+          User {{ destination.userId }} notified using {{ destination.media }} at {{ destination.notifyTime | date:'medium' }}
+          </li>
+        </ul>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col *ngIf="!notification.isAcknowledged()">
+        <button ion-button block outline type="button" (click)="onAckNotification()">Ack</button>
+      </ion-col>
+      <ion-col *ngIf="notification.isAcknowledged()">
+        <button ion-button block outline type="button" (click)="onUnackNotification()">Unack</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

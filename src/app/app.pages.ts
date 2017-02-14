@@ -11,6 +11,7 @@ import { AlarmPage } from '../pages/alarm/alarm';
 import { OutagesPage } from '../pages/outages/outages';
 import { OutagePage } from '../pages/outage/outage';
 import { NotificationsPage } from '../pages/notifications/notifications';
+import { NotificationPage } from '../pages/notification/notification';
 import { NodesPage } from '../pages/nodes/nodes';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
@@ -28,6 +29,7 @@ export const MyPages = [
     OutagesPage,
     OutagePage,
     NotificationsPage,
+    NotificationPage,
     NodesPage,
     SnmpConfigPage,
     RequisitionsPage

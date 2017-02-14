@@ -11,7 +11,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsOutagesService {
 
-  outagesPerPage: number = 10;
+  outagesPerPage: number = 20;
 
   constructor(private httpUtils: HttpUtilsService) {}
 

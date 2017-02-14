@@ -86,13 +86,9 @@ export class OnmsAlarm {
             e['suppressedTime'],
             e['ackTime'],
             e['ackUser'],
-            e['ifIndex']
+            e['ifIndex'],
+            OnmsParameter.importParameters(e['parameters'])
         );
-        if (e['parameters'] && e['parameters'].length > 0) {
-            e['parameters'].forEach(p => {
-                alarm.parameters.push(new OnmsParameter(p['name'], p['value'], p['type']));
-            })
-        }
         return alarm;
     }
 

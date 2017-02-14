@@ -11,6 +11,7 @@ import { OnmsAvailabilityService } from '../services/onms-availability';
 import { OnmsEventsService } from '../services/onms-events';
 import { OnmsAlarmsService } from '../services/onms-alarms';
 import { OnmsOutagesService } from '../services/onms-outages';
+import { OnmsNotificationsService } from '../services/onms-notifications';
 
 @NgModule({
   declarations: MyPages,
@@ -27,7 +28,8 @@ import { OnmsOutagesService } from '../services/onms-outages';
     OnmsAvailabilityService,
     OnmsEventsService,
     OnmsAlarmsService,
-    OnmsOutagesService
+    OnmsOutagesService,
+    OnmsNotificationsService
   ]
 })
 export class AppModule {}

@@ -5,14 +5,47 @@
         <ion-icon name="menu"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="onRefresh()">
-        <ion-icon name="refresh"></ion-icon>
-      </button>
-    </ion-buttons>
     <ion-title>Notifications</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchNotifications($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
+  <ion-refresher (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to retrieve the latest notifications"
+      refreshingSpinner="circles"
+      refreshingText="Reloading notifications...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-grid *ngIf="noNotifications">
+    <ion-row>
+      <ion-col>
+        <h2>There are no notifications, make sure they are enabled and try again later...</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list [virtualScroll]="notifications">
+    <ion-item-sliding *virtualItem="let notification">
+      <button ion-item text-wrap [color]="notification.severity" (click)="onShowNotification(notification)">
+        <h2>{{ formatUei(notification.uei) }}</h2>
+        <div class="event-time">generated at {{ notification.pageTime | date:'medium' }} {{ notification.nodeLabel ? ' for ' + notification.nodeLabel : ''}}</div>
+        <div class="event-time" *ngIf="notification.isAcknowledged()">acknowledged by {{ notification.ackUser }} at {{ notification.ackTime | date:'medium' }}</div>
+        <br>
+        <div class="event-message">{{ notification.subject }}</div>
+        <ion-icon item-left [name]="getIcon(notification)" [color]="getIconColor(notification)"></ion-icon>
+      </button>
+      <ion-item-options>
+        <button ion-button expandable color="Normal_" (click)="onAckNotification(notification)"   *ngIf="!notification.isAcknowledged()">Ack</button>
+        <button ion-button expandable color="Normal_" (click)="onUnackNotification(notification)" *ngIf="notification.isAcknowledged()">Unack</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more notifications...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

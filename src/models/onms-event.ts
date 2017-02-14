@@ -43,13 +43,9 @@ export class OnmsEvent {
             OnmsEvent.capitalize(e['severity']),
             e['host'],
             e['source'],
-            e['ifIndex']
+            e['ifIndex'],
+            OnmsParameter.importParameters(e['parameters'])
         );
-        if (e['parameters'] && e['parameters'].length > 0) {
-            e['parameters'].forEach(p => {
-                event.parameters.push(new OnmsParameter(p['name'], p['value'], p['type']));
-            })
-        }
         return event;
     }
 
@@ -62,4 +58,5 @@ export class OnmsEvent {
     static capitalize(text: string = 'Indeterminate') : string {
         return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
     }
+
 }

@@ -10,9 +10,16 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsEventsService {
 
-  eventsPerPage: number = 10;
+  eventsPerPage: number = 20;
 
   constructor(private httpUtils: HttpUtilsService) {}
+
+  getEvent(server: OnmsServer, eventId: number = 0,) : Promise<OnmsEvent> {
+    let url = `/rest/events/${eventId}`;
+    return this.httpUtils.get(server, url)
+      .map((response: Response) =>  OnmsEvent.importEvent(response.json()))
+      .toPromise();
+  }
 
   getEvents(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsEvent[]> {
     let url = `/rest/events?order=desc&orderBy=eventTime&offset=${start}&limit=${this.eventsPerPage}`;

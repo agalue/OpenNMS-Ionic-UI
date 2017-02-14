@@ -11,7 +11,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsAlarmsService {
 
-  alarmsPerPage: number = 10;
+  alarmsPerPage: number = 20;
 
   constructor(private httpUtils: HttpUtilsService) {}
 
