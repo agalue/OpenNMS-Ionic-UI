@@ -31,4 +31,16 @@ export class NodePage {
     }
   }
 
+  onShowAssets() {
+
+  }
+
+  onShowGraphs() {
+
+  }
+
+  onForceRescan() {
+
+  }
+
 }

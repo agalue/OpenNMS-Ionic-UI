@@ -51,6 +51,15 @@
         <ion-list-header>Categories</ion-list-header>
         <ion-item *ngFor="let c of node.categories">{{ c.name }}</ion-item>
       </ion-list>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button ion-button block outline type="button" (click)="onShowAssets()">View Assets</button>
+            <button ion-button block outline type="button" (click)="onShowGraphs()">Graphs</button>
+            <button ion-button block outline type="button" (click)="onForceRescan()">Force Rescan</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
     <div *ngSwitchCase="'ip'">
       <br>
