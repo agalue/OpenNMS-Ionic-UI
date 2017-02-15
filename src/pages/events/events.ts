@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsEvent } from '../../models/onms-event';
 
 import { EventPage } from '../event/event';
 
-import { OnmsServersService } from '../../services/onms-servers';
 import { OnmsEventsService } from '../../services/onms-events';
 
 @Component({
@@ -18,24 +16,18 @@ export class EventsPage {
   noEvents = false;
   events: OnmsEvent[] = [];
   eventFilter: string;
-  onmsServer: OnmsServer;
 
   private start: number = 0;
 
   constructor(
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
-    private serversService: OnmsServersService,
+    private alertCtrl: AlertController,
     private eventsService: OnmsEventsService
   ) {}
 
   ionViewWillLoad() {
-    this.serversService.getDefaultServer()
-      .then((server: OnmsServer) => {
-        this.onmsServer = server;
-        this.onRefresh();
-      })
-      .catch(error => console.log(error));
+    this.onRefresh();
   }
 
   onRefresh() {
@@ -98,12 +90,22 @@ export class EventsPage {
 
   private loadEvents() : Promise<boolean> {
     return new Promise(resolve => {
-      this.eventsService.getEvents(this.onmsServer, this.start, this.eventFilter)
+      this.eventsService.getEvents(this.start, this.eventFilter)
         .then((events: OnmsEvent[]) => {
           events.forEach(e => this.events.push(e));
           resolve(events.length > 0);
-        });
+        })
+        .catch(error => this.alert('Load Error', error))
     });
+  }
+
+  private alert(title: string, message: string) {
+    const alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: ['Ok']
+    });
+    alert.present();
   }
 
 }

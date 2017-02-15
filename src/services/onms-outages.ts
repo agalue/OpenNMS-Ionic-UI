@@ -4,7 +4,7 @@ import { Response } from '@angular/http';
 import { OnmsServer } from '../models/onms-server';
 import { OnmsOutage } from '../models/onms-outage';
 import { OnmsOutageSummary } from '../models/onms-outage-summary';
-import { HttpUtilsService } from './http-utils';
+import { HttpService } from './http';
 
 import 'rxjs/Rx';
 
@@ -13,23 +13,31 @@ export class OnmsOutagesService {
 
   outagesPerPage: number = 20;
 
-  constructor(private httpUtils: HttpUtilsService) {}
+  constructor(private http: HttpService) {}
 
-  getOutages(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsOutage[]> {
+  getOutages(start: number = 0, filter: string = null) : Promise<OnmsOutage[]> {
     let url = `/rest/outages?order=desc&orderBy=ifLostService&offset=${start}&limit=${this.outagesPerPage}`;
     if (filter) {
-      url += `&comparator=ilike&serviceLostEvent.eventDescr=${filter}`;
+      url += `&comparator=ilike&serviceLostEvent.eventDescr=%25${filter}%25`;
     }
-    return this.httpUtils.get(server, url)
-      .map((response: Response) =>  OnmsOutage.importOutages(response.json().outage))
-      .toPromise();
+    return new Promise<OnmsOutage[]>((resolve,reject) =>
+      this.http.get(url)
+        .map((response: Response) => OnmsOutage.importOutages(response.json().outage))
+        .toPromise()
+        .then(data => resolve(data))
+        .catch(error => reject(error))
+    );
   }
 
-  getSumaries(server: OnmsServer, start: number = 0) : Promise<OnmsOutageSummary[]> {
+  getSumaries(start: number = 0) : Promise<OnmsOutageSummary[]> {
     let url = `/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`;
-    return this.httpUtils.get(server, url)
-      .map((response: Response) =>  OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
-      .toPromise();
+    return new Promise<OnmsOutageSummary[]>((resolve,reject) =>
+      this.http.get(url)
+        .map((response: Response) => OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
+        .toPromise()
+        .then(data => resolve(data))
+        .catch(error => reject(error))
+    );
   }
 
 }

@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { MyPages } from './app.pages';
 
-import { HttpUtilsService } from '../services/http-utils';
+import { HttpService } from '../services/http';
 import { OnmsServersService } from '../services/onms-servers';
 import { OnmsAvailabilityService } from '../services/onms-availability';
 import { OnmsEventsService } from '../services/onms-events';
@@ -23,7 +23,7 @@ import { OnmsNotificationsService } from '../services/onms-notifications';
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Storage,
-    HttpUtilsService,
+    HttpService,
     OnmsServersService,
     OnmsAvailabilityService,
     OnmsEventsService,

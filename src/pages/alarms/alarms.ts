@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsAlarm } from '../../models/onms-alarm';
 
 import { AlarmPage } from '../alarm/alarm';
 
-import { OnmsServersService } from '../../services/onms-servers';
 import { OnmsAlarmsService } from '../../services/onms-alarms';
 
 @Component({
@@ -19,7 +17,6 @@ export class AlarmsPage {
   noAlarms = false;
   alarms: OnmsAlarm[] = [];
   alarmFilter: string;
-  onmsServer: OnmsServer;
 
   private start: number = 0;
 
@@ -28,17 +25,11 @@ export class AlarmsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private serversService: OnmsServersService,
     private alarmsService: OnmsAlarmsService
   ) {}
 
   ionViewWillLoad() {
-    this.serversService.getDefaultServer()
-      .then((server: OnmsServer) => {
-        this.onmsServer = server;
-        this.onUpdate();
-      })
-      .catch(error => console.log(error));
+    this.onUpdate();
   }
 
   onRefresh(refresher: any) {
@@ -64,7 +55,7 @@ export class AlarmsPage {
   }
 
   onShowAlarm(alarm: OnmsAlarm) {
-    this.navCtrl.push(AlarmPage, {server: this.onmsServer, alarm: alarm});
+    this.navCtrl.push(AlarmPage, {alarm: alarm});
   }
 
   onSearchAlarms(event: any) {
@@ -80,39 +71,39 @@ export class AlarmsPage {
   }
 
   onAckAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.acknowledgeAlarm(this.onmsServer, alarm)
+    this.alarmsService.acknowledgeAlarm(alarm)
       .then((ack: OnmsAck) => {
         alarm.update(ack);
         this.toast('Alarm acknowledged!');
       })
-      .catch(error => this.alert('Ack Error', error.message));
+      .catch(error => this.alert('Ack Error', error));
   }
 
   onUnackAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.unacknowledgeAlarm(this.onmsServer, alarm)
+    this.alarmsService.unacknowledgeAlarm(alarm)
       .then((ack: OnmsAck) => {
         alarm.update(ack);
         this.toast('Alarm unacknowledged!');
       })
-      .catch(error => this.alert('Unack Error', error.message));
+      .catch(error => this.alert('Unack Error', error));
   }
 
   onClearAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.clearAlarm(this.onmsServer, alarm)
+    this.alarmsService.clearAlarm(alarm)
       .then((ack: OnmsAck) => {
         alarm.update(ack);
         this.toast('Alarm cleared!');
       })
-      .catch(error => this.alert('Clear Error', error.message));
+      .catch(error => this.alert('Clear Error', error));
   }
 
   onEscalateAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.escalateAlarm(this.onmsServer, alarm)
+    this.alarmsService.escalateAlarm(alarm)
       .then((ack: OnmsAck) => {
         alarm.update(ack);
         this.toast('Alarm escalated!');
       })
-      .catch(error => this.alert('Escalate Error', error.message));
+      .catch(error => this.alert('Escalate Error', error));
   }
 
   onInfiniteScroll(infiniteScroll: any) {
@@ -144,11 +135,12 @@ export class AlarmsPage {
 
   private loadAlarms() : Promise<boolean> {
     return new Promise(resolve => {
-      this.alarmsService.getAlarms(this.onmsServer, this.start, this.alarmFilter)
+      this.alarmsService.getAlarms(this.start, this.alarmFilter)
         .then((alarms: OnmsAlarm[]) => {
           alarms.forEach(e => this.alarms.push(e));
           resolve(alarms.length > 0);
-        });
+        })
+        .catch(error => this.alert('Load Error', error))
     });
   }
 

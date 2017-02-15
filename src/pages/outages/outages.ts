@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsOutage } from '../../models/onms-outage';
 
 import { OutagePage } from '../outage/outage';
 
-import { OnmsServersService } from '../../services/onms-servers';
 import { OnmsOutagesService } from '../../services/onms-outages';
 
 @Component({
@@ -18,24 +16,18 @@ export class OutagesPage {
   noOutages = false;
   outages: OnmsOutage[] = [];
   outageFilter: string;
-  onmsServer: OnmsServer;
 
   private start: number = 0;
 
   constructor(
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
-    private serversService: OnmsServersService,
+    private alertCtrl: AlertController,
     private outagesService: OnmsOutagesService
   ) {}
 
   ionViewWillLoad() {
-    this.serversService.getDefaultServer()
-      .then((server: OnmsServer) => {
-        this.onmsServer = server;
-        this.onRefresh();
-      })
-      .catch(error => console.log(error));
+    this.onRefresh();
   }
 
   onRefresh() {
@@ -89,12 +81,22 @@ export class OutagesPage {
 
   private loadOutages() {
     return new Promise(resolve => {
-      this.outagesService.getOutages(this.onmsServer, this.start, this.outageFilter)
+      this.outagesService.getOutages(this.start, this.outageFilter)
         .then(outages => {
           outages.forEach(e => this.outages.push(e));
           resolve(true);
-        });
+        })
+        .catch(error => this.alert('Load Error', error))
     });
+  }
+
+  private alert(title: string, message: string) {
+    const alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: ['Ok']
+    });
+    alert.present();
   }
 
 }

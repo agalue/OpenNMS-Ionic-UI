@@ -1,19 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+import { Injectable, EventEmitter } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Storage } from '@ionic/storage';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/Rx';
 
 import { OnmsServer } from '../models/onms-server';
-import { HttpUtilsService } from './http-utils';
-
-import 'rxjs/Rx';
 
 @Injectable()
 export class OnmsServersService {
 
+  defaultUpdated = new EventEmitter<OnmsServer>();
+
   private servers: OnmsServer[];
   private defaultServer: OnmsServer;
+  private endPoint = '/rest/info';
+  private timeout  = 3000;
 
-  constructor(private storage: Storage, private httpUtils: HttpUtilsService) {}
+  constructor(private storage: Storage, private http: Http) {}
 
   getDefaultServer() : Promise<OnmsServer> {
     if (this.defaultServer) {
@@ -24,6 +27,7 @@ export class OnmsServersService {
         .then((servers: OnmsServer[]) => {
           const defaultServer = servers.find(server => server.isDefault);
           this.defaultServer = defaultServer;
+          this.defaultUpdated.emit(this.defaultServer);
           resolve(defaultServer);
         })
         .catch(error => reject(error));
@@ -80,12 +84,14 @@ export class OnmsServersService {
       this.servers[currentDefault].isDefault = false;
       this.servers[index].isDefault = true;
       this.defaultServer = this.servers[index];
+      this.defaultUpdated.emit(this.defaultServer);
       this.storage.set('onms-servers', this.servers)
         .then(() => resolve())
         .catch(error => {
           this.servers[currentDefault].isDefault = true;
           this.servers[index].isDefault = false;
           this.defaultServer = this.servers[currentDefault];
+          this.defaultUpdated.emit(this.defaultServer);
           reject(error);
         });      
     });
@@ -94,6 +100,9 @@ export class OnmsServersService {
   removeServer(index: number) : Promise<any> {
     if (this.servers.length == 1) {
       return Promise.reject({ message: 'The list of servers cannot be empty. At least one server has to exist, and at least one server has to be the default.' });
+    }
+    if (this.servers[index].isDefault) {
+      return Promise.reject({ message: 'The default server cannot be deleted.'});
     }
     return new Promise<OnmsServer>((resolve, reject) => {
       const backup = this.servers.slice();
@@ -108,14 +117,18 @@ export class OnmsServersService {
   }
 
   private updateVersion(server: OnmsServer) : Promise<any> {
-    return this.httpUtils.get(server, '/rest/info')
-      .map((response: Response) => {
-        const info = response.json();
-        server.type = info.packageDescription;
-        server.version = info.displayVersion;
-        return server;        
-      })
-      .toPromise();
+    return new Promise((resolve, reject) =>
+      this.http.get(server.url + this.endPoint)
+        .timeout(this.timeout, new Error('Timeout exceeded'))
+        .map((response: Response) => response.json())
+        .toPromise()
+        .then((info) => {
+          server.type = info.packageDescription;
+          server.version = info.displayVersion;
+          resolve(info);
+        })
+        .catch(() => reject('Something wrong happened retrieving the server information from OpenNMS'))
+    );
   }
 
 }

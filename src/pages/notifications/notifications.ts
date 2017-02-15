@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsNotification } from '../../models/onms-notification';
 
 import { NotificationPage } from '../notification/notification';
 
-import { OnmsServersService } from '../../services/onms-servers';
 import { OnmsNotificationsService } from '../../services/onms-notifications';
 
 @Component({
@@ -19,7 +17,6 @@ export class NotificationsPage {
   noNotifications = false;
   notifications: OnmsNotification[] = [];
   notificationFilter: string;
-  onmsServer: OnmsServer;
 
   private start: number = 0;
 
@@ -28,17 +25,11 @@ export class NotificationsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private serversService: OnmsServersService,
     private notifyService: OnmsNotificationsService
   ) {}
 
   ionViewWillLoad() {
-    this.serversService.getDefaultServer()
-      .then((server: OnmsServer) => {
-        this.onmsServer = server;
-        this.onUpdate();
-      })
-      .catch(error => console.log(error));
+    this.onUpdate();
   }
 
   onRefresh(refresher: any) {
@@ -64,7 +55,7 @@ export class NotificationsPage {
   }
 
   onShowNotification(notification: OnmsNotification) {
-    this.navCtrl.push(NotificationPage, {server: this.onmsServer, notification: notification});
+    this.navCtrl.push(NotificationPage, {notification: notification});
   }
 
   onSearchNotifications(event: any) {
@@ -80,21 +71,21 @@ export class NotificationsPage {
   }
 
   onAckNotification(notification: OnmsNotification) {
-    this.notifyService.acknowledgeNotification(this.onmsServer, notification)
+    this.notifyService.acknowledgeNotification(notification)
       .then((ack: OnmsAck) => {
         notification.update(ack);
         this.toast('Notification acknowledged!');
       })
-      .catch(error => this.alert('Ack Error', error.message));
+      .catch(error => this.alert('Ack Error', error));
   }
 
   onUnackNotification(notification: OnmsNotification) {
-    this.notifyService.unacknowledgeNotification(this.onmsServer, notification)
+    this.notifyService.unacknowledgeNotification(notification)
       .then((ack: OnmsAck) => {
         notification.update(ack);
         this.toast('Notification unacknowledged!');
       })
-      .catch(error => this.alert('Unack Error', error.message));
+      .catch(error => this.alert('Unack Error', error));
   }
 
   onInfiniteScroll(infiniteScroll: any) {
@@ -126,12 +117,13 @@ export class NotificationsPage {
 
   private loadNotifications() : Promise<boolean> {
     return new Promise(resolve => {
-      this.notifyService.getNotifications(this.onmsServer, this.start, this.notificationFilter)
+      this.notifyService.getNotifications(this.start, this.notificationFilter)
         .then((notifications: OnmsNotification[]) => {
           console.log(notifications);
           notifications.forEach(n => this.notifications.push(n));
           resolve(notifications.length > 0);
-        });
+        })
+        .catch(error => this.alert('Load Error', error))
     });
   }
 

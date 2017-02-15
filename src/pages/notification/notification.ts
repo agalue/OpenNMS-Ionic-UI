@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsEvent } from '../../models/onms-event';
 import { OnmsNotification } from '../../models/onms-notification';
 import { OnmsAck } from '../../models/onms-ack';
@@ -15,7 +14,6 @@ import { OnmsNotificationsService } from '../../services/onms-notifications';
 })
 export class NotificationPage {
 
-  onmsServer: OnmsServer;
   notification: OnmsNotification;
 
   constructor(
@@ -27,33 +25,32 @@ export class NotificationPage {
     private notifyService: OnmsNotificationsService
   ) {
     this.notification = navParams.get('notification');
-    this.onmsServer = navParams.get('server');
   }
 
   onShowEvent() {
-    this.eventsService.getEvent(this.onmsServer, this.notification.eventId)
+    this.eventsService.getEvent(this.notification.eventId)
       .then((event: OnmsEvent) => {
         this.navCtrl.push(EventPage, { event: event });
       })
-      .catch(error => this.alert('Event Error', error.message));
+      .catch(error => this.alert('Event Error', error));
   }
 
   onAckNotification() {
-    this.notifyService.acknowledgeNotification(this.onmsServer, this.notification)
+    this.notifyService.acknowledgeNotification(this.notification)
       .then((ack: OnmsAck) => {
         this.notification.update(ack);
         this.toast('Notification acknowledged!');
       })
-      .catch(error => this.alert('Ack Error', error.message));
+      .catch(error => this.alert('Ack Error', error));
   }
 
   onUnackNotification(a) {
-    this.notifyService.unacknowledgeNotification(this.onmsServer, this.notification)
+    this.notifyService.unacknowledgeNotification(this.notification)
       .then((ack: OnmsAck) => {
         this.notification.update(ack);
         this.toast('Notification unacknowledged!');
       })
-      .catch(error => this.alert('Unack Error', error.message));
+      .catch(error => this.alert('Unack Error', error));
   }
 
   private toast(message: string) {

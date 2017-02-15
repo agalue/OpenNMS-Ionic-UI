@@ -4,7 +4,7 @@ import { Response } from '@angular/http';
 import { OnmsServer } from '../models/onms-server';
 import { OnmsAlarm } from '../models/onms-alarm';
 import { OnmsAck } from '../models/onms-ack';
-import { HttpUtilsService } from './http-utils';
+import { HttpService } from './http';
 
 import 'rxjs/Rx';
 
@@ -13,39 +13,47 @@ export class OnmsAlarmsService {
 
   alarmsPerPage: number = 20;
 
-  constructor(private httpUtils: HttpUtilsService) {}
+  constructor(private http: HttpService) {}
 
-  getAlarms(server: OnmsServer, start: number = 0, filter: string = null) : Promise<OnmsAlarm[]> {
+  getAlarms(start: number = 0, filter: string = null) : Promise<OnmsAlarm[]> {
     let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${this.alarmsPerPage}`;
     if (filter) {
-      url += `&comparator=ilike&description=${filter}`;
+      url += `&comparator=ilike&description=%25${filter}%25`;
     }
-    return this.httpUtils.get(server, url)
-      .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))
-      .toPromise();
+    return new Promise<OnmsAlarm[]>((resolve, reject) =>
+      this.http.get(url)
+        .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))
+        .toPromise()
+        .then(data => resolve(data))
+        .catch(error => reject(error))
+    );
   }
 
-  acknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
-    return this.requestAcknodwledge(server, alarm.id, 'ack');
+  acknowledgeAlarm(alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(alarm.id, 'ack');
   }
 
-  unacknowledgeAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
-    return this.requestAcknodwledge(server, alarm.id, 'unack');
+  unacknowledgeAlarm(alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(alarm.id, 'unack');
   }
 
-  clearAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
-    return this.requestAcknodwledge(server, alarm.id, 'clear');
+  clearAlarm(alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(alarm.id, 'clear');
   }
 
-  escalateAlarm(server: OnmsServer, alarm: OnmsAlarm) : Promise<OnmsAck> {
-    return this.requestAcknodwledge(server, alarm.id, 'esc');
+  escalateAlarm(alarm: OnmsAlarm) : Promise<OnmsAck> {
+    return this.requestAcknodwledge(alarm.id, 'esc');
   }
 
-  private requestAcknodwledge(server: OnmsServer, alarmId: number, action: string) : Promise<OnmsAck> {
+  private requestAcknodwledge(alarmId: number, action: string) : Promise<OnmsAck> {
     let ackRequest = `alarmId=${alarmId}&action=${action}`;
-    return this.httpUtils.post(server, '/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
-      .map((response: Response) =>  OnmsAck.importAck(response.json()))
-      .toPromise();
+    return new Promise<OnmsAck>((resolve, reject) =>
+      this.http.post('/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
+        .map((response: Response) =>  OnmsAck.importAck(response.json()))
+        .toPromise()
+        .then(data => resolve(data))
+        .catch(error => reject(error))
+    );
   }
 
 }

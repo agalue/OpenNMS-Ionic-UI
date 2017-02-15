@@ -47,4 +47,5 @@ export class ServersPage implements OnInit {
       .then((servers:OnmsServer[]) => this.servers = servers)
       .catch(error => console.log(error));
   }
+
 }

@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { AlertController, LoadingController } from 'ionic-angular';
 
-import { OnmsServer } from '../../models/onms-server';
 import { OnmsSlmSection } from '../../models/onms-slm-section';
-import { OnmsServersService } from '../../services/onms-servers';
 import { OnmsAvailabilityService } from '../../services/onms-availability';
 
 @Component({
@@ -13,28 +11,32 @@ import { OnmsAvailabilityService } from '../../services/onms-availability';
 export class HomePage {
 
   mode = 'Availability';
-  onmsServer: OnmsServer;
   sections: OnmsSlmSection[] = [];
 
   constructor(
     private alertCtrl: AlertController,
-    private availService: OnmsAvailabilityService,
-    private serversService: OnmsServersService
+    private loadingCtrl: LoadingController,
+    private availService: OnmsAvailabilityService
   ) {}
 
   ionViewWillLoad() {
-    this.serversService.getDefaultServer()
-      .then((server: OnmsServer) => {
-        this.onmsServer = server;
-        this.onRefresh();
-      })
-      .catch(error => console.log(error));
+    this.onRefresh();
   }
 
   onRefresh() {
-    this.availService.getAvailability(this.onmsServer)
-      .then(sections => this.sections = sections)
-      .catch(error => this.alert('Cannot retrieve availability data.', error.message));
+    const loading = this.loadingCtrl.create({
+      content: 'Loading information, please wait...'
+    });
+    loading.present();
+    this.availService.getAvailability()
+      .then(sections => {
+        this.sections = sections
+        loading.dismiss();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Cannot retrieve availability data.', error)
+      });
   }
 
   private alert(title: string, message: string) {

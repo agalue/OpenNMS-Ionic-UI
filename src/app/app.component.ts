@@ -14,6 +14,7 @@ import { ServersPage } from '../pages/servers/servers';
 import { SetupPage } from '../pages/setup/setup';
 
 import { OnmsServersService } from '../services/onms-servers';
+import { HttpService } from '../services/http';
 
 @Component({
   templateUrl: 'app.html'
@@ -23,22 +24,37 @@ export class MyApp {
 
   rootPage: any;
 
-  pages: Array<{title: string, component: any}>;
+  groups: Array<{name: string, pages: Array<{title: string, component: any}>}>;
 
-  constructor(public platform: Platform, private serversConfig: OnmsServersService) {
+  constructor(
+    public platform: Platform,
+    private httpService: HttpService,
+    private serversConfig: OnmsServersService
+  ) {
     this.initializeApp();
 
-    this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'Events', component: EventsPage },
-      { title: 'Alarms', component: AlarmsPage },
-      { title: 'Outages', component: OutagesPage },
-      { title: 'Notifications', component: NotificationsPage },
-      { title: 'Nodes', component: NodesPage },
-      { title: 'SNMP Config', component: SnmpConfigPage },
-      { title: 'Requisitions', component: RequisitionsPage },
-      { title: 'Servers', component: ServersPage }
+    this.groups = [
+      {
+        name: 'Status',
+        pages: [
+          { title: 'Home', component: HomePage },
+          { title: 'Events', component: EventsPage },
+          { title: 'Alarms', component: AlarmsPage },
+          { title: 'Outages', component: OutagesPage },
+          { title: 'Notifications', component: NotificationsPage },
+          { title: 'Nodes', component: NodesPage },
+        ]
+      },{
+        name: 'Admin',
+        pages: [
+          { title: 'SNMP Config', component: SnmpConfigPage },
+          { title: 'Requisitions', component: RequisitionsPage },
+          { title: 'Servers', component: ServersPage }
+        ]
+      }
     ];
+
+    httpService.register();
 
     serversConfig.getDefaultServer()
       .then(defaultServer => this.rootPage = defaultServer ? HomePage : SetupPage )
