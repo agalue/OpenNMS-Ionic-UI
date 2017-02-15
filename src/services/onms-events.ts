@@ -39,4 +39,14 @@ export class OnmsEventsService {
     );
   }
 
+  sendEvent(event: OnmsEvent) : Promise<any> {
+    let url = `/rest/events`;
+    return new Promise<any>((resolve, reject) =>
+      this.http.post(url, 'application/json', event)
+        .toPromise()
+        .then(() => resolve())
+        .catch(error => reject(error))
+    );
+  }
+
 }
