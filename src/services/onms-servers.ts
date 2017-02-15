@@ -13,7 +13,6 @@ export class OnmsServersService {
 
   private servers: OnmsServer[];
   private defaultServer: OnmsServer;
-  private endPoint = '/rest/info';
   private timeout  = 3000;
 
   constructor(private storage: Storage, private http: Http) {}
@@ -118,7 +117,7 @@ export class OnmsServersService {
 
   private updateVersion(server: OnmsServer) : Promise<any> {
     return new Promise((resolve, reject) =>
-      this.http.get(server.url + this.endPoint)
+      this.http.get(server.url + '/rest/info')
         .timeout(this.timeout, new Error('Timeout exceeded'))
         .map((response: Response) => response.json())
         .toPromise()

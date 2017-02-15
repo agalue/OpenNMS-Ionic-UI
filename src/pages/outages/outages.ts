@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
 
-import { OnmsOutage } from '../../models/onms-outage';
-
 import { OutagePage } from '../outage/outage';
-
+import { OnmsOutage } from '../../models/onms-outage';
 import { OnmsOutagesService } from '../../services/onms-outages';
 
 @Component({

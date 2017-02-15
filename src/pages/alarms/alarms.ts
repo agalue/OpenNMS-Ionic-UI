@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 
+import { AlarmPage } from '../alarm/alarm';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsAlarm } from '../../models/onms-alarm';
-
-import { AlarmPage } from '../alarm/alarm';
-
 import { OnmsAlarmsService } from '../../services/onms-alarms';
 
 @Component({

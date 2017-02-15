@@ -10,14 +10,13 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsAvailabilityService {
 
-  private endPoint = '/rest/availability';
   private timeout  = 3000;
 
   constructor(private http: HttpService) {}
 
   getAvailability() : Promise<OnmsSlmSection[]> {
     return new Promise<OnmsSlmSection[]>((resolve, reject) =>
-      this.http.get(this.endPoint)
+      this.http.get('/rest/availability')
         .timeout(this.timeout, new Error('Timeout exceeded'))
         .map((response: Response) => OnmsSlmSection.import(response.json().section))
         .toPromise()

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
 
-import { OnmsEvent } from '../../models/onms-event';
-
 import { EventPage } from '../event/event';
-
+import { OnmsEvent } from '../../models/onms-event';
 import { OnmsEventsService } from '../../services/onms-events';
 
 @Component({

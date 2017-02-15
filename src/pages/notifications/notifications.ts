@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 
+import { NotificationPage } from '../notification/notification';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsNotification } from '../../models/onms-notification';
-
-import { NotificationPage } from '../notification/notification';
-
 import { OnmsNotificationsService } from '../../services/onms-notifications';
 
 @Component({
