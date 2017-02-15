@@ -51,8 +51,13 @@ export class HttpService {
 
   put(url: string, contentType: string, data: any) : Observable<Response> {
     let options: RequestOptions = this.getOptions();
-    options.headers.append('Content-Type', contentType);
-    let body = typeof data === "string" ? data : JSON.stringify(data);
+    if (contentType) {
+      options.headers.append('Content-Type', contentType);
+    }
+    let body: any;
+    if (data) {
+      body = typeof data === "string" ? data : JSON.stringify(data);
+    }
     return this.http.put(this.getBaseUrl() + url, body, options)
       .catch(this.handleError);
   }

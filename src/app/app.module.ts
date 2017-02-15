@@ -14,6 +14,7 @@ import { OnmsOutagesService } from '../services/onms-outages';
 import { OnmsNotificationsService } from '../services/onms-notifications';
 import { OnmsNodesService } from '../services/onms-nodes';
 import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
+import { OnmsRequisitionsService } from '../services/onms-requisitions';
 
 @NgModule({
   declarations: MyPages,
@@ -33,7 +34,8 @@ import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
     OnmsOutagesService,
     OnmsNotificationsService,
     OnmsNodesService,
-    OnmsSnmpConfigService
+    OnmsSnmpConfigService,
+    OnmsRequisitionsService
   ]
 })
 export class AppModule {}
