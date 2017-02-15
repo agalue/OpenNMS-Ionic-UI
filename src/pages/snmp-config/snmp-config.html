@@ -8,4 +8,132 @@
 </ion-header>
 
 <ion-content padding>
+  <form #lookupForm="ngForm" (ngSubmit)="onLookup(lookupForm)" novalidate>
+    <ion-list inset>
+      <ion-list-header>SNMP Config Lookup</ion-list-header>
+      <ion-item>
+        <ion-label stacked>IP Address</ion-label>
+        <ion-input type="text" name="ipAddress" ngModel required></ion-input>
+      </ion-item>
+      <ion-item>
+        <button ion-button block outline type="submit" [disabled]="!lookupForm.valid">Look Up</button>
+      </ion-item>
+    </ion-list>
+  </form>
+  <form #configForm="ngForm" (ngSubmit)="onSave(configForm)" novalidate>
+    <ion-list inset>
+      <ion-list-header>General Parameters</ion-list-header>
+      <ion-item>
+        <ion-label stacked>IP Address</ion-label>
+        <ion-input type="text" name="ipAddress" [(ngModel)]="ipAddress"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Version</ion-label>
+        <ion-select name="version" [(ngModel)]="config.version">
+          <ion-option value="v1">Version 1</ion-option>
+          <ion-option value="v2c">Version 2c</ion-option>
+          <ion-option value="v3">Version 3</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Port</ion-label>
+        <ion-input type="number" name="port" [(ngModel)]="config.port"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Timeout</ion-label>
+        <ion-input type="number" name="timeout" [(ngModel)]="config.timeout"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Retries</ion-label>
+        <ion-input type="number" name="retries" [(ngModel)]="config.retries"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Proxy Host</ion-label>
+        <ion-input type="string" name="proxyHost" [(ngModel)]="config.proxyHost"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Max Request Size</ion-label>
+        <ion-input type="number" name="maxRequestSize" [(ngModel)]="config.maxRequestSize"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Max Vars Per PDU</ion-label>
+        <ion-input type="number" name="maxVarsPerPdu" [(ngModel)]="config.maxVarsPerPdu"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Max Repetitions</ion-label>
+        <ion-input type="number" name="maxRepetitions" [(ngModel)]="config.maxRepetitions"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-list inset *ngIf="config.version == 'v2c' || config.version == 'v1'">
+      <ion-list-header>v1/v2 Parameters</ion-list-header>
+      <ion-item>
+        <ion-label stacked>Read Community String</ion-label>
+        <ion-input type="text" name="readCommunity" [(ngModel)]="config.readCommunity"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Write Community String</ion-label>
+        <ion-input type="text" name="writeCommunity" [(ngModel)]="config.writeCommunity"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-list inset *ngIf="config.version == 'v3'">
+      <ion-list-header>v3 Parameters</ion-list-header>
+      <ion-item>
+        <ion-label stacked>Security Name</ion-label>
+        <ion-input type="text" name="securityName" [(ngModel)]="config.securityName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Security Level</ion-label>
+        <ion-select name="securityLevel" [(ngModel)]="config.securityLevel">
+          <ion-option value="1">noAuthNoPriv</ion-option>
+          <ion-option value="2">authNoPriv</ion-option>
+          <ion-option value="3">authPriv</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Auth Passphrase</ion-label>
+        <ion-input type="password" name="authPassPhrase" [(ngModel)]="config.authPassPhrase"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Auth Protocol</ion-label>
+        <ion-select name="authProtocol" [(ngModel)]="config.authProtocol">
+          <ion-option value="MD5">MD5</ion-option>
+          <ion-option value="SHA">SHA</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Privacy Passphrase</ion-label>
+        <ion-input type="password" name="privPassPhrase" [(ngModel)]="config.privPassPhrase"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Privacy Protocol</ion-label>
+        <ion-select name="privProtocol" [(ngModel)]="config.privProtocol">
+          <ion-option value="DES">DES</ion-option>
+          <ion-option value="AES">AES128</ion-option>
+          <ion-option value="AES192">AES192</ion-option>
+          <ion-option value="AES256">AES256</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Engine ID</ion-label>
+        <ion-input type="text" name="engineId" [(ngModel)]="config.engineId"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Context Engine ID</ion-label>
+        <ion-input type="text" name="contextEngineId" [(ngModel)]="config.contextEngineId"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Context Name</ion-label>
+        <ion-input type="text" name="contextName" [(ngModel)]="config.contextName"></ion-input>
+      </ion-item>
+       <ion-item>
+        <ion-label stacked>Enterprise ID</ion-label>
+        <ion-input type="text" name="enterpriseId" [(ngModel)]="config.enterpriseId"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-list inset>
+      <ion-item>
+        <button ion-button block outline type="submit" [disabled]="!configForm.valid">Save Configuration</button>
+      </ion-item>
+    </ion-list>
+  </form>
 </ion-content>
