@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
-import { OnmsServer } from '../models/onms-server';
 import { OnmsNode } from '../models/onms-node';
 import { OnmsIpInterface } from '../models/onms-ip-interface';
 import { OnmsSnmpInterface } from '../models/onms-snmp-interface';

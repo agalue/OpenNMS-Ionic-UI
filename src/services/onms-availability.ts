@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
-import { OnmsServer } from '../models/onms-server';
 import { OnmsSlmSection } from '../models/onms-slm-section';
 import { HttpService } from './http';
 

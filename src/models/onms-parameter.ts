@@ -1,21 +1,11 @@
 export class OnmsParameter {
 
-    constructor(
-        public name: string,
-        public value: string,
-        public type: string
-    ) {}
+    public name: string;
+    public value: string;
+    public type: string;
 
-    static importParameter(e: Object): OnmsParameter {
-        if (!e) {
-            return null;
-        }
-        let parameter = new OnmsParameter(
-            e['name'],
-            e['value'],
-            e['type']
-        );
-        return parameter;
+    static importParameter(rawParameter: Object): OnmsParameter {
+        return Object.assign(new OnmsParameter(), rawParameter);
     }
 
     static importParameters(rawParameters: Object[]): OnmsParameter[] {
@@ -26,4 +16,5 @@ export class OnmsParameter {
         rawParameters.forEach(p => parameters.push(OnmsParameter.importParameter(p)));
         return parameters;
     }
+
 } 

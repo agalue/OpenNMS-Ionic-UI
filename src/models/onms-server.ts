@@ -1,4 +1,5 @@
 export class OnmsServer {
+
     public type: string;
     public version: string;
 
@@ -16,4 +17,5 @@ export class OnmsServer {
             && this.username == other.username
             && this.password == other.password;
     }
+
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
-import { OnmsServer } from '../models/onms-server';
 import { OnmsOutage } from '../models/onms-outage';
 import { OnmsOutageSummary } from '../models/onms-outage-summary';
 import { HttpService } from './http';

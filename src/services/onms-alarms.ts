@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
-import { OnmsServer } from '../models/onms-server';
 import { OnmsAlarm } from '../models/onms-alarm';
 import { OnmsAck } from '../models/onms-ack';
 import { HttpService } from './http';

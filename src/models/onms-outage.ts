@@ -2,35 +2,22 @@ import { OnmsEvent } from './onms-event';
 
 export class OnmsOutage {
 
-    constructor(
-        public id: number,
-        public ifLostService: number,
-        public ifRegainedService: number,
-        public nodeId: number,
-        public nodeLabel: string,
-        public ipAddress: string,
-        public serviceId: number,
-        public serviceName: string,
-        public serviceLostEvent: OnmsEvent,
-        public serviceRegainedEvent: OnmsEvent
-    ) {}
+    public id: number;
+    public ifLostService: number;
+    public ifRegainedService: number;
+    public nodeId: number;
+    public nodeLabel: string;
+    public ipAddress: string;
+    public serviceId: number;
+    public serviceName: string;
+    public serviceLostEvent: OnmsEvent;
+    public serviceRegainedEvent: OnmsEvent;
 
-    static importOutage(e: Object): OnmsOutage {
-        if (!e) {
-            return null;
-        }
-        let outage = new OnmsOutage(
-            e['id'],
-            e['ifLostService'],
-            e['ifRegainedService'],
-            e['nodeId'],
-            e['nodeLabel'],
-            e['ipAddress'],
-            e['serviceId'],
-            e['monitoredService'] ? e['monitoredService']['serviceType']['name'] : null,
-            OnmsEvent.importEvent(e['serviceLostEvent']),
-            OnmsEvent.importEvent(e['serviceRegainedEvent'])
-        );
+    static importOutage(rawOutage: Object): OnmsOutage {
+        let outage = Object.assign(new OnmsOutage(), rawOutage);
+        outage.serviceName = rawOutage['monitoredService'] ? rawOutage['monitoredService']['serviceType']['name'] : null;
+        outage.serviceLostEvent = OnmsEvent.importEvent(rawOutage['serviceLostEvent']);
+        outage.serviceRegainedEvent = OnmsEvent.importEvent(rawOutage['serviceRegainedEvent']);
         return outage;
     }
 

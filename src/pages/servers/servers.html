@@ -14,7 +14,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
   <ion-list>
     <ion-item-sliding *ngFor="let server of servers; let i = index">
       <button ion-item (click)="onEditServer(server, i)">
