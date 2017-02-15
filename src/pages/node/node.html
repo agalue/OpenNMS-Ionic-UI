@@ -5,4 +5,91 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-segment [(ngModel)]="mode">
+    <ion-segment-button value="info">
+      Info
+    </ion-segment-button>
+    <ion-segment-button value="ip">
+      IP
+    </ion-segment-button>
+    <ion-segment-button value="snmp">
+      SNMP
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="mode">
+    <div *ngSwitchCase="'info'">
+      <ion-grid>
+        <ion-row>
+          <ion-col><b>ID</b></ion-col><ion-col width-70>{{ node.id }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Label</b></ion-col><ion-col>{{ node.label }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Foreign Source</b></ion-col><ion-col width-70>{{ node.foreignSource || 'N/A' }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Foreign ID</b></ion-col><ion-col width-70>{{ node.foreignId || 'N/A' }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>sysName</b></ion-col><ion-col width-70>{{ node.sysName }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>sysObjectId</b></ion-col><ion-col width-70>{{ node.sysObjectId }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>sysLocation</b></ion-col><ion-col width-70>{{ node.sysLocation }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>sysContact</b></ion-col><ion-col width-70>{{ node.sysContact }}</ion-col>
+        </ion-row>
+        <ion-row *ngIf="node.sysDescription">
+          <ion-col><b>sysDescription</b><br><br>{{ node.sysDescription }}</ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-list *ngIf="node.categories.length > 0">
+        <ion-list-header>Categories</ion-list-header>
+        <ion-item *ngFor="let c of node.categories">{{ c.name }}</ion-item>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'ip'">
+      <br>
+      <ion-list>
+        <ion-item *ngFor="let intf of node.ipInterfaces">
+          <h2>{{ intf.ipAddress }}</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col><b>ifIndex</b></ion-col><ion-col width-70>{{ intf.ifIndex }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>hostname</b></ion-col><ion-col width-70>{{ intf.hostName }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b># services</b></ion-col><ion-col width-70>{{ intf.monitoredServiceCount }}</ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-icon item-left [name]="intf.snmpPrimary == 'P' ? 'attach' : ''"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'snmp'">
+      <br>
+      <ion-list>
+        <ion-item *ngFor="let intf of node.snmpInterfaces">
+          <h2>{{ intf.ifName }}</h2>
+          <ion-grid>
+            <ion-row>
+              <ion-col><b>ifIndex</b></ion-col><ion-col width-70>{{ intf.ifIndex }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>ifAlias</b></ion-col><ion-col width-70>{{ intf.ifAlias }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>MAC</b></ion-col><ion-col width-70>{{ intf.physAddr }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
 </ion-content>

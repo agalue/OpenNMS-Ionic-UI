@@ -5,7 +5,21 @@
     </button>
     <ion-title>Nodes</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchNodes($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-list [virtualScroll]="nodes">
+    <button ion-item *virtualItem="let node" (click)="onShowNode(node)">
+      <h2>{{ node.label }}</h2>
+      <div class="event-message" *ngIf="node.foreignSource">Requisition: {{ node.foreignSource }}, Foreign-ID: {{ node.foreignId }}</div>
+      <div class="event-message" *ngIf="!node.foreignSource">Auto-discovered with nodeId: {{ node.id }}</div>
+    </button>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onInfiniteScroll($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more nodes...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

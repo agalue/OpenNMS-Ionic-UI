@@ -13,6 +13,7 @@ import { OutagePage } from '../pages/outage/outage';
 import { NotificationsPage } from '../pages/notifications/notifications';
 import { NotificationPage } from '../pages/notification/notification';
 import { NodesPage } from '../pages/nodes/nodes';
+import { NodePage } from '../pages/node/node';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
 
@@ -31,6 +32,7 @@ export const MyPages = [
     NotificationsPage,
     NotificationPage,
     NodesPage,
+    NodePage,
     SnmpConfigPage,
     RequisitionsPage
 ];
