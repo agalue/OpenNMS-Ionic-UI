@@ -16,13 +16,9 @@ export class HttpService {
     serversService.defaultUpdated.subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
   }
 
-  private appendAuth(server: OnmsServer, headers: Headers) {
-    headers.append('Authorization', 'Basic ' + btoa(server.username + ':' + server.password));
-  }
-
   private getOptions() : RequestOptions {
     let headers = new Headers();
-    this.appendAuth(this.defaultServer, headers);
+    headers.append('Authorization', 'Basic ' + btoa(this.defaultServer.username + ':' + this.defaultServer.password));
     headers.append('Accept', 'application/json');
     return new RequestOptions({ headers: headers });
   }
