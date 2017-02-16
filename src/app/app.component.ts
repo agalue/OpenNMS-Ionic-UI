@@ -58,11 +58,9 @@ export class MyApp {
 
     httpService.register();
 
+    serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
     serversConfig.getDefaultServer()
-      .then(defaultServer => {
-        this.rootPage = defaultServer ? HomePage : SetupPage;
-        this.onmsServer = defaultServer;
-      })
+      .then(defaultServer => this.rootPage = defaultServer ? HomePage : SetupPage)
       .catch(error => console.log(error));
   }
 

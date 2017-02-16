@@ -17,13 +17,20 @@
 <ion-content no-padding>
   <ion-list>
     <ion-item-sliding *ngFor="let server of servers; let i = index">
-      <button ion-item (click)="onEditServer(server, i)">
+      <ion-item (click)="onSetDefault(i)">
         <h2>{{ server.name }}</h2>
         <p>{{ server.type }} {{ server.version }}</p>
         <ion-icon item-left [name]="server.isDefault ? 'checkmark' : ''"></ion-icon>
-      </button>
-      <ion-item-options side="right" (ionSwipe)="onSetDefault(i)">
-        <button ion-button expandable (click)="onSetDefault(i)">Mark as Default</button>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button expandable (click)="onEditServer(i)">
+          <ion-icon name="create"></ion-icon>
+          Edit Server
+        </button>
+        <button ion-button expandable color="danger" (click)="onRemoveServer(i)">
+          <ion-icon name="trash"></ion-icon>
+          Remove
+        </button>
       </ion-item-options>    
     </ion-item-sliding>
   </ion-list>

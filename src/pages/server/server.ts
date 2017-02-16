@@ -46,7 +46,7 @@ export class ServerPage implements OnInit {
     }
     promise
       .then(() => this.viewCtrl.dismiss(true))
-      .catch(error => this.alert('Save Server', error.message));
+      .catch(error => this.alert('Save Server', error));
   }
 
   onDelete() {
@@ -63,7 +63,7 @@ export class ServerPage implements OnInit {
           handler: () => {
             this.serversService.removeServer(this.serverIndex)
               .then(() => this.viewCtrl.dismiss(true))
-              .catch(error => this.alert('Delete Server', error.message));
+              .catch(error => this.alert('Delete Server', error));
           }
         }
       ]
