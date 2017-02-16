@@ -117,7 +117,6 @@ export class NotificationsPage {
     return new Promise(resolve => {
       this.notifyService.getNotifications(this.start, this.notificationFilter)
         .then((notifications: OnmsNotification[]) => {
-          console.log(notifications);
           notifications.forEach(n => this.notifications.push(n));
           resolve(notifications.length > 0);
         })
