@@ -13,6 +13,7 @@ import { RequisitionsPage } from '../pages/requisitions/requisitions';
 import { ServersPage } from '../pages/servers/servers';
 import { SetupPage } from '../pages/setup/setup';
 
+import { OnmsServer } from '../models/onms-server';
 import { OnmsServersService } from '../services/onms-servers';
 import { HttpService } from '../services/http';
 
@@ -23,6 +24,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any;
+  onmsServer: OnmsServer;
 
   groups: Array<{name: string, pages: Array<{title: string, component: any}>}>;
 
@@ -57,7 +59,10 @@ export class MyApp {
     httpService.register();
 
     serversConfig.getDefaultServer()
-      .then(defaultServer => this.rootPage = defaultServer ? HomePage : SetupPage )
+      .then(defaultServer => {
+        this.rootPage = defaultServer ? HomePage : SetupPage;
+        this.onmsServer = defaultServer;
+      })
       .catch(error => console.log(error));
   }
 

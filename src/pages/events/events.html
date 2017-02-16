@@ -26,7 +26,7 @@
   <ion-list [virtualScroll]="events">
     <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
       <h2>{{ formatUei(event.uei) }}</h2>
-      <div class="event-time">{{ event.eventTime | date:'medium' }}</div>
+      <div class="event-time">{{ event.time | date:'medium' }}</div>
       <br>
       <div class="event-message">{{ event.logMessage }}</div>
       <ion-icon item-left [name]="getIcon(event)" [color]="getIconColor(event)"></ion-icon>

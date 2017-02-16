@@ -28,6 +28,7 @@ export class OnmsAlarm {
     public parameters: OnmsParameter[] = [];
 
     static importAlarm(rawAlarm: Object): OnmsAlarm {
+        if (!rawAlarm) return null;
         let alarm = Object.assign(new OnmsAlarm(), rawAlarm);
         alarm.lastEvent = OnmsEvent.importEvent(rawAlarm['lastEvent']);
         alarm.serviceName = rawAlarm['serviceType'] ? rawAlarm['serviceType']['name'] : null;

@@ -9,7 +9,7 @@ export class OnmsEvent {
     public nodeLabel: string;
     public ipAddress: string;
     public serviceName: string;
-    public eventTime: number;
+    public time: number;
     public createTime: number;
     public logMessage: string;
     public description: string;
@@ -20,6 +20,7 @@ export class OnmsEvent {
     public parameters: OnmsParameter[] = [];
 
     static importEvent(rawEvent: Object): OnmsEvent {
+        if (!rawEvent) return null;
         let event = Object.assign(new OnmsEvent(), rawEvent);
         event.serviceName = rawEvent['serviceType'] ? rawEvent['serviceType']['name'] : null;
         event.parameters = OnmsParameter.importParameters(rawEvent['parameters']);

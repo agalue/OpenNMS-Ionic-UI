@@ -20,6 +20,7 @@ export class OnmsNotification {
     public destinations: OnmsDestination[] = [];
 
     static importNotification(rawNotification: Object): OnmsNotification {
+        if (!rawNotification) return null;
         let notification = Object.assign(new OnmsNotification(), rawNotification);
         notification.destinations = OnmsDestination.importDestinations(rawNotification['destinations'])
         notification.severity = OnmsEvent.capitalize(rawNotification['severity']);

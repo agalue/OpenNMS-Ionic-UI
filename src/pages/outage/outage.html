@@ -10,6 +10,7 @@
       <ion-col>
         <h3><b>Node</b></h3>
         <p>{{ outage.nodeLabel }} ({{ outage.nodeId }})</p>
+        <p *ngIf="outage.foreignSource">{{ outage.foreignId }} @ {{ outage.foreignSource }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="outage.ipAddress">
