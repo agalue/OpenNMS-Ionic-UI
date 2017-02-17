@@ -4,6 +4,7 @@ import { OnmsRequisitionStats } from './onms-requisition-stats';
 export class OnmsRequisition {
 
     public deployed: boolean = false;
+    public deployedNodes: number = 0;
 
     constructor(
         public foreignSource: string,
@@ -50,6 +51,7 @@ export class OnmsRequisition {
         this.nodes.forEach(n => {
             if (stats.foreignIds.indexOf(n.foreignId) > -1) {
                 n.deployed = true;
+                this.deployedNodes++;
             }
         });
     }

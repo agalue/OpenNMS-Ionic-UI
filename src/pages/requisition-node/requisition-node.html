@@ -24,6 +24,7 @@
       <br>
       <form [formGroup]="form" (ngSubmit)="onSave()">
         <ion-list inset>
+          <ion-list-header>Basic</ion-list-header>
           <ion-item>
             <ion-label stacked>Foreign ID</ion-label>
             <ion-input type="text" formControlName="foreignId"></ion-input>
@@ -32,33 +33,62 @@
             <ion-label stacked>Node Label</ion-label>
             <ion-input type="text" formControlName="nodeLabel"></ion-input>
           </ion-item>
-          <br>
-          <button ion-button block type="submit" [disabled]="!form.valid">Save Changes</button>
+          <ion-item>
+            <ion-label stacked>Location</ion-label>
+            <ion-input type="text" formControlName="location"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Building</ion-label>
+            <ion-input type="text" formControlName="building"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>City</ion-label>
+            <ion-input type="text" formControlName="city"></ion-input>
+          </ion-item>
         </ion-list>
+        <ion-list inset>
+          <ion-list-header>Path Outages</ion-list-header>
+          <ion-item>
+            <ion-label stacked>Parent Foreign Source</ion-label>
+            <ion-input type="text" formControlName="parentForeignSource"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Parent Foreign ID</ion-label>
+            <ion-input type="text" formControlName="parentForeignId"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Parent Node Label</ion-label>
+            <ion-input type="text" formControlName="parentNodeLabel"></ion-input>
+          </ion-item>
+        </ion-list>
+        <br>
+        <button ion-button block type="submit" [disabled]="!form.valid">Save Changes</button>
       </form>
     </div>
     <div *ngSwitchCase="'interfaces'">
       <br>
-      <button ion-button small block outline icon-left>
+      <button ion-button small block outline icon-left (click)="onAddInterface()">
         <ion-icon name="add"></ion-icon>
         Add Interface
       </button>
       <br>      
       <ion-list>
-        <button ion-item *ngFor="let intf of node.interfaces" (click)="onShowInterface(intf)">
-          <h2>{{ intf.ipAddress }}</h2>
+        <button ion-item *ngFor="let intf of node.interfaces" (click)="onEditInterface(intf)">
+          <h2>{{ intf.ipAddress }} ({{ intf.snmpPrimary }})</h2>
+          <p *ngIf="intf.description">{{ intf.description }}</p>
+          <p>{{ intf.services.length }} services</p>
         </button>
       </ion-list>
     </div>
     <div *ngSwitchCase="'assets'">
       <br>
-      <button ion-button small block outline icon-left>
+      <button ion-button small block outline icon-left (click)="onAddAsset()">
         <ion-icon name="add"></ion-icon>
         Add Asset
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let asset of node.assets" (click)="onShowAsset(asset)">
+        <button ion-item *ngFor="let asset of node.assets" (click)="onEditAsset(asset)">
           <h2>{{ asset.name }}</h2>
           <p>{{ asset.value }}</p>
         </button>
@@ -66,13 +96,13 @@
     </div>
     <div *ngSwitchCase="'categories'">
       <br>
-      <button ion-button small block outline icon-left>
+      <button ion-button small block outline icon-left (click)="onAddCategory()">
         <ion-icon name="add"></ion-icon>
         Add Category
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let category of node.categories" (click)="onShowCategory(category)">
+        <button ion-item *ngFor="let category of node.categories" (click)="onEditCategory(category)">
           <h2>{{ category.name }}</h2>
         </button>
       </ion-list>

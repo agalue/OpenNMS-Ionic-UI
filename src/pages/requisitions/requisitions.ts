@@ -56,6 +56,27 @@ export class RequisitionsPage {
       });
   }
 
+  onShowOptions() {
+   const actionSheet = this.actionSheetCtrl.create({
+      title: 'Requisitions Commands',
+      buttons: [
+        {
+          text: 'Add Requisition',
+          handler: () => this.onAddRequisition()
+        },
+        {
+          text: 'Refresh Requisitions',
+          handler: () => this.onRefresh()
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
   onShowRequisition(requisition: OnmsRequisition) {
     this.navCtrl.push(RequisitionPage, { requisition: requisition });
   }

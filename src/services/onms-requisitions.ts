@@ -144,4 +144,16 @@ export class OnmsRequisitionsService {
       .toPromise()
   }
 
+  getAvailableAssets() : Promise<string[]> {
+    return this.http.get('/rest/foreignSourcesConfig/assets')
+      .map((response: Response) => response.json().element)
+      .toPromise();
+  }
+
+  getAvailableCategories() : Promise<string[]> {
+    return this.http.get('/rest/foreignSourcesConfig/categories')
+      .map((response: Response) => response.json().element)
+      .toPromise();    
+  }
+
 }

@@ -6,10 +6,10 @@
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button icon-only (click)="onAddRequisition()">
-        <ion-icon name="add"></ion-icon>
+      <button ion-button icon-only (click)="onShowOptions()">
+        <ion-icon name="cog"></ion-icon>
       </button>
-    </ion-buttons>
+    </ion-buttons>    
     <ion-title>Requisitions</ion-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearch($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
@@ -29,7 +29,7 @@
         <h2>{{ requisition.foreignSource }}</h2>
         <p>Last Updated: {{ requisition.dateStamp | date:'medium' }}</p>
         <p>Last Imported: {{ requisition.lastImport ? (requisition.lastImport | date:'medium') : 'Never' }}</p>
-        <p>{{ requisition.nodes.length}} nodes</p>
+        <p>{{ requisition.nodes.length}} nodes defined, {{ requisition.deployedNodes }} nodes deployed</p>
       </button>
       <ion-item-options>
         <button ion-button expandable color="secondary"   (click)="onEditForeignSource(requisition)">

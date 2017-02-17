@@ -43,6 +43,12 @@ export class OnmsRequisitionNode {
         return node;
     }
 
+    getPrimaryIP() : string {
+        if (this.interfaces.length == 0) return null;
+        const ip = this.interfaces.find(i => i.snmpPrimary == 'P');
+        return ip ? ip.ipAddress + ' (P)' : this.interfaces[0].ipAddress
+    }
+
     generateModel() : Object {
         let rawNode: Object = {
             'foreign-id': this.foreignId,

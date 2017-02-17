@@ -9,6 +9,10 @@ export class OnmsRequisitionInterface {
         public services: OnmsRequisitionService[] = []
     ) {}
 
+    static create() : OnmsRequisitionInterface {
+        return new OnmsRequisitionInterface(null, null, null);
+    }
+
     static importInterfaces(rawInterfaces: Object[]) : OnmsRequisitionInterface[] {
         let interfaces: OnmsRequisitionInterface[] = [];
         rawInterfaces.forEach(i => interfaces.push(OnmsRequisitionInterface.importInterface(i)));

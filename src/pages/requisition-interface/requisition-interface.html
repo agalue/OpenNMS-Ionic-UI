@@ -1,8 +1,42 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Interface</ion-title>
+    <ion-title>{{ mode }} Interface</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
+  <form [formGroup]="form" (ngSubmit)="onSave()">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item>
+            <ion-label stacked>IP Address</ion-label>
+            <ion-input type="text" formControlName="ipAddress"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Description</ion-label>
+            <ion-input type="text" formControlName="description"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>SNMP Primary</ion-label>
+            <ion-select formControlName="snmpPrimary">
+              <ion-option value="P">Primary</ion-option>
+              <ion-option value="S">Secondary</ion-option>
+              <ion-option value="N">Not Elegible</ion-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block color="secondary" type="submit" [disabled]="!form.valid">Save</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  </form>
 </ion-content>

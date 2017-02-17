@@ -37,10 +37,16 @@ export class OnmsNode {
         return nodes;
     }
 
-    hasLocation(): boolean {
+    hasLocation() : boolean {
         return this.assetRecord != null
             && this.assetRecord.latitude != null
             && this.assetRecord.longitude != null;
+    }
+
+    getPrimaryIP() : string {
+        if (this.ipInterfaces.length == 0) return null;
+        const ip = this.ipInterfaces.find(i => i.snmpPrimary == 'P');
+        return ip ? ip.ipAddress : null;
     }
 
 }

@@ -28,7 +28,20 @@ export class RequisitionPage {
   }
 
   onShowOptions() {
-
+    const actionSheet = this.actionSheetCtrl.create({
+      title: 'Requisition Commands',
+      buttons: [
+        {
+          text: 'Add Node',
+          handler: () => this.onAddNode()
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ]
+    });
+    actionSheet.present();
   }
 
   onSearch() {

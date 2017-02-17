@@ -26,6 +26,7 @@ import { RequisitionPage } from '../pages/requisition/requisition';
 import { RequisitionNodePage } from '../pages/requisition-node/requisition-node';
 import { RequisitionInterfacePage } from '../pages/requisition-interface/requisition-interface';
 import { RequisitionAssetPage }from '../pages/requisition-asset/requisition-asset';
+import { RequisitionCategoryPage } from '../pages/requisition-category/requisition-category';
 import { ForeignSourcePage } from '../pages/foreign-source/foreign-source';
 import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
@@ -66,6 +67,7 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     RequisitionNodePage,
     RequisitionInterfacePage,
     RequisitionAssetPage,
+    RequisitionCategoryPage,
     ForeignSourcePage,
     PolicyPage,
     DetectorPage    
@@ -96,6 +98,7 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     RequisitionNodePage,
     RequisitionInterfacePage,
     RequisitionAssetPage,
+    RequisitionCategoryPage,
     ForeignSourcePage,
     PolicyPage,
     DetectorPage    
