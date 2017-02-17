@@ -28,7 +28,7 @@
       <h2>{{ formatUei(event.uei) }}</h2>
       <div class="event-time">{{ event.time | date:'medium' }}</div>
       <br>
-      <div class="event-message">{{ event.logMessage }}</div>
+      <div class="event-message" [innerHTML]="event.logMessage"></div>
       <ion-icon item-left [name]="getIcon(event)" [color]="getIconColor(event)"></ion-icon>
     </button>
   </ion-list>

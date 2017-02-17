@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 
 import { OnmsOutage } from '../models/onms-outage';
 import { OnmsOutageSummary } from '../models/onms-outage-summary';
+import { OnmsApiFilter } from '../models/onms-api-filter';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -14,10 +15,10 @@ export class OnmsOutagesService {
 
   constructor(private http: HttpService) {}
 
-  getOutages(start: number = 0, filter: string = null) : Promise<OnmsOutage[]> {
-    let url = `/rest/outages?order=desc&orderBy=ifLostService&offset=${start}&limit=${this.outagesPerPage}`;
-    if (filter) {
-      url += `&comparator=ilike&serviceLostEvent.eventDescr=%25${filter}%25`;
+  getOutages(start: number = 0, filters: OnmsApiFilter[] = [], limit: number = this.outagesPerPage) : Promise<OnmsOutage[]> {
+    let url = `/rest/outages?order=desc&orderBy=ifLostService&offset=${start}&limit=${limit}`;
+    if (filters.length > 0) {
+      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`;
     }
     return this.http.get(url)
       .map((response: Response) => OnmsOutage.importOutages(response.json().outage))
@@ -25,8 +26,7 @@ export class OnmsOutagesService {
   }
 
   getSumaries(start: number = 0) : Promise<OnmsOutageSummary[]> {
-    const url = `/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`;
-    return this.http.get(url)
+    return this.http.get(`/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`)
       .map((response: Response) => OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
       .toPromise()
   }

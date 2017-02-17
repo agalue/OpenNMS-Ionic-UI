@@ -31,6 +31,7 @@ import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
 
 import { HttpService } from '../services/http';
+import { OnmsUIService } from '../services/onms-ui';
 import { OnmsServersService } from '../services/onms-servers';
 import { OnmsAvailabilityService } from '../services/onms-availability';
 import { OnmsEventsService } from '../services/onms-events';
@@ -103,6 +104,7 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Storage,
     HttpService,
+    OnmsUIService,
     OnmsServersService,
     OnmsAvailabilityService,
     OnmsEventsService,

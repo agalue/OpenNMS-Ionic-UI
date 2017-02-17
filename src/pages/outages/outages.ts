@@ -3,6 +3,8 @@ import { NavController, LoadingController, AlertController } from 'ionic-angular
 
 import { OutagePage } from '../outage/outage';
 import { OnmsOutage } from '../../models/onms-outage';
+import { OnmsApiFilter } from '../../models/onms-api-filter';
+import { OnmsUIService } from '../../services/onms-ui';
 import { OnmsOutagesService } from '../../services/onms-outages';
 
 @Component({
@@ -21,6 +23,7 @@ export class OutagesPage {
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
+    private uiService: OnmsUIService,
     private outagesService: OnmsOutagesService
   ) {}
 
@@ -68,18 +71,17 @@ export class OutagesPage {
   }
 
   formatUei(uei: string) {
-    let ret: string = uei.replace(/^.*\//g, '');
-    ret = ret.search(/_/) == -1 ? ret.replace(/([A-Z])/g, ' $1') : ret.replace('_', ' ');
-    return ret.charAt(0).toUpperCase() + ret.slice(1);
+    return this.uiService.getFormattedUei(uei);
   }
 
   getIconColor(outage: OnmsOutage, strong: boolean = false) {
-    return (outage.serviceRegainedEvent ? 'Normal' : 'Major') + (strong ? '_' : '');
+    return this.uiService.getOutageIconColor(outage, strong);
   }
 
   private loadOutages() {
     return new Promise(resolve => {
-      this.outagesService.getOutages(this.start, this.outageFilter)
+      const filter = new OnmsApiFilter('serviceLostEvent.eventDescr', this.outageFilter);
+      this.outagesService.getOutages(this.start, [filter])
         .then(outages => {
           outages.forEach(e => this.outages.push(e));
           resolve(true);

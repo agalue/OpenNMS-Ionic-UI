@@ -129,13 +129,20 @@ export class OnmsServersService {
         .then(info => {
           server.type = info.packageDescription;
           server.version = info.displayVersion || 'Unknown';
+          console.log(info);
           console.log(server);
           if (server.isDefault) {
             this.notify(server);
           }          
           resolve(server);
         })
-        .catch(() => reject('Something wrong happened retrieving the server information from OpenNMS'))
+        .catch(error => {
+          console.log(error);
+          let msg = 'Something wrong happened retrieving the server information from OpenNMS.'
+                  + ' Make sure the URL and the credentials are correct.'
+                  + ' Also verify that CORS is enabled on the server.'
+          reject(msg);
+        })
     });
   }
 

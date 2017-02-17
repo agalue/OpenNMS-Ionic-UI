@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
 import { OnmsEvent } from '../models/onms-event';
+import { OnmsApiFilter } from '../models/onms-api-filter';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -13,10 +14,10 @@ export class OnmsEventsService {
 
   constructor(private http: HttpService) {}
 
-  getEvents(start: number = 0, filter: string = null) : Promise<OnmsEvent[]> {
-    let url = `/rest/events?order=desc&orderBy=eventTime&offset=${start}&limit=${this.eventsPerPage}`;
-    if (filter) {
-      url += `&comparator=ilike&eventDescr=%25${filter}%25`;
+  getEvents(start: number = 0, filters: OnmsApiFilter[] = [], limit: number = this.eventsPerPage) : Promise<OnmsEvent[]> {
+    let url = `/rest/events?order=desc&orderBy=eventTime&offset=${start}&limit=${limit}`;
+    if (filters.length > 0) {
+      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`;
     }
     return this.http.get(url)
       .timeout(3000, new Error('Timeout exceeded'))
@@ -24,16 +25,15 @@ export class OnmsEventsService {
       .toPromise()
   }
 
-  getEvent(eventId: number = 0) : Promise<OnmsEvent> {
-    const url = `/rest/events/${eventId}`;
-    return this.http.get(url)
+  getEvent(eventId) : Promise<OnmsEvent> {
+    return this.http.get(`/rest/events/${eventId}`)
       .map((response: Response) => OnmsEvent.importEvent(response.json()))
       .toPromise()
   }
 
-  sendEvent(event: OnmsEvent) : Promise<any> {
-    const url = `/rest/events`;
-    return this.http.post(url, 'application/json', event)
+  // TODO: This expects org.opennms.netmgt.xml.event.Event
+  sendEvent(event: Object) : Promise<any> {
+    return this.http.post('/rest/events', 'application/json', event)
       .toPromise()
   }
 

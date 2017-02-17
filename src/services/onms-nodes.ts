@@ -26,22 +26,19 @@ export class OnmsNodesService {
   }
 
   getNode(nodeId: number) : Promise<OnmsNode> {
-    const url = `/rest/nodes/${nodeId}`;
-    return this.http.get(url)
+    return this.http.get(`/rest/nodes/${nodeId}`)
       .map((response: Response) => response.json() as OnmsNode)
       .toPromise()
   }
 
   getIpInterfaces(nodeId: number) : Promise<OnmsIpInterface[]> {
-    const url = `/rest/nodes/${nodeId}/ipinterfaces?limit=0`;
-    return this.http.get(url)
+    return this.http.get(`/rest/nodes/${nodeId}/ipinterfaces?limit=0`)
       .map((response: Response) => OnmsIpInterface.importInterfaces(response.json().ipInterface))
       .toPromise()
   }
 
   getSnmpInterfaces(nodeId: number) : Promise<OnmsSnmpInterface[]> {
-    const url = `/rest/nodes/${nodeId}/snmpinterfaces?limit=0`;
-    return this.http.get(url)
+    return this.http.get(`/rest/nodes/${nodeId}/snmpinterfaces?limit=0`)
       .map((response: Response) => OnmsSnmpInterface.importInterfaces(response.json().snmpInterface))
       .toPromise()
   }

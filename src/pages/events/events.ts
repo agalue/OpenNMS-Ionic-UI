@@ -3,6 +3,8 @@ import { NavController, LoadingController, AlertController } from 'ionic-angular
 
 import { EventPage } from '../event/event';
 import { OnmsEvent } from '../../models/onms-event';
+import { OnmsApiFilter } from '../../models/onms-api-filter';
+import { OnmsUIService } from '../../services/onms-ui';
 import { OnmsEventsService } from '../../services/onms-events';
 
 @Component({
@@ -21,6 +23,7 @@ export class EventsPage {
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
+    private uiService: OnmsUIService,
     private eventsService: OnmsEventsService
   ) {}
 
@@ -68,27 +71,21 @@ export class EventsPage {
   }
 
   formatUei(uei: string) {
-    let ret: string = uei.replace(/^.*\//g, '');
-    ret = ret.search(/_/) == -1 ? ret.replace(/([A-Z])/g, ' $1') : ret.replace('_', ' ');
-    return ret.charAt(0).toUpperCase() + ret.slice(1);
+    return this.uiService.getFormattedUei(uei);
   }
 
   getIcon(event: OnmsEvent) {
-    const index = event.getSeverityIndex();
-    if (index > 5)
-      return 'flame';
-    if (index > 3)
-      return 'warning';
-    return 'alert';
+    return this.uiService.getEventIcon(event);
   }
 
   getIconColor(event: OnmsEvent) {
-    return event.severity + '_';
+    return this.uiService.getEventIconColor(event);
   }
 
   private loadEvents() : Promise<boolean> {
     return new Promise(resolve => {
-      this.eventsService.getEvents(this.start, this.eventFilter)
+      const filter = new OnmsApiFilter('eventDescr', this.eventFilter);
+      this.eventsService.getEvents(this.start, [filter])
         .then((events: OnmsEvent[]) => {
           events.forEach(e => this.events.push(e));
           resolve(events.length > 0);

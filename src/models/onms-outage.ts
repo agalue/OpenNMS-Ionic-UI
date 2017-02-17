@@ -30,4 +30,8 @@ export class OnmsOutage {
         return outages;
     }
 
+    getSeverity() {
+        return this.serviceRegainedEvent ? 'Normal' : 'Major';
+    }
+
 }

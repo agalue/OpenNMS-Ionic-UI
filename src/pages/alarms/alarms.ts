@@ -4,6 +4,8 @@ import { NavController, LoadingController, ToastController, AlertController } fr
 import { AlarmPage } from '../alarm/alarm';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsAlarm } from '../../models/onms-alarm';
+import { OnmsApiFilter } from '../../models/onms-api-filter';
+import { OnmsUIService } from '../../services/onms-ui';
 import { OnmsAlarmsService } from '../../services/onms-alarms';
 
 @Component({
@@ -23,6 +25,7 @@ export class AlarmsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
+    private uiService: OnmsUIService,
     private alarmsService: OnmsAlarmsService
   ) {}
 
@@ -113,27 +116,21 @@ export class AlarmsPage {
   }
 
   formatUei(uei: string) {
-    let ret: string = uei.replace(/^.*\//g, '');
-    ret = ret.search(/_/) == -1 ? ret.replace(/([A-Z])/g, ' $1') : ret.replace('_', ' ');
-    return ret.charAt(0).toUpperCase() + ret.slice(1);
+    return this.uiService.getFormattedUei(uei);
   }
 
   getIconColor(alarm: OnmsAlarm) {
-    return alarm.severity + '_';
+    return this.uiService.getAlarmIconColor(alarm);
   }
 
   getIcon(alarm: OnmsAlarm) {
-    const index = alarm.getSeverityIndex();
-    if (index > 5)
-      return 'flame';
-    if (index > 3)
-      return 'warning';
-    return 'alert';
+    return this.uiService.getAlarmIcon(alarm);
   }
 
   private loadAlarms() : Promise<boolean> {
     return new Promise(resolve => {
-      this.alarmsService.getAlarms(this.start, this.alarmFilter)
+      const filter = new OnmsApiFilter('description', this.alarmFilter);
+      this.alarmsService.getAlarms(this.start, [filter])
         .then((alarms: OnmsAlarm[]) => {
           alarms.forEach(e => this.alarms.push(e));
           resolve(alarms.length > 0);

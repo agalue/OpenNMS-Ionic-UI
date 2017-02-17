@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 
 import { OnmsAlarm } from '../models/onms-alarm';
 import { OnmsAck } from '../models/onms-ack';
+import { OnmsApiFilter } from '../models/onms-api-filter';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -14,10 +15,10 @@ export class OnmsAlarmsService {
 
   constructor(private http: HttpService) {}
 
-  getAlarms(start: number = 0, filter: string = null) : Promise<OnmsAlarm[]> {
-    let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${this.alarmsPerPage}`;
-    if (filter) {
-      url += `&comparator=ilike&description=%25${filter}%25`;
+  getAlarms(start: number = 0, filters: OnmsApiFilter[] = [], limit: number = this.alarmsPerPage) : Promise<OnmsAlarm[]> {
+    let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${limit}`;
+    if (filters.length > 0) {
+      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`;
     }
     return this.http.get(url)
       .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))

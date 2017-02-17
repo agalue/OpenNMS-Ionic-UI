@@ -37,4 +37,10 @@ export class OnmsNode {
         return nodes;
     }
 
+    hasLocation(): boolean {
+        return this.assetRecord != null
+            && this.assetRecord.latitude != null
+            && this.assetRecord.longitude != null;
+    }
+
 }

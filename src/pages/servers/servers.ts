@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController, AlertController, ToastController } from 'ionic-angular';
 
+import { ServerPage } from '../server/server';
 import { OnmsServer } from '../../models/onms-server';
 import { OnmsServersService } from '../../services/onms-servers';
-
-import { ServerPage } from '../server/server';
 
 @Component({
   selector: 'page-servers',

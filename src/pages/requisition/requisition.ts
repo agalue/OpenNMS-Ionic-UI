@@ -20,7 +20,7 @@ export class RequisitionPage {
     private navParams: NavParams,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController,    
+    private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
     private requisitionsService: OnmsRequisitionsService
   ) {

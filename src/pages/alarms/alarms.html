@@ -30,7 +30,8 @@
     <ion-item-sliding *virtualItem="let alarm">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
         <h2>{{ formatUei(alarm.uei) }}</h2>
-        <div class="event-time">generated at {{ alarm.lastEventTime | date:'medium' }} {{ alarm.nodeLabel ? ' for ' + alarm.nodeLabel : ''}}</div>
+        <div class="event-time">{{ alarm.nodeLabel ? ' for ' + alarm.nodeLabel : ''}}</div>
+        <div class="event-time">generated at {{ alarm.lastEventTime | date:'medium' }}</div>
         <div class="event-time" *ngIf="alarm.isAcknowledged()">acknowledged by {{ alarm.ackUser }} at {{ alarm.ackTime | date:'medium' }}</div>
         <br>
         <div class="event-message">{{ alarm.logMessage }}</div>
