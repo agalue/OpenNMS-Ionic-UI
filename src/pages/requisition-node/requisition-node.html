@@ -5,4 +5,78 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-segment [(ngModel)]="mode">
+    <ion-segment-button value="basic">
+      Basic
+    </ion-segment-button>
+    <ion-segment-button value="interfaces">
+      Interfaces
+    </ion-segment-button>
+    <ion-segment-button value="assets">
+      Assets
+    </ion-segment-button>
+    <ion-segment-button value="categories">
+      Categories
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="mode">
+    <div *ngSwitchCase="'basic'">
+      <br>
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <ion-list inset>
+          <ion-item>
+            <ion-label stacked>Foreign ID</ion-label>
+            <ion-input type="text" formControlName="foreignId"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Node Label</ion-label>
+            <ion-input type="text" formControlName="nodeLabel"></ion-input>
+          </ion-item>
+          <br>
+          <button ion-button block type="submit" [disabled]="!form.valid">Save Changes</button>
+        </ion-list>
+      </form>
+    </div>
+    <div *ngSwitchCase="'interfaces'">
+      <br>
+      <button ion-button small block outline icon-left>
+        <ion-icon name="add"></ion-icon>
+        Add Interface
+      </button>
+      <br>      
+      <ion-list>
+        <button ion-item *ngFor="let intf of node.interfaces" (click)="onShowInterface(intf)">
+          <h2>{{ intf.ipAddress }}</h2>
+        </button>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'assets'">
+      <br>
+      <button ion-button small block outline icon-left>
+        <ion-icon name="add"></ion-icon>
+        Add Asset
+      </button>
+      <br>
+      <ion-list>
+        <button ion-item *ngFor="let asset of node.assets" (click)="onShowAsset(asset)">
+          <h2>{{ asset.name }}</h2>
+          <p>{{ asset.value }}</p>
+        </button>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'categories'">
+      <br>
+      <button ion-button small block outline icon-left>
+        <ion-icon name="add"></ion-icon>
+        Add Category
+      </button>
+      <br>
+      <ion-list>
+        <button ion-item *ngFor="let category of node.categories" (click)="onShowCategory(category)">
+          <h2>{{ category.name }}</h2>
+        </button>
+      </ion-list>
+    </div>
+  </div>
 </ion-content>
+

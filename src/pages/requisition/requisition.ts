@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
+
+import { RequisitionNodePage } from '../requisition-node/requisition-node';
+import { OnmsRequisition } from '../../models/onms-requisition';
+import { OnmsRequisitionNode } from '../../models/onms-requisition-node';
+import { OnmsForeignSource } from '../../models/onms-foreign-source';
+import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
 @Component({
   selector: 'page-requisition',
@@ -7,10 +13,42 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class RequisitionPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  requisition: OnmsRequisition;
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RequisitionPage');
+  constructor(
+    private navCtrl: NavController,
+    private navParams: NavParams,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,    
+    private actionSheetCtrl: ActionSheetController,
+    private requisitionsService: OnmsRequisitionsService
+  ) {
+    this.requisition = navParams.get('requisition');
+  }
+
+  onShowOptions() {
+
+  }
+
+  onSearch() {
+
+  }
+
+  onCancelSearch() {
+
+  }
+
+  onAddNode() {
+
+  }
+
+  onEditNode(node: OnmsRequisitionNode) {
+    this.navCtrl.push(RequisitionNodePage, { node: node })
+  }
+
+  onRemoveNode() {
+
   }
 
 }

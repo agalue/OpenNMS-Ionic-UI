@@ -1,6 +1,9 @@
 import { OnmsRequisitionNode } from './onms-requisition-node';
+import { OnmsRequisitionStats } from './onms-requisition-stats';
 
 export class OnmsRequisition {
+
+    public deployed: boolean = false;
 
     constructor(
         public foreignSource: string,
@@ -8,6 +11,10 @@ export class OnmsRequisition {
         public lastImport: number,
         public nodes: OnmsRequisitionNode[] = []
     ) {}
+
+    static create(foreignSource: string): OnmsRequisition {
+        return new OnmsRequisition(foreignSource, new Date().getTime(), null);
+    }
 
     static importRequisitions(rawRequisitions: Object[]) : OnmsRequisition[] {
         let requisitions: OnmsRequisition[] = [];
@@ -36,6 +43,15 @@ export class OnmsRequisition {
         } else {
             this.nodes[pos] = node;
         }
+    }
+
+    update(stats: OnmsRequisitionStats) {
+        this.deployed = true;
+        this.nodes.forEach(n => {
+            if (stats.foreignIds.indexOf(n.foreignId) > -1) {
+                n.deployed = true;
+            }
+        });
     }
 
     generateModel() : Object {

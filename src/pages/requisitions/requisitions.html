@@ -12,7 +12,39 @@
     </ion-buttons>
     <ion-title>Requisitions</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearch($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content padding>
+  <ion-grid *ngIf="noRequisitions">
+    <ion-row>
+      <ion-col>
+        <h2>There are no requisitions, please try again later...</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item-sliding *ngFor="let requisition of requisitions">
+      <button ion-item (click)="onShowRequisition(requisition)">
+        <h2>{{ requisition.foreignSource }}</h2>
+        <p>Last Updated: {{ requisition.dateStamp | date:'medium' }}</p>
+        <p>Last Imported: {{ requisition.lastImport ? (requisition.lastImport | date:'medium') : 'Never' }}</p>
+        <p>{{ requisition.nodes.length}} nodes</p>
+      </button>
+      <ion-item-options>
+        <button ion-button expandable color="secondary"   (click)="onEditForeignSource(requisition)">
+          <ion-icon name="create"></ion-icon>
+          Edit FS
+        </button>
+        <button ion-button expandable color="primary"  (click)="onImportRequisition(requisition)">
+          <ion-icon name="sync"></ion-icon>
+          Import
+        </button>
+        <button ion-button expandable color="danger" (click)="onDeleteRequisition(requisition)">
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>

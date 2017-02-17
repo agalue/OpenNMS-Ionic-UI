@@ -5,4 +5,24 @@
 </ion-header>
 
 <ion-content padding>
+  <form #f="ngForm" (ngSubmit)="onSave(f)">
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>Name</ion-label>
+        <ion-input type="text" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Class</ion-label>
+        <ion-input type="text" name="className" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-row>
+      <ion-col>
+        <button type="submit" ion-button block color="secondary" [disabled]="!f.valid">Save</button>
+      </ion-col>
+      <ion-col>
+        <button type="button" ion-button block color="danger" (click)="onCancel()">Cancel</button>
+      </ion-col>
+    </ion-row>
+  </form>
 </ion-content>

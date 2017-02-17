@@ -5,4 +5,51 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-segment [(ngModel)]="mode">
+    <ion-segment-button value="overview">
+      Overview
+    </ion-segment-button>
+    <ion-segment-button value="detectors">
+      Detectors
+    </ion-segment-button>
+    <ion-segment-button value="policies">
+      Policies
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="mode">
+    <div *ngSwitchCase="'overview'">
+      <br>
+      <h2>{{ definition.name }}</h2>
+      <p>Last Update: {{ definition.dateStamp | date:'medium' }}</p>
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <ion-list inset>
+          <ion-item>
+            <ion-label stacked>Scan Interval</ion-label>
+            <ion-input type="text" formControlName="scanInterval"></ion-input>
+          </ion-item>
+          <br>
+          <button ion-button block type="submit" [disabled]="!form.valid">Save Definition</button>
+        </ion-list>
+      </form>
+    </div>
+    <div *ngSwitchCase="'detectors'">
+      <br>
+      <ion-list>
+        <button ion-item *ngFor="let detector of definition.detectors" (click)="onShowDetector(detector)">
+          <h2>{{ detector.name }}</h2>
+          <p>{{ detector.className | className }}</p>
+        </button>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'policies'">
+      <br>
+      <ion-list>
+        <button ion-item *ngFor="let policy of definition.policies" (click)="onShowPolicy(policy)">
+          <h2>{{ policy.name }}</h2>
+          <p>{{ policy.className | className }}</p>
+        </button>
+      </ion-list>
+    </div>
+  </div>
 </ion-content>
+

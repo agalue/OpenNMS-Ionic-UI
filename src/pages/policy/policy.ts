@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { ViewController, NavParams } from 'ionic-angular';
+
+import { OnmsRequisitionPolicy } from '../../models/onms-requisition-policy';
 
 @Component({
   selector: 'page-policy',
@@ -7,10 +9,18 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class PolicyPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  policy: OnmsRequisitionPolicy;
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad PolicyPage');
+  constructor(private navParams: NavParams, private viewCtrl : ViewController) {
+    this.policy = navParams.get('policy');
+  }
+
+  onSave() {
+    this.viewCtrl.dismiss(this.policy);
+  }
+
+  onCancel() {
+    this.viewCtrl.dismiss();
   }
 
 }

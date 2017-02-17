@@ -1,8 +1,28 @@
 <ion-header>
   <ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onShowOptions()">
+        <ion-icon name="cog"></ion-icon>
+      </button>
+    </ion-buttons>    
     <ion-title>Requisition</ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearch($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content padding>
+  <ion-list>
+    <ion-item-sliding *ngFor="let node of requisition.nodes">
+      <button ion-item (click)="onEditNode(node)">
+        <h2>{{ node.nodeLabel }}</h2>
+        <p>Foreign ID: {{ node.foreignId }}</p>
+      </button>
+      <ion-item-options>
+        <button ion-button expandable color="danger" (click)="onDeleteNode(node)">
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>  
 </ion-content>

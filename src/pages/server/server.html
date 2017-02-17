@@ -34,7 +34,7 @@
         <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
       </ion-col>
       <ion-col>
-        <button ion-button block color="secondary" type="submit">Save</button>
+        <button ion-button block color="secondary" type="submit" [disabled]="!serverForm.valid">Save</button>
       </ion-col>
       <ion-col *ngIf="server">
         <button ion-button block color="danger" type="button" (click)="onDelete()" [disabled]="server.isDefault">Delete</button>

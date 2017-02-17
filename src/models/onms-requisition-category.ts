@@ -9,7 +9,7 @@ export class OnmsRequisitionCategory {
     }
 
     static importCategory(rawCategory: Object) : OnmsRequisitionCategory {
-        return Object.assign(new OnmsRequisitionCategory(), rawCategory);;
+        return Object.assign(new OnmsRequisitionCategory(), rawCategory);
     }
 
     generateModel() : Object {

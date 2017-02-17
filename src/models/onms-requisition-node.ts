@@ -4,6 +4,8 @@ import { OnmsRequisitionAsset } from './onms-requisition-asset';
 
 export class OnmsRequisitionNode {
 
+    public deployed: boolean = false;
+
     constructor(
         public foreignId: string,
         public nodeLabel: string,
