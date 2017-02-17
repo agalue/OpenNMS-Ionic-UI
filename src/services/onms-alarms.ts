@@ -19,13 +19,9 @@ export class OnmsAlarmsService {
     if (filter) {
       url += `&comparator=ilike&description=%25${filter}%25`;
     }
-    return new Promise<OnmsAlarm[]>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get(url)
+      .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))
+      .toPromise()
   }
 
   acknowledgeAlarm(alarm: OnmsAlarm) : Promise<OnmsAck> {
@@ -45,14 +41,10 @@ export class OnmsAlarmsService {
   }
 
   private requestAcknodwledge(alarmId: number, action: string) : Promise<OnmsAck> {
-    let ackRequest = `alarmId=${alarmId}&action=${action}`;
-    return new Promise<OnmsAck>((resolve, reject) =>
-      this.http.post('/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
-        .map((response: Response) =>  OnmsAck.importAck(response.json()))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const ackRequest = `alarmId=${alarmId}&action=${action}`;
+    return this.http.post('/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
+      .map((response: Response) =>  OnmsAck.importAck(response.json()))
+      .toPromise()
   }
 
 }

@@ -18,35 +18,23 @@ export class OnmsEventsService {
     if (filter) {
       url += `&comparator=ilike&eventDescr=%25${filter}%25`;
     }
-    return new Promise((resolve, reject) =>
-      this.http.get(url)
-        .timeout(3000, new Error('Timeout exceeded'))
-        .map((response: Response) => OnmsEvent.importEvents(response.json().event))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get(url)
+      .timeout(3000, new Error('Timeout exceeded'))
+      .map((response: Response) => OnmsEvent.importEvents(response.json().event))
+      .toPromise()
   }
 
   getEvent(eventId: number = 0) : Promise<OnmsEvent> {
-    let url = `/rest/events/${eventId}`;
-    return new Promise<OnmsEvent>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsEvent.importEvent(response.json()))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const url = `/rest/events/${eventId}`;
+    return this.http.get(url)
+      .map((response: Response) => OnmsEvent.importEvent(response.json()))
+      .toPromise()
   }
 
   sendEvent(event: OnmsEvent) : Promise<any> {
-    let url = `/rest/events`;
-    return new Promise<any>((resolve, reject) =>
-      this.http.post(url, 'application/json', event)
-        .toPromise()
-        .then(() => resolve())
-        .catch(error => reject(error))
-    );
+    const url = `/rest/events`;
+    return this.http.post(url, 'application/json', event)
+      .toPromise()
   }
 
 }

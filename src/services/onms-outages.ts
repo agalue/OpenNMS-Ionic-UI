@@ -19,24 +19,16 @@ export class OnmsOutagesService {
     if (filter) {
       url += `&comparator=ilike&serviceLostEvent.eventDescr=%25${filter}%25`;
     }
-    return new Promise<OnmsOutage[]>((resolve,reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsOutage.importOutages(response.json().outage))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get(url)
+      .map((response: Response) => OnmsOutage.importOutages(response.json().outage))
+      .toPromise()
   }
 
   getSumaries(start: number = 0) : Promise<OnmsOutageSummary[]> {
-    let url = `/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`;
-    return new Promise<OnmsOutageSummary[]>((resolve,reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const url = `/rest/outages/summaries?offset=${start}&limit=${this.outagesPerPage}`;
+    return this.http.get(url)
+      .map((response: Response) => OnmsOutageSummary.importSumaries(response.json()['outage-summary']))
+      .toPromise()
   }
 
 }

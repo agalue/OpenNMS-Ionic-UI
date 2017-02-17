@@ -25,7 +25,7 @@ export class OnmsServersService {
         .then((servers: OnmsServer[]) => {
           const defaultServer = servers.find(server => server.isDefault);
           this.defaultServer = defaultServer;
-          this.notify();
+          this.notify(defaultServer);
           resolve(defaultServer);
         })
         .catch(error => reject(error));
@@ -48,7 +48,7 @@ export class OnmsServersService {
     return new Promise<OnmsServer>((resolve, reject) => {
       this.updateVersion(server)
         .then((updatedServer: OnmsServer) => {
-          console.debug(`updatting server ${updatedServer.name} with version ${updatedServer.version}`);
+          console.debug(`adding server ${updatedServer.name} with version ${updatedServer.version}`);
           this.servers.push(updatedServer);
           this.storage.set('onms-servers', this.servers)
             .then(() => resolve(updatedServer))
@@ -65,15 +65,11 @@ export class OnmsServersService {
     return new Promise<OnmsServer>((resolve, reject) => {
       this.updateVersion(server)
         .then((updatedServer: OnmsServer) => {
+          console.debug(`updating server ${updatedServer.name} with version ${updatedServer.version}`);
           const backup = this.servers.slice();
           this.servers[index] = updatedServer;
           this.storage.set('onms-servers', this.servers)
-            .then(() => {
-              if (updatedServer.isDefault) {
-                this.notify();
-              }
-              resolve(server)
-            })
+            .then(() => resolve(updatedServer))
             .catch(error => {
               this.servers = backup;
               reject(error);
@@ -89,14 +85,14 @@ export class OnmsServersService {
       this.servers[currentDefault].isDefault = false;
       this.servers[index].isDefault = true;
       this.defaultServer = this.servers[index];
-      this.notify();
+      this.notify(this.defaultServer);
       this.storage.set('onms-servers', this.servers)
         .then(() => resolve())
         .catch(error => {
           this.servers[currentDefault].isDefault = true;
           this.servers[index].isDefault = false;
           this.defaultServer = this.servers[currentDefault];
-          this.notify();
+          this.notify(this.defaultServer);
           reject(error);
         });      
     });
@@ -131,17 +127,20 @@ export class OnmsServersService {
         .map((response: Response) => response.json())
         .toPromise()
         .then(info => {
-          console.log(info);
           server.type = info.packageDescription;
           server.version = info.displayVersion || 'Unknown';
+          console.log(server);
+          if (server.isDefault) {
+            this.notify(server);
+          }          
           resolve(server);
         })
         .catch(() => reject('Something wrong happened retrieving the server information from OpenNMS'))
     });
   }
 
-  private notify() {
-      this.defaultUpdated.emit(this.defaultServer);
+  private notify(server: OnmsServer) {
+      this.defaultUpdated.emit(server);
   }
 
 }

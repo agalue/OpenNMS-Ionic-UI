@@ -19,13 +19,9 @@ export class OnmsNotificationsService {
     if (filter) {
       url += `&comparator=ilike&textMessage=%25${filter}%25`;
     }
-    return new Promise<OnmsNotification[]>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsNotification.importNotifications(response.json().notification))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get(url)
+      .map((response: Response) => OnmsNotification.importNotifications(response.json().notification))
+      .toPromise()
   }
 
   acknowledgeNotification(notification: OnmsNotification) : Promise<OnmsAck> {
@@ -37,14 +33,10 @@ export class OnmsNotificationsService {
   }
 
   private requestAcknodwledge(notifyId: number, action: string) : Promise<OnmsAck> {
-    let ackRequest = `notifId=${notifyId}&action=${action}`;
-    return new Promise<OnmsAck>((resolve, reject) =>
-      this.http.post('/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
-        .map((response: Response) => OnmsAck.importAck(response.json()))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-      );
+    const ackRequest = `notifId=${notifyId}&action=${action}`;
+    return this.http.post('/rest/acks', 'application/x-www-form-urlencoded', ackRequest)
+      .map((response: Response) => OnmsAck.importAck(response.json()))
+      .toPromise()
   }
 
 }

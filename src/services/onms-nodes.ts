@@ -20,46 +20,30 @@ export class OnmsNodesService {
     if (filter) {
       url += `&comparator=ilike&label=%25${filter}%25`;
     }
-    return new Promise<OnmsNode[]>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsNode.importNodes(response.json().node))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get(url)
+      .map((response: Response) => OnmsNode.importNodes(response.json().node))
+      .toPromise()
   }
 
   getNode(nodeId: number) : Promise<OnmsNode> {
-    let url = `/rest/nodes/${nodeId}`;
-    return new Promise<OnmsNode>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => response.json() as OnmsNode)
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const url = `/rest/nodes/${nodeId}`;
+    return this.http.get(url)
+      .map((response: Response) => response.json() as OnmsNode)
+      .toPromise()
   }
 
   getIpInterfaces(nodeId: number) : Promise<OnmsIpInterface[]> {
-    let url = `/rest/nodes/${nodeId}/ipinterfaces?limit=0`;
-    return new Promise<OnmsIpInterface[]>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsIpInterface.importInterfaces(response.json().ipInterface))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const url = `/rest/nodes/${nodeId}/ipinterfaces?limit=0`;
+    return this.http.get(url)
+      .map((response: Response) => OnmsIpInterface.importInterfaces(response.json().ipInterface))
+      .toPromise()
   }
 
   getSnmpInterfaces(nodeId: number) : Promise<OnmsSnmpInterface[]> {
-    let url = `/rest/nodes/${nodeId}/snmpinterfaces?limit=0`;
-    return new Promise<OnmsSnmpInterface[]>((resolve, reject) =>
-      this.http.get(url)
-        .map((response: Response) => OnmsSnmpInterface.importInterfaces(response.json().snmpInterface))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    const url = `/rest/nodes/${nodeId}/snmpinterfaces?limit=0`;
+    return this.http.get(url)
+      .map((response: Response) => OnmsSnmpInterface.importInterfaces(response.json().snmpInterface))
+      .toPromise()
   }
 
 }

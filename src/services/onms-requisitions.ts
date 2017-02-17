@@ -36,20 +36,13 @@ export class OnmsRequisitionsService {
   }
 
   private updateDeployedStatsForRequisition(requisition: OnmsRequisition) : Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getRequisitionStatsForRequisition(requisition.foreignSource)
-        .then((requisitionStats: OnmsRequisitionStats) => requisition.update(requisitionStats))
-        .catch(error => reject(error))
-    });
+    return this.getRequisitionStatsForRequisition(requisition.foreignSource)
+      .then((requisitionStats: OnmsRequisitionStats) => requisition.update(requisitionStats));
   }
 
   importRequisition(foreignSource: string, rescanExisting: string = 'true') : Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.put(`/rest/requisitions/${foreignSource}?importRescanExisting=${rescanExisting}`, null, null)
-        .toPromise()
-        .then(() => resolve())
-        .catch(error => reject(error))
-    });
+    return this.http.put(`/rest/requisitions/${foreignSource}?importRescanExisting=${rescanExisting}`, null, null)
+      .toPromise();
   }
 
   getRequisitions() : Promise<OnmsRequisition[]> {
@@ -78,121 +71,77 @@ export class OnmsRequisitionsService {
   }
 
   getRequisitionNames() : Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.http.get('/rest/requisitionNames')
-        .map((response: Response) => response.json()['foreign-source'])
-        .toPromise()
-        .then(requisitionNames => resolve(requisitionNames))
-        .catch(error => reject(error))
-     });
+    return this.http.get('/rest/requisitionNames')
+      .map((response: Response) => response.json()['foreign-source'])
+      .toPromise()
   }
 
   getRequisitionStats() : Promise<OnmsRequisitionStats[]> {
-    return new Promise((resolve, reject) => {
-      this.http.get('/rest/requisitions/deployed/stats')
-        .map((response: Response) => OnmsRequisitionStats.imporStats(response.json()['foreign-source']))
-        .toPromise()
-        .then(stats => resolve(stats))
-        .catch(error => reject(error))
-     });
+    return this.http.get('/rest/requisitions/deployed/stats')
+      .map((response: Response) => OnmsRequisitionStats.imporStats(response.json()['foreign-source']))
+      .toPromise()
   }
 
   getRequisitionStatsForRequisition(foreignSource: string) : Promise<OnmsRequisitionStats> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`/rest/requisitions/deployed/stats/${foreignSource}`)
-        .map((response: Response) => OnmsRequisitionStats.importSingleStats(response.json()))
-        .toPromise()
-        .then(stats => resolve(stats))
-        .catch(error => reject(error))
-     });
+    return this.http.get(`/rest/requisitions/deployed/stats/${foreignSource}`)
+      .map((response: Response) => OnmsRequisitionStats.importSingleStats(response.json()))
+      .toPromise()
   }
 
   getRequisition(foreignSource: string) : Promise<OnmsRequisition> {
-    return new Promise((resolve, reject) => {
       let requisition = this.cache.getCachedRequisition(foreignSource);
       if (requisition) {
-        resolve(requisition);
-        return;
+        return Promise.resolve(requisition);
       }
-      this.http.get(`/rest/requisitions/${foreignSource}`)
-        .map((response: Response) => OnmsRequisition.importRequisition(response.json()))
-        .toPromise()
-        .then(requisition => {
+      return this.http.get(`/rest/requisitions/${foreignSource}`)
+        .map((response: Response) => {
+          const requisition = OnmsRequisition.importRequisition(response.json());
           this.cache.setCachedRequisition(requisition);
-          resolve(requisition);
+          return requisition;
         })
-        .catch(error => reject(error))
-     });
+        .toPromise()
   }
 
   saveRequisition(requisition: OnmsRequisition) : Promise<any> {
-    return new Promise((resolve, reject) => {
-      const rawRequisition = requisition.generateModel();
-      this.http.post('/rest/requisitions', 'application/json', rawRequisition)
-        .toPromise()
-        .then(() => {
-          resolve(rawRequisition);
-        })
-        .catch(error => reject(error))
-    });
+    const rawRequisition = requisition.generateModel();
+    return this.http.post('/rest/requisitions', 'application/json', rawRequisition)
+      .toPromise()
   }
 
   removeRequisition(requisition: OnmsRequisition) : Promise<any> {
     return Promise.reject('Not implemented yet, sorry!');
   }
 
-  getNode(foreignSource: string, foreignId: string) : Promise<OnmsRequisitionNode[]> {
-    return new Promise((resolve, reject) => {
-      let node = this.cache.getCachedNode(foreignSource, foreignId);
-      if (node) {
-        resolve(node);
-        return;
-      }
-      this.http.get(`/rest/requisitions/${foreignSource}/${foreignId}`)
-        .map((response: Response) => OnmsRequisitionNode.importNode(response.json()))
-        .toPromise()
-        .then(node => {
-          this.cache.getCachedRequisition(foreignSource).updateNode(node);
-          resolve(node);
-        })
-        .catch(error => reject(error))
-    });
+  getNode(foreignSource: string, foreignId: string) : Promise<OnmsRequisitionNode> {
+    let node = this.cache.getCachedNode(foreignSource, foreignId);
+    if (node) {
+      return Promise.resolve(node);
+    }
+    return this.http.get(`/rest/requisitions/${foreignSource}/${foreignId}`)
+      .map((response: Response) => {
+        const node = OnmsRequisitionNode.importNode(response.json());
+        this.cache.getCachedRequisition(foreignSource).updateNode(node);
+        return node;
+      })
+      .toPromise()
   }
 
-  saveNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<Object> {
-    return new Promise((resolve, reject) => {
-      const rawNode = node.generateModel();
-      this.http.post(`/rest/requisitions/${foreignSource}`, 'application/json', rawNode)
-        .toPromise()
-        .then(() => {
-          resolve(rawNode);
-        })
-        .catch(error => reject(error))
-    });
+  saveNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
+    const rawNode = node.generateModel();
+    return this.http.post(`/rest/requisitions/${foreignSource}`, 'application/json', rawNode)
+      .toPromise()
   }
 
   getForeignSourceDefinition(foreignSource: string) : Promise<OnmsForeignSource> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`/rest/foreignSources/${foreignSource}`)
-        .map((response: Response) => OnmsForeignSource.importForeignSource(response.json()))
-        .toPromise()
-        .then(foreignSource => {
-          resolve(foreignSource);
-        })
-        .catch(error => reject(error))
-     });
+    return this.http.get(`/rest/foreignSources/${foreignSource}`)
+      .map((response: Response) => OnmsForeignSource.importForeignSource(response.json()))
+      .toPromise()
   }
 
-  saveForeignSourceDefinition(foreignSource: OnmsForeignSource) : Promise<Object> {
-    return new Promise((resolve, reject) => {
-      const rawForeignSource = foreignSource.generateModel();
-      this.http.post('/rest/foreignSources', 'application/json', rawForeignSource)
-        .toPromise()
-        .then(() => {
-          resolve(rawForeignSource);
-        })
-        .catch(error => reject(error))
-     });
+  saveForeignSourceDefinition(foreignSource: OnmsForeignSource) : Promise<any> {
+    const rawForeignSource = foreignSource.generateModel();
+    return this.http.post('/rest/foreignSources', 'application/json', rawForeignSource)
+      .toPromise()
   }
 
 }

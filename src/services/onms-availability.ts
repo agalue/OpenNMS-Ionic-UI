@@ -14,14 +14,10 @@ export class OnmsAvailabilityService {
   constructor(private http: HttpService) {}
 
   getAvailability() : Promise<OnmsSlmSection[]> {
-    return new Promise<OnmsSlmSection[]>((resolve, reject) =>
-      this.http.get('/rest/availability')
-        .timeout(this.timeout, new Error('Timeout exceeded'))
-        .map((response: Response) => OnmsSlmSection.import(response.json().section))
-        .toPromise()
-        .then(data => resolve(data))
-        .catch(error => reject(error))
-    );
+    return this.http.get('/rest/availability')
+      .timeout(this.timeout, new Error('Timeout exceeded'))
+      .map((response: Response) => OnmsSlmSection.import(response.json().section))
+      .toPromise()
   }
 
 }

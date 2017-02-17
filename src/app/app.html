@@ -11,7 +11,7 @@
         Server
       </ion-list-header>
       <ion-item>
-         <p> {{ onmsServer?.name }}, version {{ onmsServer?.version }}</p>
+         <p>{{ onmsServer?.type }} {{ onmsServer?.name }}, v.{{ onmsServer?.version }}</p>
       </ion-item>
     </ion-list>
     <ion-list no-lines *ngFor="let g of groups">
