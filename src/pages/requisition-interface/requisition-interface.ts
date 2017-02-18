@@ -65,6 +65,7 @@ export class RequisitionInterfacePage implements OnInit {
       'snmpPrimary' : new FormControl(this.intf.snmpPrimary, Validators.required),
       'services' : services
     });
+    console.log('Interface form initailized!');
   }
 
   private getServices() : FormArray {

@@ -65,6 +65,10 @@ export class RequisitionsPage {
           handler: () => this.onAddRequisition()
         },
         {
+          text: 'Edit Default Foreign Source',
+          handler: () => this.onEditForeignSource('default')
+        },
+        {
           text: 'Refresh Requisitions',
           handler: () => this.onRefresh()
         },
@@ -104,12 +108,13 @@ export class RequisitionsPage {
     alert.present();
   }
 
-  onEditForeignSource(requisition: OnmsRequisition) {
-    const loading = this.loadingCtrl.create({
-      content: `Loading foreign source definition for requisition ${requisition.foreignSource} ...`
-    });
+  onEditForeignSource(foreignSource: string) {
+    const content = foreignSource == 'default' ?
+      'Loading defult foreign source definition...' :
+      `Loading foreign source definition for requisition ${foreignSource} ...`
+    const loading = this.loadingCtrl.create({ content: content });
     loading.present();
-    return this.requisitionsService.getForeignSourceDefinition(requisition.foreignSource)
+    return this.requisitionsService.getForeignSourceDefinition(foreignSource)
       .then((definition:OnmsForeignSource) => {
         loading.dismiss();
         this.navCtrl.push(ForeignSourcePage, { definition: definition });

@@ -22,6 +22,10 @@ export class OnmsRequisitionPolicy {
         );
     }
 
+    static create() : OnmsRequisitionPolicy {
+        return new OnmsRequisitionPolicy(null, null);
+    }
+
     generateModel() : Object {
         let rawModel: Object = {
             'name': this.name,

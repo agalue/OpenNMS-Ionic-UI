@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Foreign Source</ion-title>
+    <ion-title>Foreign Source Definition</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only color="danger" (click)="onSave()" *ngIf="form.invalid || form.dirty">
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -21,21 +26,24 @@
       <br>
       <h2>{{ definition.name }}</h2>
       <p>Last Update: {{ definition.dateStamp | date:'medium' }}</p>
-      <form [formGroup]="form" (ngSubmit)="onSave()">
+      <form [formGroup]="form">
         <ion-list inset>
           <ion-item>
             <ion-label stacked>Scan Interval</ion-label>
             <ion-input type="text" formControlName="scanInterval"></ion-input>
           </ion-item>
-          <br>
-          <button ion-button block type="submit" [disabled]="!form.valid">Save Definition</button>
         </ion-list>
       </form>
     </div>
     <div *ngSwitchCase="'detectors'">
       <br>
+      <button ion-button clear small block outline icon-left (click)="onAddDetector()">
+        <ion-icon name="add"></ion-icon>
+        Add Detector
+      </button>
+      <br>
       <ion-list>
-        <button ion-item *ngFor="let detector of definition.detectors" (click)="onShowDetector(detector)">
+        <button ion-item *ngFor="let detector of definition.detectors; let i = index" (click)="onEditDetector(detector,i)">
           <h2>{{ detector.name }}</h2>
           <p>{{ detector.className | className }}</p>
         </button>
@@ -43,8 +51,13 @@
     </div>
     <div *ngSwitchCase="'policies'">
       <br>
+      <button ion-button clear small block outline icon-left (click)="onAddPolicy()">
+        <ion-icon name="add"></ion-icon>
+        Add Policy
+      </button>
+      <br>
       <ion-list>
-        <button ion-item *ngFor="let policy of definition.policies" (click)="onShowPolicy(policy)">
+        <button ion-item *ngFor="let policy of definition.policies; let i = index" (click)="onEditPolicy(policy,i)">
           <h2>{{ policy.name }}</h2>
           <p>{{ policy.className | className }}</p>
         </button>

@@ -6,6 +6,7 @@ import { DetectorPage } from '../detector/detector';
 import { PolicyPage } from '../policy/policy';
 import { OnmsRequisitionDetector } from '../../models/onms-requisition-detector';
 import { OnmsRequisitionPolicy } from '../../models/onms-requisition-policy';
+import { OnmsForeignSourceConfig } from '../../models/onms-foreign-source-config';
 import { OnmsForeignSource } from '../../models/onms-foreign-source';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
@@ -17,6 +18,7 @@ export class ForeignSourcePage implements OnInit {
 
   mode = 'overview';
   definition: OnmsForeignSource;
+  configs: OnmsForeignSourceConfig[] = [];
   form: FormGroup;
 
   constructor(
@@ -30,33 +32,111 @@ export class ForeignSourcePage implements OnInit {
 
   ngOnInit() {
     this.definition = this.navParams.get('definition');
+    this.requisitionsService.getPoliciesConfig()
+      .then(configs => this.configs = configs)
+      .catch(error => console.error(error));
     this.initForm();
   }
 
-  onShowDetector(detector: OnmsRequisitionDetector) {
-    const modal = this.modalCtrl.create(DetectorPage, { detector: detector });
-    modal.onDidDismiss((updatedDetector: OnmsRequisitionDetector) => {
-      if (updatedDetector) {
-        // Perform Validation and mark the form as dirty if changed.
+  ionViewCanLeave() : Promise<void> {
+    if (this.form.valid && !this.form.dirty) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve, reject) => {
+      const alert = this.alertCtrl.create({
+        title: 'Save Definition',
+        subTitle: 'Are you sure you discard all your changes ?',
+        message: 'This cannot be undone.',
+        buttons: [
+          {
+            text: 'Save Definition',
+            handler: () => {
+              this.saveDefinition()
+                .then(() => resolve())
+                .catch(error => reject(error))
+            }
+          },
+          {
+            text: 'Discard Changes',
+            handler: () => resolve()
+          }
+        ]
+      });
+      alert.present();
+    });
+  }
+
+  onSave() {
+    this.saveDefinition()
+      .then(() => this.toast('Foreign Source definition has been saved!'))
+      .catch(error => this.alert('Save Definition', error));
+  }
+
+  onAddPolicy() {
+    this.updatePolicy(null, (newPolicy) => {
+      this.definition.policies.push(newPolicy);
+      this.toast(`Policy ${newPolicy.name} added!`);
+    });
+  }
+
+  onAddDetector() {
+    this.updateDetector(null, (newDetector) => {
+      this.definition.detectors.push(newDetector);
+      this.toast(`Detector ${newDetector.name} added!`);
+    });
+  }
+
+  onEditPolicy(policy: OnmsRequisitionPolicy, index: number) {
+    this.updatePolicy(policy, (policyUpdated) => {
+      this.definition.policies[index] = policyUpdated;
+      this.toast(`Policy ${policyUpdated.name} updated!`);
+    });
+  }
+
+  onEditDetector(detector: OnmsRequisitionDetector, index: number) {
+    this.updateDetector(detector, (detectorUpdated) => {
+      this.definition.detectors[index] = detectorUpdated;
+      this.toast(`Detector ${detectorUpdated.name} updated!`);
+    });
+  }
+
+  private updatePolicy(policy: OnmsRequisitionPolicy, handler: (updated: OnmsRequisitionPolicy) => void) {
+    const modal = this.modalCtrl.create(PolicyPage, { configs: this.configs, policy: policy });
+    modal.onDidDismiss((updatedPolicy:OnmsRequisitionPolicy) => {
+      if (updatedPolicy) {
+        this.form.markAsDirty();
+        handler(updatedPolicy);
       }
     });
     modal.present();
   }
 
-  onShowPolicy(policy: OnmsRequisitionPolicy) {
-    const modal = this.modalCtrl.create(PolicyPage, { policy: policy });
-    modal.onDidDismiss((updatedPolicy: OnmsRequisitionPolicy) => {
-      if (updatedPolicy) {
-        // Perform Validation and mark the form as dirty if changed.
+  private updateDetector(detector: OnmsRequisitionDetector, handler: (updated: OnmsRequisitionDetector) => void) {
+    const modal = this.modalCtrl.create(DetectorPage, { configs: this.configs, detector: detector });
+    modal.onDidDismiss((updatedDetector:OnmsRequisitionDetector) => {
+      if (updatedDetector) {
+        this.form.markAsDirty();
+        handler(updatedDetector);
       }
     });
-    modal.present();    
+    modal.present();
   }
 
   private initForm() {
-    console.log('initialize form');
     this.form = new FormGroup({
       'scanInterval' : new FormControl(this.definition.scanInterval, Validators.required),
+    });
+  }
+
+  private saveDefinition() : Promise<void> {
+    return new Promise<void>((resolve,reject) => {
+      Object.assign(this.definition, this.form.value);
+      this.requisitionsService.saveForeignSourceDefinition(this.definition)
+        .then(() => {
+          this.form.markAsPristine();
+          resolve();
+        })
+        .catch(error => reject(error));
     });
   }
 

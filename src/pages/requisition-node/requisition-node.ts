@@ -75,21 +75,25 @@ export class RequisitionNodePage implements OnInit {
       .catch(error => this.alert('Save Node', error));
   }
 
-  onAddInterface(intf: OnmsRequisitionInterface) {
+  onGenerateForeignId() {
+    this.form.get('foreignId').setValue(new Date().getTime());
+  }
+
+  onAddInterface() {
     this.updateInterface(null, (newIntf) => {
       this.node.interfaces.push(newIntf);
       this.toast(`Interface ${newIntf.ipAddress} added!`);
     });    
   }
 
-  onAddAsset(asset: OnmsRequisitionAsset) {
+  onAddAsset() {
     this.updateAsset(null, (newAsset) => {
       this.node.assets.push(newAsset);
       this.toast(`Asset ${newAsset.name} added!`);
     });
   }
 
-  onAddCategory(category: OnmsRequisitionCategory) {
+  onAddCategory() {
     this.updateCategory(null, (newCategory) => {
       this.node.categories.push(newCategory);
       this.toast(`Category ${newCategory.name} added!`);

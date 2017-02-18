@@ -46,6 +46,13 @@ export class OnmsRequisition {
         }
     }
 
+    removeNode(node: OnmsRequisitionNode) {
+        const pos = this.nodes.findIndex(n => n.foreignId == node.foreignId);
+        if (pos == -1) {
+            this.nodes.slice(pos, 1);
+        }
+    }
+
     update(stats: OnmsRequisitionStats) {
         this.deployed = true;
         this.nodes.forEach(n => {

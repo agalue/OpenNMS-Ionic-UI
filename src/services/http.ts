@@ -74,4 +74,10 @@ export class HttpService {
       .catch(this.handleError);
   }
 
+  delete(url: string) : Observable<Response> {
+    let options: RequestOptions = this.getOptions();
+    return this.http.delete(this.getBaseUrl() + url, options)
+      .catch(this.handleError);
+  }
+
 }

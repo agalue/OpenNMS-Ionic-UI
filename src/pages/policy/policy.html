@@ -5,24 +5,70 @@
 </ion-header>
 
 <ion-content padding>
-  <form #f="ngForm" (ngSubmit)="onSave(f)">
-    <ion-list>
-      <ion-item>
-        <ion-label stacked>Name</ion-label>
-        <ion-input type="text" name="name" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label stacked>Class</ion-label>
-        <ion-input type="text" name="className" required></ion-input>
-      </ion-item>
-    </ion-list>
+  <form #f="ngForm" (ngSubmit)="onSave()">
+  <ion-grid>
     <ion-row>
       <ion-col>
-        <button type="submit" ion-button block color="secondary" [disabled]="!f.valid">Save</button>
+        <ion-list>
+          <ion-item>
+            <ion-label stacked>Name</ion-label>
+            <ion-input type="text" name="name" [(ngModel)]="policy.name" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>Class</ion-label>
+            <ion-select name="className" [(ngModel)]="policy.className" required (ionChange)="onClassChange($event)">
+              <ion-option *ngFor="let config of configs" [value]="config.className">{{ config.name }}</ion-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button clear small icon-left type="button" (click)="onAddParameter()" [disabled]="!policy.className || !hasAvailableParameters">
+          <ion-icon name="add"></ion-icon>
+          Add Parameter
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-list-header>Parameters</ion-list-header>
+          <ion-item-sliding *ngFor="let parameter of policy.parameters; let i = index">
+            <ion-item *ngIf="parameter.required">
+              <ion-label stacked>{{ parameter.key }}</ion-label>
+              <ion-input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="parameter.key" required *ngIf="!parameter.hasOptions()"></ion-input>
+              <ion-select [ngModelOptions]="{standalone: true}" [(ngModel)]="parameter.value" required *ngIf="parameter.hasOptions()">
+                <ion-option *ngFor="let option of parameter.options" [value]="option">{{ option }}</ion-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="!parameter.required">
+              <ion-label stacked *ngIf="parameter.key">{{ parameter.key }}</ion-label>
+              <ion-label stacked *ngIf="!parameter.key">Choose Parameter Key</ion-label>
+              <ion-select [ngModelOptions]="{standalone: true}" [(ngModel)]="parameter.key" required *ngIf="!parameter.key">
+                <ion-option *ngFor="let param of getAvailableParameters()" [value]="param">{{ param }}</ion-option>
+              </ion-select>
+              <ion-input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="parameter.value" required></ion-input>
+            </ion-item>
+            <ion-item-options>
+              <button ion-button expandable color="danger" type="button" (click)="onRemoveParameter(i)">
+                <ion-icon name="trash"></ion-icon>
+                Remove
+              </button>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col>
         <button type="button" ion-button block color="danger" (click)="onCancel()">Cancel</button>
       </ion-col>
+      <ion-col>
+        <button type="submit" ion-button block color="secondary" [disabled]="!f.valid">Save</button>
+      </ion-col>
     </ion-row>
+  </ion-grid>
   </form>
 </ion-content>

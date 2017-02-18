@@ -69,12 +69,39 @@ export class RequisitionPage {
     this.navCtrl.push(RequisitionNodePage, { foreignSource: this.requisition.foreignSource, node: node })
   }
 
-  onRemoveNode() {
-
+  onRemoveNode(node: OnmsRequisitionNode) {
+    const alert = this.alertCtrl.create({
+      title: 'Delete Node',
+      subTitle: 'Are you sure you want to delete the node?',
+      message: 'This cannot be undone. All the nodes will be permanently removed from the database.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          handler: () => this.removeNode(node)
+        }
+      ]
+    });
+    alert.present();
   }
 
   onEditForeignSourceDefinition() {
-    this.navCtrl.push(ForeignSourcePage, {})
+    const loading = this.loadingCtrl.create({
+      content: `Loading foreign source definition for requisition ${this.requisition.foreignSource} ...`
+    });
+    loading.present();
+    return this.requisitionsService.getForeignSourceDefinition(this.requisition.foreignSource)
+      .then((definition:OnmsForeignSource) => {
+        loading.dismiss();
+        this.navCtrl.push(ForeignSourcePage, { definition: definition });
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Load Error', error)
+      });
   }
 
   onImportRequisition() {
@@ -117,6 +144,22 @@ export class RequisitionPage {
         loading.dismiss();
         this.alert('Import Error', error)
       });
+  }
+
+  private removeNode(node: OnmsRequisitionNode) {
+    const loading = this.loadingCtrl.create({
+      content: `Removing node ${node.foreignId}...`
+    });
+    loading.present();
+    this.requisitionsService.removeNode(this.requisition.foreignSource, node)
+      .then(() => {
+        loading.dismiss();
+        this.toast(`Node ${node.foreignId} has been removed!`);
+      })
+    .catch(error => {
+      loading.dismiss();
+      this.alert('Remove Node Error', error)
+    });
   }
 
   private alert(title: string, message: string) {

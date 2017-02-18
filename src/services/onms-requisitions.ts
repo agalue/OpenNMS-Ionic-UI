@@ -6,6 +6,7 @@ import { OnmsRequisitionStats } from '../models/onms-requisition-stats';
 import { OnmsRequisitionNode } from '../models/onms-requisition-node';
 import { OnmsRequisitionsCache } from '../models/onms-requisitions-cache';
 import { OnmsForeignSource } from '../models/onms-foreign-source';
+import { OnmsForeignSourceConfig } from '../models/onms-foreign-source-config';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -129,7 +130,20 @@ export class OnmsRequisitionsService {
   saveNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
     const rawNode = node.generateModel();
     return this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode)
-      .toPromise();
+      .toPromise()
+      .then(() => {
+        const requisition = this.cache.getCachedRequisition(foreignSource);
+        requisition.updateNode(node);
+      });
+  }
+
+  removeNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
+    return this.http.delete(`/rest/requisitions/${foreignSource}/nodes/${node.foreignId}`)
+      .toPromise()
+      .then(() => {
+        const requisition = this.cache.getCachedRequisition(foreignSource);
+        requisition.removeNode(node);
+      });
   }
 
   getForeignSourceDefinition(foreignSource: string) : Promise<OnmsForeignSource> {
@@ -159,6 +173,18 @@ export class OnmsRequisitionsService {
   getAvailableServices(foreignSource: string) : Promise<string[]> {
     return this.http.get(`/rest/foreignSourcesConfig/services/${foreignSource}`)
       .map((response: Response) => response.json().element)
+      .toPromise();
+  }
+
+  getDetectorsConfig() : Promise<OnmsForeignSourceConfig[]> {
+    return this.http.get('/rest/foreignSourcesConfig/detectors')
+      .map((response: Response) => OnmsForeignSourceConfig.importConfigs(response.json().plugins))
+      .toPromise();
+  }
+
+  getPoliciesConfig() : Promise<OnmsForeignSourceConfig[]> {
+    return this.http.get('/rest/foreignSourcesConfig/policies')
+      .map((response: Response) => OnmsForeignSourceConfig.importConfigs(response.json().plugins))
       .toPromise();
   }
 

@@ -19,7 +19,7 @@
         <p>IP Address: {{ node.getPrimaryIP() }}</p>
       </button>
       <ion-item-options>
-        <button ion-button expandable color="danger" (click)="onDeleteNode(node)">
+        <button ion-button expandable color="danger" (click)="onRemoveNode(node)">
           <ion-icon name="trash"></ion-icon>
           Delete
         </button>

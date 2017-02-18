@@ -32,7 +32,7 @@
         <p>{{ requisition.nodes.length}} nodes defined, {{ requisition.deployedNodes }} nodes deployed</p>
       </button>
       <ion-item-options>
-        <button ion-button expandable color="secondary"   (click)="onEditForeignSource(requisition)">
+        <button ion-button expandable color="secondary"   (click)="onEditForeignSource(requisition.foreignSource)">
           <ion-icon name="create"></ion-icon>
           Edit FS
         </button>
