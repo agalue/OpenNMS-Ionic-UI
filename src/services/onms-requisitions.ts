@@ -73,19 +73,19 @@ export class OnmsRequisitionsService {
   getRequisitionNames() : Promise<string[]> {
     return this.http.get('/rest/requisitionNames')
       .map((response: Response) => response.json()['foreign-source'])
-      .toPromise()
+      .toPromise();
   }
 
   getRequisitionStats() : Promise<OnmsRequisitionStats[]> {
     return this.http.get('/rest/requisitions/deployed/stats')
       .map((response: Response) => OnmsRequisitionStats.imporStats(response.json()['foreign-source']))
-      .toPromise()
+      .toPromise();
   }
 
   getRequisitionStatsForRequisition(foreignSource: string) : Promise<OnmsRequisitionStats> {
     return this.http.get(`/rest/requisitions/deployed/stats/${foreignSource}`)
       .map((response: Response) => OnmsRequisitionStats.importSingleStats(response.json()))
-      .toPromise()
+      .toPromise();
   }
 
   getRequisition(foreignSource: string) : Promise<OnmsRequisition> {
@@ -99,13 +99,13 @@ export class OnmsRequisitionsService {
           this.cache.setCachedRequisition(requisition);
           return requisition;
         })
-        .toPromise()
+        .toPromise();
   }
 
   saveRequisition(requisition: OnmsRequisition) : Promise<any> {
     const rawRequisition = requisition.generateModel();
     return this.http.post('/rest/requisitions', 'application/json', rawRequisition)
-      .toPromise()
+      .toPromise();
   }
 
   removeRequisition(requisition: OnmsRequisition) : Promise<any> {
@@ -117,31 +117,31 @@ export class OnmsRequisitionsService {
     if (node) {
       return Promise.resolve(node);
     }
-    return this.http.get(`/rest/requisitions/${foreignSource}/${foreignId}`)
+    return this.http.get(`/rest/requisitions/${foreignSource}/nodes/${foreignId}`)
       .map((response: Response) => {
         const node = OnmsRequisitionNode.importNode(response.json());
         this.cache.getCachedRequisition(foreignSource).updateNode(node);
         return node;
       })
-      .toPromise()
+      .toPromise();
   }
 
   saveNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
     const rawNode = node.generateModel();
-    return this.http.post(`/rest/requisitions/${foreignSource}`, 'application/json', rawNode)
-      .toPromise()
+    return this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode)
+      .toPromise();
   }
 
   getForeignSourceDefinition(foreignSource: string) : Promise<OnmsForeignSource> {
     return this.http.get(`/rest/foreignSources/${foreignSource}`)
       .map((response: Response) => OnmsForeignSource.importForeignSource(response.json()))
-      .toPromise()
+      .toPromise();
   }
 
   saveForeignSourceDefinition(foreignSource: OnmsForeignSource) : Promise<any> {
     const rawForeignSource = foreignSource.generateModel();
     return this.http.post('/rest/foreignSources', 'application/json', rawForeignSource)
-      .toPromise()
+      .toPromise();
   }
 
   getAvailableAssets() : Promise<string[]> {
@@ -153,7 +153,13 @@ export class OnmsRequisitionsService {
   getAvailableCategories() : Promise<string[]> {
     return this.http.get('/rest/foreignSourcesConfig/categories')
       .map((response: Response) => response.json().element)
-      .toPromise();    
+      .toPromise();
+  }
+
+  getAvailableServices(foreignSource: string) : Promise<string[]> {
+    return this.http.get(`/rest/foreignSourcesConfig/services/${foreignSource}`)
+      .map((response: Response) => response.json().element)
+      .toPromise();
   }
 
 }

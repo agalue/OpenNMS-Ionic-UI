@@ -43,6 +43,10 @@ export class OnmsRequisitionNode {
         return node;
     }
 
+    static create(): OnmsRequisitionNode {
+        return new OnmsRequisitionNode(null, null, null, null, null, null, null, null);
+    }
+
     getPrimaryIP() : string {
         if (this.interfaces.length == 0) return null;
         const ip = this.interfaces.find(i => i.snmpPrimary == 'P');

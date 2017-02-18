@@ -31,10 +31,39 @@
     </ion-row>
     <ion-row>
       <ion-col>
+        <button ion-button clear small icon-left (click)="onAddService()">
+          <ion-icon name="add"></ion-icon>
+          Add Service
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list formArrayName="services">
+          <ion-list-header>Services</ion-list-header>
+          <ion-item-sliding *ngFor="let service of form.controls.services.controls; let i = index">
+            <ion-item [formGroupName]="i">
+              <ion-input type="text" formControlName="name"></ion-input>
+              <button  item-right icon-only color="primary" type="button" (click)="onShowServices(i)">
+                <ion-icon name="list"></ion-icon>
+              </button>
+            </ion-item>
+            <ion-item-options>
+              <button ion-button expandable color="danger" (click)="onRemoveService(i)">
+                <ion-icon name="trash"></ion-icon>
+                Remove
+              </button>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
         <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
       </ion-col>
       <ion-col>
-        <button ion-button block color="secondary" type="submit" [disabled]="!form.valid">Save</button>
+        <button ion-button block color="secondary" type="submit" [disabled]="form.invalid || form.dirty">Save</button>
       </ion-col>
     </ion-row>
   </ion-grid>

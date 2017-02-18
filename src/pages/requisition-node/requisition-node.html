@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Node</ion-title>
+    <ion-title>{{ node.nodeLabel }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only color="danger" (click)="onSave()" *ngIf="form.invalid || form.dirty">
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -22,7 +27,7 @@
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'basic'">
       <br>
-      <form [formGroup]="form" (ngSubmit)="onSave()">
+      <form [formGroup]="form">
         <ion-list inset>
           <ion-list-header>Basic</ion-list-header>
           <ion-item>
@@ -61,19 +66,17 @@
             <ion-input type="text" formControlName="parentNodeLabel"></ion-input>
           </ion-item>
         </ion-list>
-        <br>
-        <button ion-button block type="submit" [disabled]="!form.valid">Save Changes</button>
       </form>
     </div>
     <div *ngSwitchCase="'interfaces'">
       <br>
-      <button ion-button small block outline icon-left (click)="onAddInterface()">
+      <button ion-button clear small block outline icon-left (click)="onAddInterface()">
         <ion-icon name="add"></ion-icon>
         Add Interface
       </button>
       <br>      
       <ion-list>
-        <button ion-item *ngFor="let intf of node.interfaces" (click)="onEditInterface(intf)">
+        <button ion-item *ngFor="let intf of node.interfaces; let i = index" (click)="onEditInterface(intf,i)">
           <h2>{{ intf.ipAddress }} ({{ intf.snmpPrimary }})</h2>
           <p *ngIf="intf.description">{{ intf.description }}</p>
           <p>{{ intf.services.length }} services</p>
@@ -82,13 +85,13 @@
     </div>
     <div *ngSwitchCase="'assets'">
       <br>
-      <button ion-button small block outline icon-left (click)="onAddAsset()">
+      <button ion-button clear small block outline icon-left (click)="onAddAsset()">
         <ion-icon name="add"></ion-icon>
         Add Asset
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let asset of node.assets" (click)="onEditAsset(asset)">
+        <button ion-item *ngFor="let asset of node.assets; let i = index" (click)="onEditAsset(asset,i)">
           <h2>{{ asset.name }}</h2>
           <p>{{ asset.value }}</p>
         </button>
@@ -96,13 +99,13 @@
     </div>
     <div *ngSwitchCase="'categories'">
       <br>
-      <button ion-button small block outline icon-left (click)="onAddCategory()">
+      <button ion-button clear small block outline icon-left (click)="onAddCategory()">
         <ion-icon name="add"></ion-icon>
         Add Category
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let category of node.categories" (click)="onEditCategory(category)">
+        <button ion-item *ngFor="let category of node.categories; let i = index" (click)="onEditCategory(category,i)">
           <h2>{{ category.name }}</h2>
         </button>
       </ion-list>

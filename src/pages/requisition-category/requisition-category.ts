@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ViewController, NavParams } from 'ionic-angular';
+import { NavParams, ViewController, AlertController } from 'ionic-angular';
 
 import { OnmsRequisitionCategory } from '../../models/onms-requisition-category';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
@@ -18,8 +18,9 @@ export class RequisitionCategoryPage implements OnInit {
   availableCategories: string[] = [];
 
   constructor(
-    private viewCtrl: ViewController,
     private navParams: NavParams,
+    private viewCtrl: ViewController,
+    private alertCtrl: AlertController,
     private requisitionsService: OnmsRequisitionsService
   ) {}
 
@@ -37,11 +38,33 @@ export class RequisitionCategoryPage implements OnInit {
     this.initForm();    
   }
 
-  onChooseExisting(name: string) {
-    this.category.name = name;
+  onShowCategories() {
+    const options = this.alertCtrl.create({
+      title: 'Choose Category',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          handler: data => this.form.get('name').setValue(data)
+        }
+      ]
+    });
+    this.availableCategories.forEach(category => {
+      options.addInput({
+        name: 'options',
+        value: category,
+        label: category,
+        type: 'radio'
+      })
+    })
+    options.present();
   }
 
   onSave() {
+    Object.assign(this.category, this.form.value);
     this.viewCtrl.dismiss(this.category);
   }
 

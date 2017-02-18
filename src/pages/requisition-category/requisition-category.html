@@ -11,14 +11,11 @@
       <ion-col>
         <ion-list>
           <ion-item>
-            <ion-label stacked>Choose Existing</ion-label>
-            <ion-select (ionChange)="onChooseExisting($event)">
-              <ion-option *ngFor="let category of availableCategories" [value]="category">{{ category }}</ion-option>
-            </ion-select>
-          </ion-item>
-          <ion-item>
             <ion-label stacked>Category</ion-label>
             <ion-input type="text" formControlName="name"></ion-input>
+            <button  item-right icon-only color="primary" type="button" (click)="onShowCategories()">
+              <ion-icon name="list"></ion-icon>
+            </button>
           </ion-item>
         </ion-list>
       </ion-col>

@@ -36,6 +36,7 @@ export class RequisitionAssetPage implements OnInit {
   }
 
   onSave() {
+    Object.assign(this.asset, this.form.value);
     this.viewCtrl.dismiss(this.asset);
   }
 

@@ -10,7 +10,7 @@ export class OnmsRequisitionAsset {
     }
 
     static importAsset(rawAsset: Object) : OnmsRequisitionAsset {
-        return Object.assign(new OnmsRequisitionAsset(), rawAsset);;
+        return Object.assign(new OnmsRequisitionAsset(), rawAsset);
     }
 
     generateModel() : Object {
