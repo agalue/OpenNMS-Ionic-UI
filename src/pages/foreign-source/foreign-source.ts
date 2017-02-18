@@ -18,7 +18,8 @@ export class ForeignSourcePage implements OnInit {
 
   mode = 'overview';
   definition: OnmsForeignSource;
-  configs: OnmsForeignSourceConfig[] = [];
+  policiesConfig: OnmsForeignSourceConfig[] = [];
+  detectorsConfig: OnmsForeignSourceConfig[] = [];
   form: FormGroup;
 
   constructor(
@@ -33,7 +34,10 @@ export class ForeignSourcePage implements OnInit {
   ngOnInit() {
     this.definition = this.navParams.get('definition');
     this.requisitionsService.getPoliciesConfig()
-      .then(configs => this.configs = configs)
+      .then(configs => this.policiesConfig = configs)
+      .catch(error => console.error(error));
+    this.requisitionsService.getDetectorsConfig()
+      .then(configs => this.detectorsConfig = configs)
       .catch(error => console.error(error));
     this.initForm();
   }
@@ -101,7 +105,7 @@ export class ForeignSourcePage implements OnInit {
   }
 
   private updatePolicy(policy: OnmsRequisitionPolicy, handler: (updated: OnmsRequisitionPolicy) => void) {
-    const modal = this.modalCtrl.create(PolicyPage, { configs: this.configs, policy: policy });
+    const modal = this.modalCtrl.create(PolicyPage, { configs: this.policiesConfig, policy: policy });
     modal.onDidDismiss((updatedPolicy:OnmsRequisitionPolicy) => {
       if (updatedPolicy) {
         this.form.markAsDirty();
@@ -112,7 +116,7 @@ export class ForeignSourcePage implements OnInit {
   }
 
   private updateDetector(detector: OnmsRequisitionDetector, handler: (updated: OnmsRequisitionDetector) => void) {
-    const modal = this.modalCtrl.create(DetectorPage, { configs: this.configs, detector: detector });
+    const modal = this.modalCtrl.create(DetectorPage, { configs: this.detectorsConfig, detector: detector });
     modal.onDidDismiss((updatedDetector:OnmsRequisitionDetector) => {
       if (updatedDetector) {
         this.form.markAsDirty();

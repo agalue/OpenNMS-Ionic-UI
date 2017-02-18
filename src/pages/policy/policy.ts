@@ -39,8 +39,6 @@ export class PolicyPage implements OnInit {
     this.getRequiredParameters(className).forEach(p => {
       this.policy.parameters.push(OnmsRequisitionParameter.create(p));
     });
-    console.log(`onClassChange called: ${className}`);
-    console.log(this.policy.parameters);
   }
 
   onAddParameter() {

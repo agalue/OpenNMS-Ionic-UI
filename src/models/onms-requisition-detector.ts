@@ -22,6 +22,10 @@ export class OnmsRequisitionDetector {
         );
     }
 
+    static create() : OnmsRequisitionDetector {
+        return new OnmsRequisitionDetector(null, null);
+    }
+
     generateModel() : Object {
         let rawModel: Object = {
             'name': this.name,
