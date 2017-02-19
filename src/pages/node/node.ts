@@ -40,6 +40,93 @@ export class NodePage implements OnInit {
 
   ngOnInit() {
     this.node = this.navParams.get('node');
+    this.updateDependencies();
+  }
+
+  onShowOptions() {
+    const actionSheet = this.actionSheetCtrl.create({
+      title: 'Node Commands',
+      buttons: [
+        {
+          text: 'Refresh Content',
+          handler: () => this.onRefresh()
+        },
+        {
+          text: 'Show Assets',
+          handler: () => this.onShowAssets()
+        },
+        {
+          text: 'Show Graphs',
+          handler: () => this.onShowGraphs()
+        },
+        {
+          text: 'Force Rescan',
+          handler: () => this.onForceRescan()
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+  onRefresh() {
+    const loading = this.loadingCtrl.create({
+      content: 'Refreshing node ...'
+    });
+    loading.present();
+    this.nodesService.getNode(this.node.id)
+      .then(node => {
+        Object.assign(this.node, node);
+        this.updateDependencies();
+        loading.dismiss();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Refresh Node', error)
+      });
+  }
+
+  onShowAssets() {
+    this.alert('Show Assets', 'Not implemented yet, sorry :(');
+  }
+
+  onShowGraphs() {
+    this.alert('Show Graphs', 'Not implemented yet, sorry :(');
+  }
+
+  onForceRescan() {
+    const loading = this.loadingCtrl.create({ content: 'Sending force rescan...'});
+    loading.present();
+    const event = { uei: 'uei.opennms.org/internal/capsd/forceRescan', nodeid: this.node.id };
+    this.eventsService.sendEvent(event)
+      .then(() => {
+        loading.dismiss();
+        this.toast('Force rescan event has been sent!');
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Force Rescan Error', error)
+      });
+  }
+
+  formatUei(uei: string) : string {
+    return this.uiService.getFormattedUei(uei);
+  }
+
+  getOutageColor(outage: OnmsOutage) : string {
+    return this.uiService.getOutageIconColor(outage);
+  }
+
+  getAvailabilityColor(avail: number) : string {
+    if (avail > 99) return 'Normal';
+    if (avail > 95) return 'Warning';
+    return 'Critical';
+  }
+
+  private updateDependencies() {
     // Load IP Interfaces
     if (this.node.ipInterfaces.length == 0) {
       this.nodesService.getIpInterfaces(this.node.id)
@@ -66,62 +153,6 @@ export class NodePage implements OnInit {
     this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
       .then(outages => this.outages = outages)
       .catch(error => console.error(`Cannot retrieve outages: ${error}`));
-  }
-
-  onShowOptions() {
-    const actionSheet = this.actionSheetCtrl.create({
-      title: 'Node Commands',
-      buttons: [
-        {
-          text: 'Show Assets',
-          handler: () => this.onShowAssets()
-        },
-        {
-          text: 'Show Graphs',
-          handler: () => this.onShowGraphs()
-        },
-        {
-          text: 'Force Rescan',
-          handler: () => this.onForceRescan()
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        }
-      ]
-    });
-    actionSheet.present();
-  }
-
-  onShowAssets() {
-
-  }
-
-  onShowGraphs() {
-
-  }
-
-  onForceRescan() {
-    const loading = this.loadingCtrl.create({ content: 'Sending force rescan...'});
-    loading.present();
-    const event = { uei: 'uei.opennms.org/internal/capsd/forceRescan', nodeid: this.node.id };
-    this.eventsService.sendEvent(event)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Force rescan event has been sent!');
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Force Rescan Error', error)
-      });
-  }
-
-  formatUei(uei: string) {
-    return this.uiService.getFormattedUei(uei);
-  }
-
-  getOutageColor(outage: OnmsOutage) {
-    return this.uiService.getOutageIconColor(outage);
   }
 
   private toast(message: string) {

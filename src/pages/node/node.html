@@ -29,36 +29,36 @@
       <ion-grid>
         <ion-list-header>Details</ion-list-header>
         <ion-row>
-          <ion-col width-30><b>ID</b></ion-col>
-          <ion-col >{{ node.id }}</ion-col>
+          <ion-col width-33><b>ID</b></ion-col>
+          <ion-col width-67>{{ node.id }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>Label</b></ion-col>
-          <ion-col>{{ node.label }}</ion-col>
+          <ion-col width-33><b>Label</b></ion-col>
+          <ion-col width-67>{{ node.label }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>Foreign Source</b></ion-col>
-          <ion-col>{{ node.foreignSource || 'N/A' }}</ion-col>
+          <ion-col width-33><b>Foreign Source</b></ion-col>
+          <ion-col width-67>{{ node.foreignSource || 'N/A' }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>Foreign ID</b></ion-col>
-          <ion-col>{{ node.foreignId || 'N/A' }}</ion-col>
+          <ion-col width-33><b>Foreign ID</b></ion-col>
+          <ion-col width-67>{{ node.foreignId || 'N/A' }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>sysName</b></ion-col>
-          <ion-col>{{ node.sysName }}</ion-col>
+          <ion-col width-33><b>sysName</b></ion-col>
+          <ion-col width-67>{{ node.sysName }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>sysObjectId</b></ion-col>
-          <ion-col>{{ node.sysObjectId }}</ion-col>
+          <ion-col width-33><b>sysObjectId</b></ion-col>
+          <ion-col width-67>{{ node.sysObjectId }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>sysLocation</b></ion-col>
-          <ion-col>{{ node.sysLocation }}</ion-col>
+          <ion-col width-33><b>sysLocation</b></ion-col>
+          <ion-col width-67>{{ node.sysLocation }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-30><b>sysContact</b></ion-col>
-          <ion-col>{{ node.sysContact }}</ion-col>
+          <ion-col width-33><b>sysContact</b></ion-col>
+          <ion-col width-67>{{ node.sysContact }}</ion-col>
         </ion-row>
         <ion-row *ngIf="node.sysDescription">
           <ion-col><b>sysDescription</b><br><br>{{ node.sysDescription }}</ion-col>
@@ -95,18 +95,28 @@
     <div *ngSwitchCase="'availability'">
       <div *ngIf="availability">
         <br>
-        <p>Overall Availability: {{ availability.availability | number:'1.5-5' }} %</p>
-        <p>{{ availability.serviceDownCount }} of {{ availability.serviceCount }} services down.</p>
         <ion-list>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col><b>Overall Availability</b></ion-col>
+                <ion-col width-33 [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }} %</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col><b>Services Down</b></ion-col>
+                <ion-col width-33>{{ availability.serviceDownCount }} of {{ availability.serviceCount }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
           <ion-item *ngFor="let intf of availability.ipInterfaces">
             <ion-grid>
               <ion-row>
                 <ion-col><b>{{ intf.address }}</b></ion-col>
-                <ion-col>{{ intf.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-33 [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.5-5' }} %</ion-col>
               </ion-row>
               <ion-row *ngFor="let service of intf.services">
                 <ion-col>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ service.name }}</b></ion-col>
-                <ion-col>{{ service.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-33 [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.5-5' }} %</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
@@ -120,13 +130,20 @@
           <h2>{{ intf.ipAddress }}</h2>
           <ion-grid>
             <ion-row>
-              <ion-col><b>ifIndex</b></ion-col><ion-col width-70>{{ intf.ifIndex }}</ion-col>
+              <ion-col><b>Status</b></ion-col>
+              <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>hostname</b></ion-col><ion-col width-70>{{ intf.hostName }}</ion-col>
+              <ion-col><b>ifIndex</b></ion-col>
+              <ion-col width-67>{{ intf.ifIndex }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b># services</b></ion-col><ion-col width-70>{{ intf.monitoredServiceCount }}</ion-col>
+              <ion-col><b>hostname</b></ion-col>
+              <ion-col width-67>{{ intf.hostName }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b># services</b></ion-col>
+              <ion-col width-67>{{ intf.monitoredServiceCount }}</ion-col>
             </ion-row>
           </ion-grid>
           <ion-icon item-left [name]="intf.snmpPrimary == 'P' ? 'attach' : ''"></ion-icon>
@@ -140,13 +157,20 @@
           <h2>{{ intf.ifName }}</h2>
           <ion-grid>
             <ion-row>
-              <ion-col><b>ifIndex</b></ion-col><ion-col width-70>{{ intf.ifIndex }}</ion-col>
+              <ion-col><b>Status</b></ion-col>
+              <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>ifAlias</b></ion-col><ion-col width-70>{{ intf.ifAlias }}</ion-col>
+              <ion-col><b>ifIndex</b></ion-col>
+              <ion-col width-67>{{ intf.ifIndex }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>MAC</b></ion-col><ion-col width-70>{{ intf.physAddr }}</ion-col>
+              <ion-col><b>ifAlias</b></ion-col>
+              <ion-col width-67>{{ intf.ifAlias }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>MAC</b></ion-col>
+              <ion-col width-67>{{ intf.physAddr }}</ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
