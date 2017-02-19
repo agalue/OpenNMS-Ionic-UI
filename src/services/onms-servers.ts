@@ -129,8 +129,6 @@ export class OnmsServersService {
         .then(info => {
           server.type = info.packageDescription;
           server.version = info.displayVersion || 'Unknown';
-          console.log(info);
-          console.log(server);
           if (server.isDefault) {
             this.notify(server);
           }          

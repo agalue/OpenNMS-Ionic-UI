@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Rx';
+import 'rxjs/Rx';
 
 import { OnmsServersService } from '../services/onms-servers';
 import { OnmsServer } from '../models/onms-server';
 
-import 'rxjs/Rx';
-
 @Injectable()
-export class HttpService {
+export class HttpService implements OnDestroy {
 
   defaultServer: OnmsServer;
+
+  private subscription: Subscription;
 
   constructor(private http: Http, private serversService: OnmsServersService) {
     serversService.defaultUpdated.subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
@@ -44,8 +46,13 @@ export class HttpService {
     return Observable.throw(errMsg);
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   register() {
-    this.serversService.defaultUpdated.subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
+    this.subscription = this.serversService.defaultUpdated
+      .subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
   }
 
   get(url: string) : Observable<Response> {

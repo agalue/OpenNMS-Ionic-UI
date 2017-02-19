@@ -1,6 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
+import { Subscription } from 'rxjs/Rx';
 
 import { HomePage } from '../pages/home/home';
 import { EventsPage } from '../pages/events/events';
@@ -20,13 +21,14 @@ import { HttpService } from '../services/http';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class MyApp implements OnDestroy {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any;
   onmsServer: OnmsServer;
-
   groups: Array<{name: string, pages: Array<{title: string, component: any}>}>;
+
+  private subscription: Subscription;
 
   constructor(
     public platform: Platform,
@@ -58,7 +60,7 @@ export class MyApp {
 
     httpService.register();
 
-    serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
+    this.subscription = serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
     serversConfig.getDefaultServer()
       .then(defaultServer => this.rootPage = defaultServer ? HomePage : SetupPage)
       .catch(error => console.log(error));
@@ -78,4 +80,9 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }
