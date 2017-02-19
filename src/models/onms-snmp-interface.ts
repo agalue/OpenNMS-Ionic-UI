@@ -29,4 +29,26 @@ export class OnmsSnmpInterface {
         return interfaces;
     }
 
+    getOperStatus() : string {
+        switch(this.ifOperStatus) {
+            case 1: return 'Up';
+            case 2: return 'Down';
+            case 3: return 'Testing';
+            case 4: return 'Unknown';
+            case 5: return 'Dormant';
+            case 6: return 'Not Present';
+            case 7: return 'Lower Layer Down';
+        }
+        return 'N/A';
+    }
+
+    getAdminStatus() : string {
+        switch(this.ifAdminStatus) {
+            case 1: return 'Up';
+            case 2: return 'Down';
+            case 3: return 'Testing';
+        }
+        return 'N/A';
+    }
+
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
 
+import { EventPage } from '../event/event';
+import { OutagePage } from '../outage/outage';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsEvent } from '../../models/onms-event';
 import { OnmsOutage } from '../../models/onms-outage';
@@ -87,6 +89,14 @@ export class NodePage implements OnInit {
         loading.dismiss();
         this.alert('Refresh Node', error)
       });
+  }
+
+  onShowEvent(event: OnmsEvent) {
+    this.navCtrl.push(EventPage, {event: event});
+  }
+
+  onShowOutage(outage: OnmsOutage) {
+    this.navCtrl.push(OutagePage, {outage: outage});
   }
 
   onShowAssets() {

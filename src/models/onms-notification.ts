@@ -1,4 +1,3 @@
-import { OnmsEvent } from './onms-event';
 import { OnmsAck } from './onms-ack';
 import { OnmsDestination } from './onms-destination';
 import { OnmsSeverities } from './onms-severities';

@@ -31,13 +31,13 @@
       <ion-grid *ngFor="let section of sections">
         <ion-row>
           <ion-col width-50><b>{{ section.name }}</b></ion-col>
-          <ion-col><b>Outages</b></ion-col>
-          <ion-col><b>Availability</b></ion-col>
+          <ion-col text-right><b>Outages</b></ion-col>
+          <ion-col text-right><b>Availability</b></ion-col>
         </ion-row>
         <ion-row *ngFor="let category of section.categories">
           <ion-col width-50>{{ category.name }}</ion-col>
-          <ion-col [class]="category.outageClass">{{ category.outageText }}</ion-col>
-          <ion-col [class]="category.availabilityClass">{{ category.availabilityText }}</ion-col>
+          <ion-col text-right [class]="category.outageClass">{{ category.outageText }}</ion-col>
+          <ion-col text-right [class]="category.availabilityClass">{{ category.availabilityText }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>
@@ -45,15 +45,15 @@
       <ion-grid>
         <ion-row>
           <ion-col><b>Severity</b></ion-col>
-          <ion-col><b>Total</b></ion-col>
-          <ion-col><b>Acknowledged</b></ion-col>
-          <ion-col><b>Unacknowledged</b></ion-col>
+          <ion-col width-20 text-right><b>Total</b></ion-col>
+          <ion-col width-20 text-right><b># Ack</b></ion-col>
+          <ion-col width-20 text-right><b># Unack</b></ion-col>
         </ion-row>
         <ion-row *ngFor="let alarm of alarms">
           <ion-col [class]="alarm.severity">{{ alarm.severity }}</ion-col>
-          <ion-col>{{ alarm.totalCount }}</ion-col>
-          <ion-col>{{ alarm.acknowledgedCount }}</ion-col>
-          <ion-col>{{ alarm.unacknowledgedCount }}</ion-col>
+          <ion-col width-20 text-right>{{ alarm.totalCount }}</ion-col>
+          <ion-col width-20 text-right>{{ alarm.acknowledgedCount }}</ion-col>
+          <ion-col width-20 text-right>{{ alarm.unacknowledgedCount }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>
@@ -61,11 +61,11 @@
       <ion-grid>
         <ion-row>
           <ion-col><b>Node</b></ion-col>
-          <ion-col width-33><b>Time Down</b></ion-col>
+          <ion-col width-33 text-right><b>Time Down</b></ion-col>
         </ion-row>
         <ion-row *ngFor="let outage of outages">
           <ion-col>{{ outage.nodeLabel }}</ion-col>
-          <ion-col width-33>{{ outage.getTimeInfo() }}</ion-col>
+          <ion-col width-33 text-right>{{ outage.getTimeInfo() }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>

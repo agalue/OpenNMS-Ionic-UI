@@ -80,20 +80,20 @@
       <ion-list>
         <ion-list-header>Recent Events</ion-list-header>
         <ion-item *ngIf="events.length == 0">No recent events.</ion-item>
-        <ion-item text-wrap [color]="event.severity" *ngFor="let event of events">
+        <button ion-item text-wrap [color]="event.severity" *ngFor="let event of events" (click)="onShowEvent(event)">
           <h2>{{ formatUei(event.uei) }}</h2>
           <div class="event-time">{{ event.time | date:'medium' }}</div>
           <br>
-          <div class="event-message">{{ event.logMessage }}</div>
-        </ion-item>
+          <div class="event-message" [innerHTML]="event.logMessage"></div>
+        </button>
       </ion-list>
       <ion-list>
         <ion-list-header>Current Outages</ion-list-header>
         <ion-item *ngIf="outages.length == 0">No current outages.</ion-item>
-        <ion-item text-wrap [color]="getOutageColor(outage)" *ngFor="let outage of outages">
+        <button ion-item text-wrap [color]="getOutageColor(outage)" *ngFor="let outage of outages" (click)="onShowOutage(outage)">
           <h2>{{ formatUei(outage.serviceLostEvent.uei) }}</h2>
           <div class="event-time">{{ outage.serviceName }} lost on {{ outage.ipAddress }} at {{ outage.ifLostService | date:'medium' }}</div>
-        </ion-item>
+        </button>
       </ion-list>
     </div>
     <div *ngSwitchCase="'availability'">
@@ -137,16 +137,16 @@
               <ion-col><b>Status</b></ion-col>
               <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col><b>ifIndex</b></ion-col>
-              <ion-col width-67>{{ intf.ifIndex }}</ion-col>
+            <ion-row *ngIf="intf.snmpInterface">
+              <ion-col><b>Interface</b></ion-col>
+              <ion-col width-67>{{ intf.snmpInterface.ifName || intf.snmpInterface.ifDescr }} ({{ intf.snmpInterface.ifIndex }})</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>hostname</b></ion-col>
+              <ion-col><b>Hostname</b></ion-col>
               <ion-col width-67>{{ intf.hostName }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b># services</b></ion-col>
+              <ion-col><b># Services</b></ion-col>
               <ion-col width-67>{{ intf.monitoredServiceCount }}</ion-col>
             </ion-row>
           </ion-grid>
@@ -161,20 +161,32 @@
           <h2>{{ intf.ifName }}</h2>
           <ion-grid>
             <ion-row>
-              <ion-col><b>Status</b></ion-col>
-              <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
+              <ion-col><b>Oper Status</b></ion-col>
+              <ion-col width-67 [class]="intf.ifOperStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getOperStatus() }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>ifIndex</b></ion-col>
+              <ion-col><b>Admin Status</b></ion-col>
+              <ion-col width-67 [class]="intf.ifAdminStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getAdminStatus() }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Interface Index</b></ion-col>
               <ion-col width-67>{{ intf.ifIndex }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>ifAlias</b></ion-col>
-              <ion-col width-67>{{ intf.ifAlias }}</ion-col>
+              <ion-col><b>Speed</b></ion-col>
+              <ion-col width-67>{{ intf.ifSpeed || 'N/A' }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Description</b></ion-col>
+              <ion-col width-67>{{ intf.ifDescr || 'N/A' }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Alias</b></ion-col>
+              <ion-col width-67>{{ intf.ifAlias || 'N/A' }}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col><b>MAC</b></ion-col>
-              <ion-col width-67>{{ intf.physAddr }}</ion-col>
+              <ion-col width-67>{{ intf.physAddr || 'N/A' }}</ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
