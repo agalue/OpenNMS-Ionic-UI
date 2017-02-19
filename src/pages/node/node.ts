@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
+import * as Leaflet from 'leaflet';
 
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
@@ -26,6 +27,16 @@ export class NodePage implements OnInit {
   events: OnmsEvent[] = [];
   outages: OnmsOutage[] = [];
 
+  mapOptions: Leaflet.MapOptions = {
+    tap: true,
+    touchZoom: false,
+    doubleClickZoom: false,
+    scrollWheelZoom: false,
+    zoomControl: true,
+    dragging: false,
+    attributionControl: false
+  };
+
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
@@ -43,6 +54,10 @@ export class NodePage implements OnInit {
   ngOnInit() {
     this.node = this.navParams.get('node');
     this.updateDependencies();
+  }
+
+  ionViewDidLoad() {
+    this.drawMap();
   }
 
   onShowOptions() {
@@ -83,6 +98,7 @@ export class NodePage implements OnInit {
       .then(node => {
         Object.assign(this.node, node);
         this.updateDependencies();
+        this.drawMap();
         loading.dismiss();
       })
       .catch(error => {
@@ -163,6 +179,15 @@ export class NodePage implements OnInit {
     this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
       .then(outages => this.outages = outages)
       .catch(error => console.error(`Cannot retrieve outages: ${error}`));
+  }
+
+  private drawMap() {
+    if (this.node.hasLocation()) {
+      let location: [number,number] = this.node.getLocation();
+      let map = Leaflet.map('map', this.mapOptions).setView(location, 12);
+      Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(map);
+      Leaflet.marker(location).addTo(map);
+    }
   }
 
   private toast(message: string) {

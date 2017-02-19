@@ -43,6 +43,10 @@ export class OnmsNode {
             && this.assetRecord.longitude != null;
     }
 
+    getLocation() : [number,number] {
+        return this.assetRecord ? [ this.assetRecord.latitude, this.assetRecord.longitude ] : [-1, -1];
+    }
+
     getPrimaryIP() : string {
         if (this.ipInterfaces.length == 0) return null;
         const ip = this.ipInterfaces.find(i => i.snmpPrimary == 'P');

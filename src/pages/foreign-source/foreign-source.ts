@@ -105,6 +105,10 @@ export class ForeignSourcePage implements OnInit {
   }
 
   private updatePolicy(policy: OnmsRequisitionPolicy, handler: (updated: OnmsRequisitionPolicy) => void) {
+    if (!this.policiesConfig) {
+      this.alert('Error', 'Cannot find the policies config, try again later.');
+      return;
+    }
     const modal = this.modalCtrl.create(PolicyPage, { configs: this.policiesConfig, policy: policy });
     modal.onDidDismiss((updatedPolicy:OnmsRequisitionPolicy) => {
       if (updatedPolicy) {
@@ -116,6 +120,10 @@ export class ForeignSourcePage implements OnInit {
   }
 
   private updateDetector(detector: OnmsRequisitionDetector, handler: (updated: OnmsRequisitionDetector) => void) {
+    if (!this.detectorsConfig) {
+      this.alert('Error', 'Cannot find the policies config, try again later.');
+      return;
+    }
     const modal = this.modalCtrl.create(DetectorPage, { configs: this.detectorsConfig, detector: detector });
     modal.onDidDismiss((updatedDetector:OnmsRequisitionDetector) => {
       if (updatedDetector) {
