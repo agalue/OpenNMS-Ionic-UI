@@ -14,6 +14,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 export class RequisitionsPage {
 
   noRequisitions = false;
+  searchKeyword: string = '';
   requisitions: OnmsRequisition[] = [];
 
   constructor(
@@ -28,14 +29,6 @@ export class RequisitionsPage {
 
   ionViewWillLoad() {
     this.onRefresh();
-  }
-
-  onSearch() {
-
-  }
-
-  onCancelSearch() {
-
   }
 
   onRefresh() {

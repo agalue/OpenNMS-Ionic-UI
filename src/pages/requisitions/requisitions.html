@@ -12,7 +12,7 @@
     </ion-buttons>    
     <ion-title>Requisitions</ion-title>
   </ion-navbar>
-  <ion-searchbar (ionInput)="onSearch($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
+  <ion-searchbar [(ngModel)]="searchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content padding>
@@ -24,7 +24,7 @@
     </ion-row>
   </ion-grid>
   <ion-list>
-    <ion-item-sliding *ngFor="let requisition of requisitions">
+    <ion-item-sliding *ngFor="let requisition of (requisitions | reqFilter:searchKeyword)">
       <button ion-item (click)="onShowRequisition(requisition)">
         <h2>{{ requisition.foreignSource }}</h2>
         <p>Last Updated: {{ requisition.dateStamp | date:'medium' }}</p>

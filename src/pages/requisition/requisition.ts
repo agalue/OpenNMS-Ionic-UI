@@ -14,6 +14,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 })
 export class RequisitionPage {
 
+  searchKeyword: string = '';
   requisition: OnmsRequisition;
 
   constructor(
@@ -51,14 +52,6 @@ export class RequisitionPage {
       ]
     });
     actionSheet.present();
-  }
-
-  onSearch() {
-
-  }
-
-  onCancelSearch() {
-
   }
 
   onAddNode() {

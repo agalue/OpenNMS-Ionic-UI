@@ -5,6 +5,8 @@ import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 import { ClassNamePipe } from '../pipes/class-name';
+import { RequisitionFilterPipe } from '../pipes/req-filter';
+import { RequisitionNodeFilterPipe } from '../pipes/req-node-filter';
 
 import { SetupPage } from '../pages/setup/setup';
 import { ServersPage } from '../pages/servers/servers';
@@ -45,8 +47,12 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
 
 @NgModule({
   declarations: [
-    MyApp,
+    // Pipes
     ClassNamePipe,
+    RequisitionFilterPipe,
+    RequisitionNodeFilterPipe,
+    // Pages
+    MyApp,
     SetupPage,
     ServersPage,
     ServerPage,
