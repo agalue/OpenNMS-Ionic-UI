@@ -1,7 +1,7 @@
 import { OnmsEvent } from './onms-event';
 import { OnmsAck } from './onms-ack';
 import { OnmsParameter } from './onms-parameter';
-import { ONMS_SEVERITIES } from './onms-severities';
+import { OnmsSeverities } from './onms-severities';
 
 export class OnmsAlarm {
 
@@ -33,7 +33,7 @@ export class OnmsAlarm {
         alarm.lastEvent = OnmsEvent.importEvent(rawAlarm['lastEvent']);
         alarm.serviceName = rawAlarm['serviceType'] ? rawAlarm['serviceType']['name'] : null;
         alarm.parameters = OnmsParameter.importParameters(rawAlarm['parameters']);
-        alarm.severity = OnmsEvent.capitalize(rawAlarm['severity']);
+        alarm.severity = OnmsSeverities.capitalize(rawAlarm['severity']);
         return alarm;
     }
 
@@ -60,9 +60,9 @@ export class OnmsAlarm {
                 this.severity = 'Cleared';
                 break;
             case 'ESCALATE':
-                const current = this.getSeverityIndex();
+                const current = OnmsSeverities.getIndex(this.severity);
                 if (current < 7) {
-                    this.severity = ONMS_SEVERITIES[current + 1];
+                    this.severity = OnmsSeverities.getSeverities()[current + 1];
                 }
                 break;
         }
@@ -70,10 +70,6 @@ export class OnmsAlarm {
 
     isAcknowledged() : boolean {
         return this.ackTime != null;
-    }
-
-    getSeverityIndex() {
-        return ONMS_SEVERITIES.indexOf(this.severity);
     }
 
 }

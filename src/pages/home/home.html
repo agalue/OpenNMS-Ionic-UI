@@ -42,10 +42,32 @@
       </ion-grid>
     </div>
     <div *ngSwitchCase="'Alarms'">
-      <p>Comming Soon!</p>
+      <ion-grid>
+        <ion-row>
+          <ion-col><b>Severity</b></ion-col>
+          <ion-col><b>Total</b></ion-col>
+          <ion-col><b>Acknowledged</b></ion-col>
+          <ion-col><b>Unacknowledged</b></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let alarm of alarms">
+          <ion-col [class]="alarm.severity">{{ alarm.severity }}</ion-col>
+          <ion-col>{{ alarm.totalCount }}</ion-col>
+          <ion-col>{{ alarm.acknowledgedCount }}</ion-col>
+          <ion-col>{{ alarm.unacknowledgedCount }}</ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
     <div *ngSwitchCase="'Outages'">
-      <p>Comming Soon!</p>
+      <ion-grid>
+        <ion-row>
+          <ion-col><b>Node</b></ion-col>
+          <ion-col width-33><b>Time Down</b></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let outage of outages">
+          <ion-col>{{ outage.nodeLabel }}</ion-col>
+          <ion-col width-33>{{ outage.getTimeInfo() }}</ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
   </div>
 </ion-content>

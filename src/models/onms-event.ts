@@ -1,5 +1,5 @@
 import { OnmsParameter } from './onms-parameter';
-import { ONMS_SEVERITIES } from './onms-severities';
+import { OnmsSeverities } from './onms-severities';
 
 export class OnmsEvent {
 
@@ -24,7 +24,7 @@ export class OnmsEvent {
         let event = Object.assign(new OnmsEvent(), rawEvent);
         event.serviceName = rawEvent['serviceType'] ? rawEvent['serviceType']['name'] : null;
         event.parameters = OnmsParameter.importParameters(rawEvent['parameters']);
-        event.severity = OnmsEvent.capitalize(rawEvent['severity']);
+        event.severity = OnmsSeverities.capitalize(rawEvent['severity']);
         return event;
     }
 
@@ -32,14 +32,6 @@ export class OnmsEvent {
         let events: OnmsEvent[] = [];
         rawEvents.forEach(e => events.push(OnmsEvent.importEvent(e)));
         return events;
-    }
-
-    static capitalize(text: string = 'Indeterminate') : string {
-        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-    }
-
-    getSeverityIndex() {
-        return ONMS_SEVERITIES.indexOf(this.severity);
     }
 
 }

@@ -29,6 +29,10 @@
       <ion-grid>
         <ion-list-header>Details</ion-list-header>
         <ion-row>
+          <ion-col width-33><b>Status</b></ion-col>
+          <ion-col width-67 [class]="node.isDown() ? 'Critical' : 'Normal'">{{ node.isDown() ? 'Down' : 'Up' }}</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col width-33><b>ID</b></ion-col>
           <ion-col width-67>{{ node.id }}</ion-col>
         </ion-row>

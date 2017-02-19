@@ -49,4 +49,11 @@ export class OnmsNode {
         return ip ? ip.ipAddress : null;
     }
 
+    isDown() : boolean {
+        for (let intf of this.ipInterfaces) {
+            if (!intf.isDown) return false;
+        }
+        return true;
+    }
+
 }

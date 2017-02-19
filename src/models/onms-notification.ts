@@ -1,7 +1,7 @@
 import { OnmsEvent } from './onms-event';
 import { OnmsAck } from './onms-ack';
 import { OnmsDestination } from './onms-destination';
-import { ONMS_SEVERITIES } from './onms-severities';
+import { OnmsSeverities } from './onms-severities';
 
 export class OnmsNotification {
 
@@ -23,7 +23,7 @@ export class OnmsNotification {
         if (!rawNotification) return null;
         let notification = Object.assign(new OnmsNotification(), rawNotification);
         notification.destinations = OnmsDestination.importDestinations(rawNotification['destinations'])
-        notification.severity = OnmsEvent.capitalize(rawNotification['severity']);
+        notification.severity = OnmsSeverities.capitalize(rawNotification['severity']);
         return notification;
     }
 
@@ -54,7 +54,7 @@ export class OnmsNotification {
     }
 
     getSeverityIndex() {
-        return ONMS_SEVERITIES.indexOf(this.severity);
+        return OnmsSeverities.getIndex(this.severity);
     }
 
 }

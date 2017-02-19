@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
 import { OnmsAlarm } from '../models/onms-alarm';
+import { OnmsAlarmStats } from '../models/onms-alarm-stats';
 import { OnmsAck } from '../models/onms-ack';
 import { OnmsApiFilter } from '../models/onms-api-filter';
 import { HttpService } from './http';
@@ -22,6 +23,12 @@ export class OnmsAlarmsService {
     }
     return this.http.get(url)
       .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))
+      .toPromise()
+  }
+
+  getStatistics() : Promise<OnmsAlarmStats[]> {
+    return this.http.get('/rest/stats/alarms/by-severity')
+      .map((response: Response) =>  OnmsAlarmStats.importAll(response.json().alarmStatistics))
       .toPromise()
   }
 
