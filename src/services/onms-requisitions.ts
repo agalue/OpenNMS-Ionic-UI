@@ -36,11 +36,6 @@ export class OnmsRequisitionsService {
     });
   }
 
-  private updateDeployedStatsForRequisition(requisition: OnmsRequisition) : Promise<any> {
-    return this.getRequisitionStatsForRequisition(requisition.foreignSource)
-      .then((requisitionStats: OnmsRequisitionStats) => requisition.update(requisitionStats));
-  }
-
   importRequisition(foreignSource: string, rescanExisting: string = 'true') : Promise<any> {
     return this.http.put(`/rest/requisitions/${foreignSource}?importRescanExisting=${rescanExisting}`, null, null)
       .toPromise();
@@ -110,7 +105,25 @@ export class OnmsRequisitionsService {
   }
 
   removeRequisition(requisition: OnmsRequisition) : Promise<any> {
-    return Promise.reject('Not implemented yet, sorry!');
+    return new Promise((resolve, reject) => {
+      requisition.nodes = [];
+      this.saveRequisition(requisition)
+        .catch(error => reject(error))
+        .then(() => {
+          this.importRequisition(requisition.foreignSource)
+            .catch(error => reject(error))
+            .then(() => {
+              let promises: Promise<any>[] = [];
+              promises.push(this.http.delete(`/rest/requisitions/${requisition.foreignSource}`).toPromise());
+              promises.push(this.http.delete(`/rest/requisitions/${requisition.foreignSource}/deployed`).toPromise());
+              promises.push(this.http.delete(`/rest/foreignSources/${requisition.foreignSource}`).toPromise());
+              promises.push(this.http.delete(`/rest/foreignSources/${requisition.foreignSource}/deployed`).toPromise());
+              Promise.all(promises)
+                .catch(error => reject(error))
+                .then(() => resolve());
+            })
+        });
+    });
   }
 
   getNode(foreignSource: string, foreignId: string) : Promise<OnmsRequisitionNode> {
@@ -155,6 +168,11 @@ export class OnmsRequisitionsService {
   saveForeignSourceDefinition(foreignSource: OnmsForeignSource) : Promise<any> {
     const rawForeignSource = foreignSource.generateModel();
     return this.http.post('/rest/foreignSources', 'application/json', rawForeignSource)
+      .toPromise();
+  }
+
+  removeForeignSourceDefinition(foreignSource: OnmsForeignSource) : Promise<any> {
+    return this.http.delete(`/rest/foreignSources/${foreignSource.name}`)
       .toPromise();
   }
 
