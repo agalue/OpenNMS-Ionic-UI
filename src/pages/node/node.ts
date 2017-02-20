@@ -27,7 +27,8 @@ export class NodePage implements OnInit {
   events: OnmsEvent[] = [];
   outages: OnmsOutage[] = [];
 
-  mapOptions: Leaflet.MapOptions = {
+  private map: Leaflet.Map;
+  private mapOptions: Leaflet.MapOptions = {
     tap: true,
     touchZoom: false,
     doubleClickZoom: false,
@@ -184,9 +185,12 @@ export class NodePage implements OnInit {
   private drawMap() {
     if (this.node.hasLocation()) {
       let location: [number,number] = this.node.getLocation();
-      let map = Leaflet.map('map', this.mapOptions).setView(location, 12);
-      Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(map);
-      Leaflet.marker(location).addTo(map);
+      if (!this.map) {
+        this.map = Leaflet.map('map', this.mapOptions);
+        Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(this.map);
+      }
+      this.map.setView(location, 12);
+      Leaflet.marker(location).addTo(this.map);
     }
   }
 
