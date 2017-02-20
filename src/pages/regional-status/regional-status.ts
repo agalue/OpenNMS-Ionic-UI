@@ -15,13 +15,18 @@ export class RegionalStatusPage {
   query: GeolocationQuery = new GeolocationQuery();
 
   private tileLayer: string = 'https://tiles.opennms.org/{z}/{x}/{y}.png';
-  private tileAttribution: string = "Map data &copy; <b>OpenStreetMap</b> contributors under <i>ODbL</i>, <i>CC BY-SA 2.0</i>"
   private map: Leaflet.Map;
   private markersGroup: Leaflet.MarkerClusterGroup;
 
   private mapOptions: Leaflet.MapOptions = {
     zoom: 1,
-    maxZoom: 15
+    maxZoom: 15,
+    tap: true,
+    touchZoom: true,
+    doubleClickZoom: true,
+    zoomControl: false,
+    dragging: true,
+    attributionControl: false
   };
 
   constructor(
@@ -31,19 +36,27 @@ export class RegionalStatusPage {
 
   ionViewDidLoad() {
     this.initMap();
+    this.loadGeolocations();
+  }
+
+  onShowOptions() {
+    this.alert('Commin Soon!', 'Not implemented jet, sorry :('); // FIXME
+  }
+
+  private initMap() {
+    if (this.map) return;
+    this.map = Leaflet.map('map', this.mapOptions);
+    Leaflet.tileLayer(this.tileLayer).addTo(this.map);
+    this.initMarkerGroup();
+  }
+
+  private loadGeolocations() {
     this.mapService.getGeolocations(this.query)
       .then(locations => {
         this.resetMap(locations);
         this.centerOnMap();
       })
       .catch(error => this.alert('Load Map', error));
-  }
-
-  private initMap() {
-    if (this.map) return;
-    this.map = Leaflet.map('map', this.mapOptions);
-    Leaflet.tileLayer(this.tileLayer, { attribution: this.tileAttribution }).addTo(this.map);
-    this.initMarkerGroup();
   }
 
   private initMarkerGroup() {
