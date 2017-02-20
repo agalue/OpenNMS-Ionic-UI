@@ -22,6 +22,7 @@ import { NotificationsPage } from '../pages/notifications/notifications';
 import { NotificationPage } from '../pages/notification/notification';
 import { NodesPage } from '../pages/nodes/nodes';
 import { NodePage } from '../pages/node/node';
+import { ResourcesPage } from '../pages/resources/resources';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
 import { RequisitionPage } from '../pages/requisition/requisition';
@@ -67,6 +68,7 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     NotificationPage,
     NodesPage,
     NodePage,
+    ResourcesPage,
     SnmpConfigPage,
     RequisitionsPage,
     RequisitionPage,
@@ -98,6 +100,7 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     NotificationPage,
     NodesPage,
     NodePage,
+    ResourcesPage,
     SnmpConfigPage,
     RequisitionsPage,
     RequisitionPage,

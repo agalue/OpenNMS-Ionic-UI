@@ -9,8 +9,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-segment [(ngModel)]="mode">
+<ion-content np-padding>
+  <ion-segment padding [(ngModel)]="mode">
     <ion-segment-button value="info">
       Info
     </ion-segment-button>
@@ -53,7 +53,7 @@
           <ion-col width-67>{{ node.sysName }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>sysObjectId</b></ion-col>
+          <ion-col width-33><b>sysObjectID</b></ion-col>
           <ion-col width-67>{{ node.sysObjectId }}</ion-col>
         </ion-row>
         <ion-row>

@@ -8,7 +8,7 @@
   <ion-searchbar (ionInput)="onSearchNodes($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
   <ion-list [virtualScroll]="nodes">
     <button ion-item *virtualItem="let node" (click)="onShowNode(node)">
       <h2>{{ node.label }}</h2>

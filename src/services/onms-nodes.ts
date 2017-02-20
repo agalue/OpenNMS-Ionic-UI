@@ -4,6 +4,7 @@ import { Response } from '@angular/http';
 import { OnmsNode } from '../models/onms-node';
 import { OnmsIpInterface } from '../models/onms-ip-interface';
 import { OnmsSnmpInterface } from '../models/onms-snmp-interface';
+import { OnmsResource } from '../models/onms-resource';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -40,6 +41,12 @@ export class OnmsNodesService {
   getSnmpInterfaces(nodeId: number) : Promise<OnmsSnmpInterface[]> {
     return this.http.get(`/rest/nodes/${nodeId}/snmpinterfaces?limit=0`)
       .map((response: Response) => OnmsSnmpInterface.importInterfaces(response.json().snmpInterface))
+      .toPromise()
+  }
+
+  getResources(nodeId: number) : Promise<OnmsResource[]> {
+    return this.http.get(`/rest/resources/fornode/${nodeId}`)
+      .map((response: Response) => OnmsResource.importResources(response.json().children.resource))
       .toPromise()
   }
 

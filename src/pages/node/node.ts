@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
+
 import * as Leaflet from 'leaflet';
 
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
+import { ResourcesPage } from '../resources/resources';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsEvent } from '../../models/onms-event';
 import { OnmsOutage } from '../../models/onms-outage';
@@ -28,11 +30,13 @@ export class NodePage implements OnInit {
   outages: OnmsOutage[] = [];
 
   private map: Leaflet.Map;
+  private tileLayer: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private mapOptions: Leaflet.MapOptions = {
     tap: true,
     touchZoom: false,
     doubleClickZoom: false,
     scrollWheelZoom: false,
+    maxZoom: 18,
     zoomControl: true,
     dragging: false,
     attributionControl: false
@@ -74,8 +78,8 @@ export class NodePage implements OnInit {
           handler: () => this.onShowAssets()
         },
         {
-          text: 'Show Graphs',
-          handler: () => this.onShowGraphs()
+          text: 'Show Resources',
+          handler: () => this.onShowResources()
         },
         {
           text: 'Force Rescan',
@@ -116,12 +120,12 @@ export class NodePage implements OnInit {
     this.navCtrl.push(OutagePage, {outage: outage});
   }
 
-  onShowAssets() {
-    this.alert('Show Assets', 'Not implemented yet, sorry :(');
+  onShowResources() {
+    this.navCtrl.push(ResourcesPage, {node: this.node});
   }
 
-  onShowGraphs() {
-    this.alert('Show Graphs', 'Not implemented yet, sorry :(');
+  onShowAssets() {
+    this.alert('Show Assets', 'Not implemented yet, sorry :(');
   }
 
   onForceRescan() {
@@ -187,9 +191,9 @@ export class NodePage implements OnInit {
       let location: [number,number] = this.node.getLocation();
       if (!this.map) {
         this.map = Leaflet.map('map', this.mapOptions);
-        Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(this.map);
+        Leaflet.tileLayer(this.tileLayer).addTo(this.map);
       }
-      this.map.setView(location, 12);
+      this.map.setView(location, 16);
       Leaflet.marker(location).addTo(this.map);
     }
   }
