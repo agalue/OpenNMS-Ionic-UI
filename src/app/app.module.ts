@@ -33,6 +33,7 @@ import { RequisitionCategoryPage } from '../pages/requisition-category/requisiti
 import { ForeignSourcePage } from '../pages/foreign-source/foreign-source';
 import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
+import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 
 import { HttpService } from '../services/http';
 import { OnmsUIService } from '../services/onms-ui';
@@ -45,6 +46,7 @@ import { OnmsNotificationsService } from '../services/onms-notifications';
 import { OnmsNodesService } from '../services/onms-nodes';
 import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
 import { OnmsRequisitionsService } from '../services/onms-requisitions';
+import { OnmsMapsService } from '../services/onms-maps';
 
 @NgModule({
   declarations: [
@@ -78,7 +80,8 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     RequisitionCategoryPage,
     ForeignSourcePage,
     PolicyPage,
-    DetectorPage    
+    DetectorPage,
+    RegionalStatusPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -110,7 +113,8 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     RequisitionCategoryPage,
     ForeignSourcePage,
     PolicyPage,
-    DetectorPage    
+    DetectorPage,
+    RegionalStatusPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -125,7 +129,8 @@ import { OnmsRequisitionsService } from '../services/onms-requisitions';
     OnmsNotificationsService,
     OnmsNodesService,
     OnmsSnmpConfigService,
-    OnmsRequisitionsService
+    OnmsRequisitionsService,
+    OnmsMapsService
   ]
 })
 export class AppModule {}

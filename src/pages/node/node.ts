@@ -37,7 +37,7 @@ export class NodePage implements OnInit {
     doubleClickZoom: false,
     scrollWheelZoom: false,
     maxZoom: 18,
-    zoomControl: true,
+    zoomControl: false,
     dragging: false,
     attributionControl: false
   };

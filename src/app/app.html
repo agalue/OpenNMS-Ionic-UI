@@ -19,7 +19,7 @@
         {{ g.name }}
       </ion-list-header>
       <button menuClose ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
-        {{ p.title }}
+        <p>{{ p.title }}</p>
       </button>
     </ion-list>
   </ion-content>
