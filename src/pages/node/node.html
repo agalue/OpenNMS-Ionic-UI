@@ -74,10 +74,24 @@
           <div class="category">{{ c.name }}</div>
         </ion-item>
       </ion-list>
-      <ion-list *ngIf="node.hasLocation()">
+      <ion-list >
         <ion-list-header>Location</ion-list-header>
         <ion-item>
-          <div id="map"></div>
+          <div id="map" *ngIf="node.hasLocation()"></div>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <button ion-button small block outline icon-left type="button" (click)="onUseCurrentLocation()">
+                  <ion-icon name="locate"></ion-icon> Use current location
+                </button>
+              </ion-col>
+              <ion-col>
+                <button ion-button small block outline icon-left type="button" (click)="onSelectOnMap()">
+                  <ion-icon name="map"></ion-icon> Select on Map
+                </button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-item>
       </ion-list>
       <ion-list>

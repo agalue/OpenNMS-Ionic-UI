@@ -87,4 +87,10 @@ export class HttpService implements OnDestroy {
       .catch(this.handleError);
   }
 
+  encodeParams(data: Object) : string {
+    let params: string[] = [];
+    Object.keys(data).forEach(k => params.push(`${k}=${data[k]}`));
+    return params.join('&');
+  }
+
 }

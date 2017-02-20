@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ToastController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
-
+import { NavController, NavParams, ToastController, ModalController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
+import { Geolocation } from 'ionic-native';
 import * as Leaflet from 'leaflet';
 
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
 import { ResourcesPage } from '../resources/resources';
+import { SetLocationPage } from '../set-location/set-location';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsEvent } from '../../models/onms-event';
 import { OnmsOutage } from '../../models/onms-outage';
@@ -46,6 +47,7 @@ export class NodePage implements OnInit {
     private navCtrl: NavController,
     private navParams: NavParams,
     private toastCtrl: ToastController,
+    private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private actionSheetCtrl: ActionSheetController,
@@ -143,6 +145,46 @@ export class NodePage implements OnInit {
       });
   }
 
+  onUseCurrentLocation() {
+    const loading = this.loadingCtrl.create({
+      content: 'Getting your location...'
+    });
+    loading.present();
+    Geolocation.getCurrentPosition()
+      .then(r => {
+        loading.dismiss();
+        let info = `[lat=${r.coords.latitude}, lon=${r.coords.longitude}]`;
+        const alert = this.alertCtrl.create({
+          title: 'Set Node Location',
+          subTitle: `latitude=${r.coords.latitude}, longitude=${r.coords.longitude}`,
+          message: 'Are you want to override the node location? This cannot be undone.',
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel'
+            },
+            {
+              text: 'Save Coordinates',
+              handler: () => this.saveCoordinates({ latitude: r.coords.latitude, longitude: r.coords.longitude})
+            }
+          ]
+        });
+        alert.present();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Could not get location', error.message)
+      });
+  }
+
+  onSelectOnMap() {
+    const modal = this.modalCtrl.create(SetLocationPage, { node: this.node });
+    modal.onDidDismiss(data => {
+      if (data) this.saveCoordinates(data);
+    });
+    modal.present();
+  }
+
   formatUei(uei: string) : string {
     return this.uiService.getFormattedUei(uei);
   }
@@ -196,6 +238,23 @@ export class NodePage implements OnInit {
       this.map.setView(location, 16);
       Leaflet.marker(location).addTo(this.map);
     }
+  }
+
+  private saveCoordinates(coords: {latitude: number, longitude: number}) {
+    this.node.assetRecord.latitude = coords.latitude;
+    this.node.assetRecord.longitude = coords.longitude;
+    const loading = this.loadingCtrl.create({ content: 'Updating node assets...' });
+    loading.present();
+    this.nodesService.updateAssets(this.node.id, coords)
+      .then(() => {
+        loading.dismiss();
+        this.toast('Coordinates updated!');
+        this.drawMap();
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Update Assets Error', error);
+      });
   }
 
   private toast(message: string) {

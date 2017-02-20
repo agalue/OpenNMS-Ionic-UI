@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { HttpService } from './http';
 
-import * as Leaflet from 'leaflet';
-import 'leaflet.markercluster';
 import 'rxjs/Rx';
 
 export class GeolocationQuery {
