@@ -146,8 +146,8 @@ export class RequisitionsPage {
 
   onDeleteRequisition(requisition: OnmsRequisition) {
     const alert = this.alertCtrl.create({
-      title: 'Delete Requisitions',
-      subTitle: 'Are you sure you want to delete the requisition?',
+      title: 'Delete Requisition',
+      subTitle: `Are you sure you want to delete the requisition ${requisition.foreignSource} ?`,
       message: 'This cannot be undone. All the nodes will be permanently removed from the database.',
       buttons: [
         {
@@ -175,7 +175,7 @@ export class RequisitionsPage {
       this.requisitionsService.saveRequisition(requisition)
         .then(() => {
           loading.dismiss();
-          this.toast(`Requisition ${foreignSource} has been added!`);
+          this.onShowRequisition(requisition);
         })
       .catch(error => {
         loading.dismiss();
@@ -188,10 +188,12 @@ export class RequisitionsPage {
     const loading = this.loadingCtrl.create({
       content: `Removing requisition ${requisition.foreignSource}...`
     });
-    loading.present();      
+    loading.present();
     this.requisitionsService.removeRequisition(requisition)
       .then(() => {
         loading.dismiss();
+        let index = this.requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
+        this.requisitions.splice(index, 1);
         this.toast(`Requisition ${requisition.foreignSource} has been removed!`);
       })
     .catch(error => {
@@ -205,7 +207,7 @@ export class RequisitionsPage {
       content: `Requesting an import of ${requisition.foreignSource}...`
     });
     loading.present();    
-    this.requisitionsService.importRequisition(requisition.foreignSource, rescanExisting)
+    this.requisitionsService.importRequisition(requisition, rescanExisting)
       .then(() => {
         loading.dismiss();
         this.toast('Import has started!');

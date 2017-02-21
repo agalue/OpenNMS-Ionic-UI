@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Assets</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+  <ion-grid padding>
+    <ion-row>
+      <ion-col><b>Node</b></ion-col><ion-col>{{ node.label }} ({{ node.id }})</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Foreign Source</b></ion-col><ion-col>{{ node.foreignSource || 'N/A' }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Foreign ID</b></ion-col><ion-col>{{ node.foreignId || 'N/A' }}</ion-col>
+    </ion-row>
+  </ion-grid>
+  <br>
+  <form #form="ngForm" novalidate>
+    <ion-item-group *ngFor="let group of configGroups">
+      <ion-item-divider color="primary">{{ group.title }}</ion-item-divider>
+      <ion-item *ngFor="let field of group.fields">
+        <ion-label stacked>{{ field.label }}</ion-label>
+        <ion-input type="text" [name]="field.model" [(ngModel)]="node.assetRecord[field.model]"></ion-input>
+      </ion-item>
+    </ion-item-group>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right type="button" (click)="onSave(form)" [disabled]="form.invalid">
+        Save Assets
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -20,6 +20,7 @@ export class RequisitionNodePage implements OnInit {
   isNew: boolean = false;
   mode: string = 'basic';
   foreignSource: string;
+  foreignIds: string[] = [];
   node: OnmsRequisitionNode;
   form: FormGroup;
 
@@ -33,6 +34,7 @@ export class RequisitionNodePage implements OnInit {
 
   ngOnInit() {
     this.foreignSource = this.navParams.get('foreignSource');
+    this.foreignIds = this.navParams.get('foreignIds');
     this.node = this.navParams.get('node');
     if (this.node == null) {
       this.isNew = true;
@@ -47,7 +49,7 @@ export class RequisitionNodePage implements OnInit {
     }
     return new Promise<void>((resolve, reject) => {
       const alert = this.alertCtrl.create({
-        title: 'Save Requisition',
+        title: 'Save requisition before leaving',
         subTitle: 'Are you sure you discard all your changes ?',
         message: 'This cannot be undone.',
         buttons: [
@@ -55,7 +57,10 @@ export class RequisitionNodePage implements OnInit {
             text: 'Save Node',
             handler: () => {
               this.saveNode()
-                .then(() => resolve())
+                .then(() => {
+                  this.toast('Node has been saved!');
+                  resolve()
+                })
                 .catch(error => reject(error))
             }
           },
@@ -77,6 +82,12 @@ export class RequisitionNodePage implements OnInit {
 
   onGenerateForeignId() {
     this.form.get('foreignId').setValue(new Date().getTime());
+  }
+
+  onShowLocations() {
+    this.requisitionsService.getAvailableLocations()
+      .then((locations: string[]) => this.chooseLocation(locations))
+      .catch(error => this.alert('Load Locations', error));
   }
 
   onAddInterface() {
@@ -121,12 +132,57 @@ export class RequisitionNodePage implements OnInit {
     });
   }
 
+  onRemoveInterface(index: number) {
+    this.node.interfaces.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
+  onRemoveAsset(index: number) {
+    this.node.assets.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
+  onRemoveCategory(index: number) {
+    this.node.categories.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
+  getValidityColor(field: string) {
+    return this.form.controls[field].valid ? '' : 'danger';
+  }
+
+  private chooseLocation(locations: string[]) {
+    const options = this.alertCtrl.create({
+      title: 'Choose Location',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          handler: data => this.form.controls['location'].setValue(data)
+        }
+      ]
+    });
+    locations.forEach(location => {
+      options.addInput({
+        name: 'options',
+        value: location,
+        label: location,
+        type: 'radio'
+      })
+    })
+    options.present();
+  }
+
   private saveNode() : Promise<void> {
     return new Promise<void>((resolve,reject) => {
       Object.assign(this.node, this.form.value);
       this.requisitionsService.saveNode(this.foreignSource, this.node)
         .then(() => {
           this.form.markAsPristine();
+          this.form.markAsUntouched();
           resolve();
         })
         .catch(error => reject(error));

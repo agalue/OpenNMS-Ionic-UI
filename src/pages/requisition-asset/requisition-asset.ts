@@ -26,7 +26,7 @@ export class RequisitionAssetPage implements OnInit {
     this.asset  = this.navParams.get('asset');
     this.mode = this.asset ? 'Edit' : 'Add';
     if (this.mode == 'Add') {
-      this.asset = new OnmsRequisitionAsset();
+      this.asset = OnmsRequisitionAsset.create();
     }
     
     this.requisitionsService.getAvailableAssets()

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NavController, NavParams, ModalController, AlertController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, AlertController, ToastController, reorderArray } from 'ionic-angular';
 
 import { DetectorPage } from '../detector/detector';
 import { PolicyPage } from '../policy/policy';
@@ -20,6 +20,8 @@ export class ForeignSourcePage implements OnInit {
   definition: OnmsForeignSource;
   policiesConfig: OnmsForeignSourceConfig[] = [];
   detectorsConfig: OnmsForeignSourceConfig[] = [];
+  reorderPolicies = false;
+  reorderDetectors = false;
   form: FormGroup;
 
   constructor(
@@ -102,6 +104,24 @@ export class ForeignSourcePage implements OnInit {
       this.definition.detectors[index] = detectorUpdated;
       this.toast(`Detector ${detectorUpdated.name} updated!`);
     });
+  }
+
+  onEnableReorderPolicies(enable: boolean) {
+    this.reorderPolicies = enable;
+  }
+
+  onEnableReorderDetectors(enable: boolean) {
+    this.reorderDetectors = enable;
+  }
+
+  onReorderPolicies(indexes) {
+    this.definition.policies = reorderArray(this.definition.policies, indexes);
+    this.form.markAsDirty();
+  }
+
+  onReorderDetectors(indexes) {
+    this.definition.detectors = reorderArray(this.definition.detectors, indexes);
+    this.form.markAsDirty();
   }
 
   private updatePolicy(policy: OnmsRequisitionPolicy, handler: (updated: OnmsRequisitionPolicy) => void) {

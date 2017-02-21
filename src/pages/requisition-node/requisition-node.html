@@ -31,18 +31,15 @@
         <ion-list inset>
           <ion-list-header>Basic</ion-list-header>
           <ion-item>
-            <ion-label stacked>Foreign ID</ion-label>
-            <ion-input type="text" formControlName="foreignId" [disabled]="isNew"></ion-input>
-            <button  item-right icon-only color="primary" type="button" *ngIf="!isNew" (click)="onGenerateForeignId()">
-              <ion-icon name="gear"></ion-icon>
-            </button>
+            <ion-label stacked [color]="getValidityColor('foreignId')">Foreign ID</ion-label>
+            <ion-input type="text" formControlName="foreignId" [disabled]="!isNew" (press)="onGenerateForeignId()"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Node Label</ion-label>
+            <ion-label stacked [color]="getValidityColor('nodeLabel')">Node Label</ion-label>
             <ion-input type="text" formControlName="nodeLabel"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked>Location</ion-label>
+            <ion-label stacked (press)="onShowLocations()">Location</ion-label>
             <ion-input type="text" formControlName="location"></ion-input>
           </ion-item>
           <ion-item>
@@ -60,11 +57,11 @@
             <ion-label stacked>Parent Foreign Source</ion-label>
             <ion-input type="text" formControlName="parentForeignSource"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item *ngIf="form.controls['parentNodeLabel'].value != ''">
             <ion-label stacked>Parent Foreign ID</ion-label>
             <ion-input type="text" formControlName="parentForeignId"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item *ngIf="form.controls['parentForeignId'].value != ''">
             <ion-label stacked>Parent Node Label</ion-label>
             <ion-input type="text" formControlName="parentNodeLabel"></ion-input>
           </ion-item>
@@ -79,11 +76,19 @@
       </button>
       <br>      
       <ion-list>
-        <button ion-item *ngFor="let intf of node.interfaces; let i = index" (click)="onEditInterface(intf,i)">
-          <h2>{{ intf.ipAddress }} ({{ intf.snmpPrimary }})</h2>
-          <p *ngIf="intf.description">{{ intf.description }}</p>
-          <p>{{ intf.services.length }} services</p>
-        </button>
+        <ion-item-sliding *ngFor="let intf of node.interfaces; let i = index">
+          <button ion-item  (click)="onEditInterface(intf,i)">
+            <h2>{{ intf.ipAddress }} ({{ intf.snmpPrimary }})</h2>
+            <p *ngIf="intf.description">{{ intf.description }}</p>
+            <p>{{ intf.services.length }} services</p>
+          </button>
+          <ion-item-options>
+            <button ion-button expandable color="danger" (click)="onRemoveInterface(i)">
+              <ion-icon name="trash"></ion-icon>
+              Remove
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
     <div *ngSwitchCase="'assets'">
@@ -94,10 +99,18 @@
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let asset of node.assets; let i = index" (click)="onEditAsset(asset,i)">
-          <h2>{{ asset.name }}</h2>
-          <p>{{ asset.value }}</p>
-        </button>
+        <ion-item-sliding *ngFor="let asset of node.assets; let i = index">
+          <button ion-item (click)="onEditAsset(asset,i)">
+            <h2>{{ asset.name }}</h2>
+            <p>{{ asset.value }}</p>
+          </button>
+          <ion-item-options>
+            <button ion-button expandable color="danger" (click)="onRemoveAsset(i)">
+              <ion-icon name="trash"></ion-icon>
+              Remove
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
     <div *ngSwitchCase="'categories'">
@@ -108,9 +121,17 @@
       </button>
       <br>
       <ion-list>
-        <button ion-item *ngFor="let category of node.categories; let i = index" (click)="onEditCategory(category,i)">
-          <h2>{{ category.name }}</h2>
-        </button>
+        <ion-item-sliding *ngFor="let category of node.categories; let i = index">
+          <button ion-item (click)="onEditCategory(category,i)">
+            <h2>{{ category.name }}</h2>
+          </button>
+          <ion-item-options>
+            <button ion-button expandable color="danger" (click)="onRemoveCategory(i)">
+              <ion-icon name="trash"></ion-icon>
+              Remove
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
   </div>

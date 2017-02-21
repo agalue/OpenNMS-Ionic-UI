@@ -60,14 +60,14 @@ export class HttpService implements OnDestroy {
       .catch(this.handleError);
   }
 
-  put(url: string, contentType: string, data: any) : Observable<Response> {
+  put(url: string, contentType?: string, data?: any) : Observable<Response> {
     let options: RequestOptions = this.getOptions();
     if (contentType) {
       options.headers.append('Content-Type', contentType);
     }
     let body: any;
     if (data) {
-      body = typeof data === "string" ? data : JSON.stringify(data);
+      body = typeof data === 'string' ? data : JSON.stringify(data);
     }
     return this.http.put(this.getBaseUrl() + url, body, options)
       .catch(this.handleError);
@@ -89,7 +89,9 @@ export class HttpService implements OnDestroy {
 
   encodeParams(data: Object) : string {
     let params: string[] = [];
-    Object.keys(data).forEach(k => params.push(`${k}=${data[k]}`));
+    Object.keys(data).forEach(k => {
+      if (data[k]) params.push(`${k}=${data[k]}`)
+    });
     return params.join('&');
   }
 

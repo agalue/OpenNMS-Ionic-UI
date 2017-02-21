@@ -2,10 +2,10 @@
   <ion-navbar>
     <ion-buttons end>
       <button ion-button icon-only (click)="onShowOptions()">
-        <ion-icon name="cog"></ion-icon>
+        <ion-icon name="settings"></ion-icon>
       </button>
     </ion-buttons>    
-    <ion-title>Requisition</ion-title>
+    <ion-title>{{ requisition.foreignSource }}</ion-title>
   </ion-navbar>
   <ion-searchbar [(ngModel)]="searchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>

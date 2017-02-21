@@ -3,6 +3,7 @@ import { NavController, NavParams, ToastController, ModalController, AlertContro
 import { Geolocation } from 'ionic-native';
 import * as Leaflet from 'leaflet';
 
+import { AssetsPage } from '../assets/assets';
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
 import { ResourcesPage } from '../resources/resources';
@@ -127,7 +128,7 @@ export class NodePage implements OnInit {
   }
 
   onShowAssets() {
-    this.alert('Show Assets', 'Not implemented yet, sorry :(');
+    this.navCtrl.push(AssetsPage, {node: this.node});
   }
 
   onForceRescan() {
@@ -153,7 +154,6 @@ export class NodePage implements OnInit {
     Geolocation.getCurrentPosition()
       .then(r => {
         loading.dismiss();
-        let info = `[lat=${r.coords.latitude}, lon=${r.coords.longitude}]`;
         const alert = this.alertCtrl.create({
           title: 'Set Node Location',
           subTitle: `latitude=${r.coords.latitude}, longitude=${r.coords.longitude}`,

@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-  <form [formGroup]="serverForm" (ngSubmit)="onSave()">
+  <form [formGroup]="serverForm">
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -29,17 +29,27 @@
         </ion-list>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
-      </ion-col>
-      <ion-col>
-        <button ion-button block color="secondary" type="submit" [disabled]="!serverForm.valid">Save</button>
-      </ion-col>
-      <ion-col *ngIf="server">
-        <button ion-button block color="danger" type="button" (click)="onDelete()" [disabled]="server.isDefault">Delete</button>
-      </ion-col>
-    </ion-row>
   </ion-grid>
   </form>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons start>
+      <button ion-button icon-right type="button" (click)="onCancel()">
+        Cancel
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-right type="button" color="danger" (click)="onDelete()" *ngIf="server" [disabled]="server?.isDefault">
+        Delete
+        <ion-icon name="trash"></ion-icon>
+      </button>
+      <button ion-button icon-right type="button" (click)="onSave()" [disabled]="serverForm.invalid">
+        Save
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -46,6 +46,10 @@ export class RequisitionPage {
           handler: () => this.onImportRequisition()
         },
         {
+          text: 'Remove Requisition',
+          handler: () => this.onRemoveRequisition()
+        },
+        {
           text: 'Cancel',
           role: 'cancel'
         }
@@ -55,11 +59,18 @@ export class RequisitionPage {
   }
 
   onAddNode() {
-    this.navCtrl.push(RequisitionNodePage, { foreignSource: this.requisition.foreignSource })
+    let foreignIds: string[] = this.requisition.nodes.map(n => n.foreignId);
+    this.navCtrl.push(RequisitionNodePage, {
+      foreignSource: this.requisition.foreignSource,
+      foreignIds: foreignIds
+    })
   }
 
   onEditNode(node: OnmsRequisitionNode) {
-    this.navCtrl.push(RequisitionNodePage, { foreignSource: this.requisition.foreignSource, node: node })
+    this.navCtrl.push(RequisitionNodePage, {
+      foreignSource: this.requisition.foreignSource,
+      node: node
+    })
   }
 
   onRemoveNode(node: OnmsRequisitionNode) {
@@ -123,12 +134,31 @@ export class RequisitionPage {
     actionSheet.present();
   }
 
+  onRemoveRequisition() {
+    const alert = this.alertCtrl.create({
+      title: 'Delete Requisition',
+      subTitle: `Are you sure you want to delete the requisition ${this.requisition.foreignSource} ?`,
+      message: 'This cannot be undone. All the nodes will be permanently removed from the database.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          handler: () => this.deleteRequisition()
+        }
+      ]
+    });
+    alert.present();
+  }
+
   private importRequisition(requisition: OnmsRequisition, rescanExisting: string) {
     const loading = this.loadingCtrl.create({
       content: `Requesting an import of ${requisition.foreignSource}...`
     });
     loading.present();
-    this.requisitionsService.importRequisition(requisition.foreignSource, rescanExisting)
+    this.requisitionsService.importRequisition(requisition, rescanExisting)
       .then(() => {
         loading.dismiss();
         this.toast('Import has started!');
@@ -137,6 +167,22 @@ export class RequisitionPage {
         loading.dismiss();
         this.alert('Import Error', error)
       });
+  }
+
+  private deleteRequisition() {
+    const loading = this.loadingCtrl.create({
+      content: `Removing requisition ${this.requisition.foreignSource}...`
+    });
+    loading.present();
+    this.requisitionsService.removeRequisition(this.requisition)
+      .then(() => {
+        loading.dismiss();
+        this.navCtrl.pop();
+      })
+    .catch(error => {
+      loading.dismiss();
+      this.alert('Remove Requisition Error', error)
+    });
   }
 
   private removeNode(node: OnmsRequisitionNode) {

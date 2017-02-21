@@ -20,12 +20,12 @@
       </ion-item>
     </ion-list>
   </form>
-  <form #configForm="ngForm" (ngSubmit)="onSave(configForm)" novalidate>
+  <form #configForm="ngForm" novalidate>
     <ion-list inset>
       <ion-list-header>General Parameters</ion-list-header>
       <ion-item>
         <ion-label stacked>IP Address</ion-label>
-        <ion-input type="text" name="ipAddress" [(ngModel)]="ipAddress"></ion-input>
+        <ion-input type="text" name="ipAddress" [(ngModel)]="ipAddress" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label stacked>Version</ion-label>
@@ -68,7 +68,7 @@
       <ion-list-header>v1/v2 Parameters</ion-list-header>
       <ion-item>
         <ion-label stacked>Read Community String</ion-label>
-        <ion-input type="text" name="readCommunity" [(ngModel)]="config.readCommunity"></ion-input>
+        <ion-input type="text" name="readCommunity" [(ngModel)]="config.readCommunity" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label stacked>Write Community String</ion-label>
@@ -79,7 +79,7 @@
       <ion-list-header>v3 Parameters</ion-list-header>
       <ion-item>
         <ion-label stacked>Security Name</ion-label>
-        <ion-input type="text" name="securityName" [(ngModel)]="config.securityName"></ion-input>
+        <ion-input type="text" name="securityName" [(ngModel)]="config.securityName" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label stacked>Security Level</ion-label>
@@ -130,10 +130,16 @@
         <ion-input type="text" name="enterpriseId" [(ngModel)]="config.enterpriseId"></ion-input>
       </ion-item>
     </ion-list>
-    <ion-list inset>
-      <ion-item>
-        <button ion-button block outline type="submit" [disabled]="!configForm.valid">Save Configuration</button>
-      </ion-item>
-    </ion-list>
   </form>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right type="button" (click)="onSave(configForm)" [disabled]="configForm.invalid">
+        Save Configuration
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

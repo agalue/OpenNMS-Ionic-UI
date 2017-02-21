@@ -37,12 +37,28 @@
     </div>
     <div *ngSwitchCase="'detectors'">
       <br>
-      <button ion-button clear small block outline icon-left (click)="onAddDetector()">
-        <ion-icon name="add"></ion-icon>
-        Add Detector
-      </button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button ion-button clear small block outline icon-left type="button" (click)="onAddDetector()">
+              <ion-icon name="add"></ion-icon>
+              Add a new Detector
+            </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button clear small block outline icon-left type="button" (click)="onEnableReorderDetectors(true)" *ngIf="!reorderDetectors">
+              <ion-icon name="reorder"></ion-icon>
+              Enable Re-order Mode
+            </button>
+            <button ion-button clear small block outline icon-left type="button" color="danger" (click)="onEnableReorderDetectors(false)" *ngIf="reorderDetectors">
+              <ion-icon name="done-all"></ion-icon>
+              Finish Re-order Mode
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
       <br>
-      <ion-list>
+      <ion-list [reorder]="reorderDetectors" (ionItemReorder)="onReorderDetectors($event)">
         <button ion-item *ngFor="let detector of definition.detectors; let i = index" (click)="onEditDetector(detector,i)">
           <h2>{{ detector.name }}</h2>
           <p>{{ detector.className | className }}</p>
@@ -51,13 +67,29 @@
     </div>
     <div *ngSwitchCase="'policies'">
       <br>
-      <button ion-button clear small block outline icon-left (click)="onAddPolicy()">
-        <ion-icon name="add"></ion-icon>
-        Add Policy
-      </button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button ion-button clear small block outline icon-left type="button" (click)="onAddPolicy()">
+              <ion-icon name="add"></ion-icon>
+              Add a new Policy
+            </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button clear small block outline icon-left type="button" (click)="onEnableReorderPolicies(true)" *ngIf="!reorderPolicies">
+              <ion-icon name="reorder"></ion-icon>
+              Enable Re-order Mode
+            </button>
+            <button ion-button clear small block outline icon-left type="button" color="danger" (click)="onEnableReorderPolicies(false)" *ngIf="reorderPolicies">
+              <ion-icon name="done-all"></ion-icon>
+              Finish Re-order Mode
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
       <br>
-      <ion-list>
-        <button ion-item *ngFor="let policy of definition.policies; let i = index" (click)="onEditPolicy(policy,i)">
+      <ion-list [reorder]="reorderPolicies" (ionItemReorder)="onReorderPolicies($event)">
+        <button ion-item type="button" *ngFor="let policy of definition.policies; let i = index" (click)="onEditPolicy(policy,i)">
           <h2>{{ policy.name }}</h2>
           <p>{{ policy.className | className }}</p>
         </button>

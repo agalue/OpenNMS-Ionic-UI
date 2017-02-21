@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-  <form [formGroup]="form" (ngSubmit)="onSave()">
+  <form [formGroup]="form">
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -31,7 +31,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <button ion-button clear small icon-left (click)="onAddService()">
+        <button ion-button clear small icon-left type="button" (click)="onAddService()">
           <ion-icon name="add"></ion-icon>
           Add Service
         </button>
@@ -42,30 +42,37 @@
         <ion-list formArrayName="services">
           <ion-list-header>Services</ion-list-header>
           <ion-item-sliding *ngFor="let service of form.controls.services.controls; let i = index">
-            <ion-item [formGroupName]="i">
+            <ion-item [formGroupName]="i" (press)="onShowServices(i)">
               <ion-input type="text" formControlName="name"></ion-input>
-              <button  item-right icon-only color="primary" type="button" (click)="onShowServices(i)">
-                <ion-icon name="list"></ion-icon>
-              </button>
             </ion-item>
             <ion-item-options>
-              <button ion-button expandable color="danger" (click)="onRemoveService(i)">
+              <button ion-button expandable type="button" color="danger" (click)="onRemoveService(i)">
                 <ion-icon name="trash"></ion-icon>
                 Remove
               </button>
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <button ion-button block outline type="button" (click)="onCancel()">Cancel</button>
-      </ion-col>
-      <ion-col>
-        <button ion-button block color="secondary" type="submit" [disabled]="form.invalid || form.dirty">Save</button>
+        <p>Use long press over the input field see available services...</p>
       </ion-col>
     </ion-row>
   </ion-grid>
   </form>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons start>
+      <button ion-button icon-right type="button" (click)="onCancel()">
+        Cancel
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-right type="button" (click)="onSave()" [disabled]="form.invalid">
+        Save
+        <ion-icon name="cloud-upload"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

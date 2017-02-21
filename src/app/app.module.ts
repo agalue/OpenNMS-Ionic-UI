@@ -22,6 +22,7 @@ import { NotificationsPage } from '../pages/notifications/notifications';
 import { NotificationPage } from '../pages/notification/notification';
 import { NodesPage } from '../pages/nodes/nodes';
 import { NodePage } from '../pages/node/node';
+import { AssetsPage } from '../pages/assets/assets';
 import { ResourcesPage } from '../pages/resources/resources';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
@@ -71,6 +72,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     NotificationPage,
     NodesPage,
     NodePage,
+    AssetsPage,
     ResourcesPage,
     SnmpConfigPage,
     RequisitionsPage,
@@ -105,6 +107,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     NotificationPage,
     NodesPage,
     NodePage,
+    AssetsPage,
     ResourcesPage,
     SnmpConfigPage,
     RequisitionsPage,

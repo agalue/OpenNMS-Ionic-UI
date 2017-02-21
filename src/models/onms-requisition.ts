@@ -53,8 +53,15 @@ export class OnmsRequisition {
         }
     }
 
+    markAsDeployed() {
+        this.deployed = true;
+        this.deployedNodes = this.nodes.length;
+        this.nodes.forEach(n => n.deployed = true);
+    }
+
     update(stats: OnmsRequisitionStats) {
         this.deployed = true;
+        this.deployedNodes = 0;
         this.nodes.forEach(n => {
             if (stats.foreignIds.indexOf(n.foreignId) > -1) {
                 n.deployed = true;
