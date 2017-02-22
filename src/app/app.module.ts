@@ -36,6 +36,7 @@ import { ForeignSourcePage } from '../pages/foreign-source/foreign-source';
 import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
 import { RegionalStatusPage } from '../pages/regional-status/regional-status';
+import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regional-status-options';
 import { SetLocationPage } from '../pages/set-location/set-location';
 
 import { HttpService } from '../services/http';
@@ -87,10 +88,14 @@ import { OnmsMapsService } from '../services/onms-maps';
     PolicyPage,
     DetectorPage,
     RegionalStatusPage,
+    RegionalStatusOptionsPage,
     SetLocationPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp, {
+      backButtonIcon: 'arrow-back',
+      backButtonText: ''
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -123,6 +128,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     PolicyPage,
     DetectorPage,
     RegionalStatusPage,
+    RegionalStatusOptionsPage,
     SetLocationPage
   ],
   providers: [

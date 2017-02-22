@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { AlertController, PopoverController } from 'ionic-angular';
 
+import { RegionalStatusOptionsPage } from '../regional-status-options/regional-status-options';
 import { GeolocationQuery, OnmsMapsService } from '../../services/onms-maps';
 
 import * as Leaflet from 'leaflet';
@@ -19,6 +20,7 @@ export class RegionalStatusPage {
 
   constructor(
     private alertCtrl: AlertController,
+    private popoverCtrl: PopoverController,
     private mapService: OnmsMapsService
   ) {}
 
@@ -27,8 +29,15 @@ export class RegionalStatusPage {
     this.loadGeolocations();
   }
 
-  onShowOptions() {
-    this.alert('Commin Soon!', 'Not implemented jet, sorry :('); // FIXME
+  onShowOptions(event: any) {
+    let popover = this.popoverCtrl.create(RegionalStatusOptionsPage, {
+      query: this.query,
+      onChange: (query:GeolocationQuery) => {
+        this.query = query;
+        this.loadGeolocations();
+      }
+    });
+    popover.present({ ev: event });
   }
 
   onCenter() {
