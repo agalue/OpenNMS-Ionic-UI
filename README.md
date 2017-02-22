@@ -30,13 +30,26 @@ It might be possible that the following section should be added:
 </filter-mapping>
 ```
 
-Ionic2 has to be installed on your system, in order to compile and use this project on your device:
+First, install NodeJS on your system:
+
+https://nodejs.org
+
+Then, Ionic2 should be installed on your system as well, in order to compile and use this project locally or on your device:
 
 ```
-sudo npm install ionic --save
+sudo npm install -g cordova ionic
 ```
 
-For IOS deployemnt, you need a Mac with XCode. For Android, you need Android Studio. The following link provides more information.
+To test the application using your browser, clone the project and then execute the following commands from the application directory:
+
+```
+npm install
+ionic serve
+```
+
+For IOS deployemnt, you need a Mac with XCode.
+For Android deployment, you need Android Studio.
+The following link provides more information:
 
 https://ionicframework.com/docs/guide/testing.html
 
