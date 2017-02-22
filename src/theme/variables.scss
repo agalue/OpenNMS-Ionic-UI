@@ -13,14 +13,7 @@ $font-path: "../assets/fonts";
 // http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
 
 
-@function severity_color($key) {
-  @if map-has-key($colors, $key) {
-    @return map-get($colors, $key);
-  }
 
-  @warn "Unknown `#{$key}` in $colors.";
-  @return null;
-}
 
 // Named Color Variables
 // --------------------------------------------------
@@ -36,7 +29,7 @@ $colors: (
   danger:        #f53d3d,
   light:         #f4f4f4,
   dark:          #222,
-  // OpenNMS - Main
+  // OpenNMS Severities - Light
   Critical:      #f5cdcd,
   Major:         #ffd7cd,
   Minor:         #ffebcd,
@@ -44,7 +37,7 @@ $colors: (
   Indeterminate: #ebebcd,
   Normal:        #d7e1cd,
   Cleared:       #eeeeee,
-  // OpenNMS - Borders
+  // OpenNMS Severities - Borders
   Critical_:     #cc0000,
   Major_:        #ff3300,
   Minor_:        #ff9900,
