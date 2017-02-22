@@ -6,51 +6,20 @@ page-regional-status {
         min-width: 100%;
         display: block;
     }
-    .geomap .marker-cluster-Cleared {
-        background-color: map_get($colors,Cleared_);
-    }
-    .geomap .marker-cluster-Normal {
-        background-color: map_get($colors,Normal_);
-    }
-    .geomap .marker-cluster-Minor {
-        background-color: map_get($colors,Minor_);
-    }
-    .geomap .marker-cluster-Major {
-        background-color: map_get($colors,Major_);
-    }
-    .geomap .marker-cluster-Warning {
-        background-color: map_get($colors,Warning_);
-    }
-    .geomap .marker-cluster-Critical {
-        background-color: map_get($colors,Critical_);
-    }
+
     .geomap .marker-cluster div {
         position: absolute;
         top: 0;
         color: white;
     }
-    .geomap .svg .Cleared {
-        fill: map_get($colors,Cleared_);
-        stroke: map_get($colors,Cleared_);
-    }
-    .geomap .svg .Normal {
-        fill: map_get($colors, Normal_);
-        stroke: map_get($colors,Normal_);
-    }
-    .geomap .svg .Minor {
-        fill: map_get($colors,Minor_);
-        stroke: map_get($colors,Minor_);
-    }
-    .geomap .svg .Major {
-        fill: map_get($colors,Major_);
-        stroke: map_get($colors,Major_);
-    }
-    .geomap .svg .Warning {
-        fill: map_get($colors,Warning_);
-        stroke: map_get($colors,Warning_);
-    }
-    .geomap .svg .Critical {
-        fill: map_get($colors,Critical_);
-        stroke: map_get($colors,Critical_);
+
+    @each $severity in (Cleared, Normal, Minor, Warning, Major, Critical) {
+        .geomap .marker-cluster-#{$severity} {
+            background-color: map_get($colors,#{$severity}_);
+        }
+        .geomap .svg .#{$severity} {
+            fill: map_get($colors,#{$severity}_);
+            stroke: map_get($colors,#{$severity}_);
+        }
     }
 }

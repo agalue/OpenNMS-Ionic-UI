@@ -31,6 +31,14 @@ export class RegionalStatusPage {
     this.alert('Commin Soon!', 'Not implemented jet, sorry :('); // FIXME
   }
 
+  onCenter() {
+    if (this.markersGroup.getBounds().isValid()) {
+      this.map.fitBounds(this.markersGroup.getBounds(), {padding: [15, 15]});
+    } else {
+      this.map.setView([34.5133, -94.1629], 1); // center of earth
+    }
+  }
+
   private initMap() {
     if (this.map) return;
     this.map = this.mapService.createMap('map');
@@ -41,17 +49,9 @@ export class RegionalStatusPage {
     this.mapService.getGeolocations(this.query)
       .then(locations => {
         this.mapService.resetMap(this.markersGroup, locations);
-        this.centerOnMap();
+        this.onCenter();
       })
       .catch(error => this.alert('Load Map', error));
-  }
-
-  private centerOnMap() {
-    if (this.markersGroup.getBounds().isValid()) {
-      this.map.fitBounds(this.markersGroup.getBounds(), {padding: [15, 15]});
-    } else {
-      this.map.setView([34.5133, -94.1629], 1); // center of earth
-    }
   }
 
   private alert(title: string, message: string) {
