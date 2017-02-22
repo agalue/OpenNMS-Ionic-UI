@@ -37,6 +37,7 @@ import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
 import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regional-status-options';
+import { RegionalStatusPopupPage } from '../pages/regional-status-popup/regional-status-popup';
 import { SetLocationPage } from '../pages/set-location/set-location';
 
 import { HttpService } from '../services/http';
@@ -89,6 +90,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     DetectorPage,
     RegionalStatusPage,
     RegionalStatusOptionsPage,
+    RegionalStatusPopupPage,
     SetLocationPage
   ],
   imports: [
@@ -129,6 +131,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     DetectorPage,
     RegionalStatusPage,
     RegionalStatusOptionsPage,
+    RegionalStatusPopupPage,
     SetLocationPage
   ],
   providers: [

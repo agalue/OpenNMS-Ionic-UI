@@ -1,0 +1,24 @@
+<ion-content no-padding>
+  <ion-grid *ngIf="locations.length == 1">
+    <ion-row>
+      <ion-col><b>Node</b></ion-col>
+      <ion-col>{{ locations[0].nodeInfo.nodeLabel }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>IP Address</b></ion-col>
+      <ion-col>{{ locations[0].nodeInfo.ipAddress }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Severity</b></ion-col>
+      <ion-col [class]="locations[0].severityInfo.label">{{ locations[0].severityInfo.label }}</ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="locations.length > 1">
+    <ion-row>
+      <ion-col><b>Cluster Group</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let location of locations">
+      <ion-col [class]="location.severityInfo.label">{{ location.nodeInfo.nodeLabel }}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

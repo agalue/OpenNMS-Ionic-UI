@@ -78,6 +78,23 @@ export class GeolocationInfo {
 
 }
 
+export class SeverityLegendControl extends Leaflet.Control {
+
+  constructor(options?: Leaflet.ControlOptions) {
+    let forcedOptions: Leaflet.ControlOptions = { position: 'bottomleft' };
+    super(forcedOptions);
+  }
+
+  onAdd(map: Leaflet.Map) : HTMLElement {
+    let container = Leaflet.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+    ['Normal', 'Warning', 'Minor', 'Major', 'Critical'].forEach(severity => {
+      container.innerHTML += `<div style="float:left;"><div style="float:left; margin-top: 3px; display:inline-block; height:10px; width: 10px;" class="marker-cluster-${severity}"></div><div style="float: left; margin-right: 4pt; margin-left: 2pt;">${severity}</div></div>`;
+    })
+    return container;
+  }
+
+}
+
 @Injectable()
 export class OnmsMapsService {
 
@@ -120,10 +137,10 @@ export class OnmsMapsService {
         let severity = new SeverityInfo();
         let severityArray = [0, 0, 0, 0, 0, 0, 0];
         cluster.getAllChildMarkers().forEach(m => {
-          let s = (<Object>m)['data'] as SeverityInfo;
-          severityArray[s.id - 1]++;
-          if (severity.id < s.id) {
-            severity = s;
+          let s = m['data'] as GeolocationInfo;
+          severityArray[s.severityInfo.id - 1]++;
+          if (severity.id < s.severityInfo.id) {
+            severity = s.severityInfo;
           }
         });
         let svg = this.createSvgElement(severityArray.slice(2, severityArray.length), cluster.getAllChildMarkers().length)
@@ -136,14 +153,15 @@ export class OnmsMapsService {
     });
   }
 
-  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[]) {
+  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[], onClickHandler: Leaflet.EventHandlerFn) {
     markersGroup.clearLayers();
     locations.forEach(location => {
       if (location.coordinates) {
         let icon = this.getIcon(location.severityInfo);
         let latlng = Leaflet.latLng(location.coordinates.latitude, location.coordinates.longitude);
         let marker = Leaflet.marker(latlng, { icon: icon });
-        (<Object>marker)['data'] = location.severityInfo;
+        marker['data'] = location;
+        marker.on('click', onClickHandler);
         markersGroup.addLayer(marker);
       }
     });
@@ -162,7 +180,6 @@ export class OnmsMapsService {
   }
 
   private createSvgElement(dataArray: number[], total: number) : string {
-
     const cx = 20;
     const cy = 20;
     const r = 20;
