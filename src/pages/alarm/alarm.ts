@@ -28,22 +28,14 @@ export class AlarmPage {
     this.navCtrl.push(EventPage, { event: this.alarm.lastEvent });
   }
 
-  onAckAlarm() {
-    this.alarmsService.acknowledgeAlarm(this.alarm)
-      .then((ack: OnmsAck) => {
+  onAckAlarm(acknowledge: boolean) {
+    let promise = acknowledge ? this.alarmsService.acknowledgeAlarm(this.alarm) : this.alarmsService.unacknowledgeAlarm(this.alarm);
+    let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
+    promise.then((ack: OnmsAck) => {
         this.alarm.update(ack);
-        this.toast('Alarm acknowledged!');
+        this.toast(`Alarm ${title}!`);
       })
-      .catch(error => this.alert('Ack Error', error));
-  }
-
-  onUnackAlarm(a) {
-    this.alarmsService.unacknowledgeAlarm(this.alarm)
-      .then((ack: OnmsAck) => {
-        this.alarm.update(ack);
-        this.toast('Alarm unacknowledged!');
-      })
-      .catch(error => this.alert('Unack Error', error));
+      .catch(error => this.alert(`${title} Error`, error));
   }
 
   onClearAlarm() {

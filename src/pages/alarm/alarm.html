@@ -12,13 +12,13 @@
     </ion-card>
     <ion-row>
       <ion-col>
-        <h4><b>UEI</b></h4>
+        <h5><b>UEI</b></h5>
         <p>{{ alarm.uei }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Last Event Time</b></h4>
+        <h5><b>Last Event Time</b></h5>
         <p>{{ alarm.lastEventTime | date:'medium' }}</p>
         <button ion-button block outline icon-left small (click)="onShowEvent()">
           <ion-icon name="see"></ion-icon>Show Last Event
@@ -27,74 +27,67 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Severity</b></h4>
+        <h5><b>Severity</b></h5>
         <p>{{ alarm.severity }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.nodeLabel">
       <ion-col>
-        <h4><b>Node</b></h4>
+        <h5><b>Node</b></h5>
         <p>{{ alarm.nodeLabel }} ({{ alarm.nodeId }})</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.ipAddress">
       <ion-col>
-        <h4><b>IP Address</b></h4>
+        <h5><b>IP Address</b></h5>
         <p>{{ alarm.ipAddress }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.serviceName">
       <ion-col>
-        <h4><b>Service Name</b></h4>
+        <h5><b>Service Name</b></h5>
         <p>{{ alarm.serviceName }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Log Message</b></h4>
+        <h5><b>Log Message</b></h5>
         <p [innerHTML]="alarm.logMessage"></p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Description</b></h4>
+        <h5><b>Description</b></h5>
         <p [innerHTML]="alarm.description"></p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.stickyMemo">
       <ion-col>
-        <h4><b>Sticky Memo</b></h4>
+        <h5><b>Sticky Memo</b></h5>
         <p>{{ alarm.stickyMemo.body }}</p>
         <p>By author {{ alarm.stickyMemo.author }} at {{ alarm.stickyMemo.updated | date:'medium' }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.journalMemo">
       <ion-col>
-        <h4><b>Journal Memo</b></h4>
+        <h5><b>Journal Memo</b></h5>
         <p>{{ alarm.journalMemo.body }}</p>
         <p>By author {{ alarm.journalMemo.author }} at {{ alarm.journalMemo.updated | date:'medium' }}</p>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="alarm.parameters.length > 0">
-      <ion-col>
-        <h4><b>Parameters</b></h4>
-        <ion-grid>
-          <ion-row *ngFor="let parameter of alarm.parameters">
-            <ion-col><b>{{ parameter.name }}</b></ion-col>
-            <ion-col>{{ parameter.value }}</ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-col>
-    </ion-row>
+  </ion-grid>
+  <ion-list *ngIf="alarm.parameters.length > 0">
+    <ion-list-header>Parameters</ion-list-header>
+    <button ion-item detail-none text-wrap [color]="alarm.severity" *ngFor="let parameter of alarm.parameters">
+      <b>{{ parameter.name }}</b>
+      <p>{{ parameter.value }}</p>
+    </button>
+  </ion-list>
+  <ion-grid>
     <ion-row>
-      <ion-col *ngIf="!alarm.isAcknowledged()">
-        <button ion-button block outline icon-left small type="button" (click)="onAckAlarm()">
-          <ion-icon name="happy"></ion-icon>Ack
-        </button>
-      </ion-col>
-      <ion-col *ngIf="alarm.isAcknowledged()">
-        <button ion-button block outline icon-left small type="button" (click)="onUnackAlarm()">
-          <ion-icon name="sad"></ion-icon>Unack
+      <ion-col>
+        <button ion-button block outline icon-left small type="button" (click)="onAckAlarm(!alarm.isAcknowledged())">
+          <ion-icon [name]="alarm.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>{{ alarm.isAcknowledged() ? 'Unack' : 'Ack' }}
         </button>
       </ion-col>
       <ion-col>
@@ -109,4 +102,14 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-fab top right>
+    <button ion-fab mini><ion-icon name="settings"></ion-icon></button>
+    <ion-fab-list>
+      <button ion-fab (click)="onAckAlarm(!alarm.isAcknowledged())">
+        <ion-icon [name]="alarm.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>
+      </button>
+      <button ion-fab><ion-icon name="trash" (click)="onClearAlarm()"></ion-icon></button>
+      <button ion-fab><ion-icon name="flame" (click)="onEscalateAlarm()"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

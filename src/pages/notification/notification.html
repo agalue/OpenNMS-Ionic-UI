@@ -12,19 +12,19 @@
     </ion-card>
     <ion-row>
       <ion-col>
-        <h4><b>Name</b></h4>
+        <h5><b>Name</b></h5>
         <p>{{ notification.name }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>UEI</b></h4>
+        <h5><b>UEI</b></h5>
         <p>{{ notification.uei }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Notification Time</b></h4>
+        <h5><b>Notification Time</b></h5>
         <p>{{ notification.pageTime | date:'medium' }}</p>
         <button ion-button block outline icon-left small (click)="onShowEvent()">
           <ion-icon name="see"></ion-icon>Show Event
@@ -33,31 +33,31 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Severity</b></h4>
+        <h5><b>Severity</b></h5>
         <p>{{ notification.severity }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="notification.nodeLabel">
       <ion-col>
-        <h4><b>Node</b></h4>
+        <h5><b>Node</b></h5>
         <p>{{ notification.nodeLabel }} ({{ notification.nodeId }})</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Subject</b></h4>
+        <h5><b>Subject</b></h5>
         <p [innerHTML]="notification.subject"></p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h4><b>Description</b></h4>
+        <h5><b>Description</b></h5>
         <p [innerHTML]="notification.textMessage"></p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="notification.destinations.length > 0">
       <ion-col>
-        <h4><b>Destinations</b></h4>
+        <h5><b>Destinations</b></h5>
         <ul>
           <li *ngFor="let destination of notification.destinations">
           User {{ destination.userId }} notified using {{ destination.media }} at {{ destination.notifyTime | date:'medium' }}
@@ -66,16 +66,16 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col *ngIf="!notification.isAcknowledged()">
-        <button ion-button block outline icon-left small type="button" (click)="onAckNotification()">
-          <ion-icon name="happy"></ion-icon>Ack
-        </button>
-      </ion-col>
-      <ion-col *ngIf="notification.isAcknowledged()">
-        <button ion-button block outline icon-left small type="button" (click)="onUnackNotification()">
-          <ion-icon name="sad"></ion-icon>Unack
+      <ion-col>
+        <button ion-button block outline icon-left small type="button" (click)="onAckNotification(!notification.isAcknowledged())">
+          <ion-icon [name]="notification.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>{{ notification.isAcknowledged() ? 'Unack' : 'Ack' }}
         </button>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-fab top right>
+    <button ion-fab (click)="onAckNotification(!notification.isAcknowledged())">
+      <ion-icon [name]="notification.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

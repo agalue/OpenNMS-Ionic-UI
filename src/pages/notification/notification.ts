@@ -35,22 +35,14 @@ export class NotificationPage {
       .catch(error => this.alert('Event Error', error));
   }
 
-  onAckNotification() {
-    this.notifyService.acknowledgeNotification(this.notification)
-      .then((ack: OnmsAck) => {
+  onAckNotification(acknowledge: boolean) {
+    let promise = acknowledge ? this.notifyService.acknowledgeNotification(this.notification) : this.notifyService.unacknowledgeNotification(this.notification);
+    let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
+    promise.then((ack: OnmsAck) => {
         this.notification.update(ack);
-        this.toast('Notification acknowledged!');
+        this.toast(`Notification ${title}!`);
       })
-      .catch(error => this.alert('Ack Error', error));
-  }
-
-  onUnackNotification(a) {
-    this.notifyService.unacknowledgeNotification(this.notification)
-      .then((ack: OnmsAck) => {
-        this.notification.update(ack);
-        this.toast('Notification unacknowledged!');
-      })
-      .catch(error => this.alert('Unack Error', error));
+      .catch(error => this.alert(`${title} Error`, error));
   }
 
   private toast(message: string) {
