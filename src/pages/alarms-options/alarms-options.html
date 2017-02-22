@@ -1,0 +1,13 @@
+<ion-content no-padding>
+  <ion-list>
+    <ion-list-header>Options</ion-list-header>
+    <ion-item>
+      <ion-label stacked>Show Acked?</ion-label>
+      <ion-toggle [(ngModel)]='options.showAcknowledged' (ionChange)="onOptionChange()"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked>Newest First?</ion-label>
+      <ion-toggle [(ngModel)]='options.newestFirst' (ionChange)="onOptionChange()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -4,7 +4,7 @@ import { Response } from '@angular/http';
 import { OnmsAlarm } from '../models/onms-alarm';
 import { OnmsAlarmStats } from '../models/onms-alarm-stats';
 import { OnmsAck } from '../models/onms-ack';
-import { OnmsApiFilter } from '../models/onms-api-filter';
+import { OnmsApiFilter, AlarmOptions } from '../models/onms-api-filter';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -12,14 +12,14 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsAlarmsService {
 
-  alarmsPerPage: number = 20;
-
   constructor(private http: HttpService) {}
 
-  getAlarms(start: number = 0, filters: OnmsApiFilter[] = [], limit: number = this.alarmsPerPage) : Promise<OnmsAlarm[]> {
-    let url = `/rest/alarms?order=desc&orderBy=lastEventTime&offset=${start}&limit=${limit}`;
+  getAlarms(start: number = 0, options: AlarmOptions, filters: OnmsApiFilter[] = []) : Promise<OnmsAlarm[]> {
+    let order = options.newestFirst ? 'desc' : 'asc';
+    let url = `/rest/alarms?order=${order}&orderBy=lastEventTime&offset=${start}&limit=${options.limit}`;
+    filters.push(new OnmsApiFilter('alarmAckUser', options.showAcknowledged ? 'notnull' : 'null'));
     if (filters.length > 0) {
-      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`;
+      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`
     }
     return this.http.get(url)
       .map((response: Response) =>  OnmsAlarm.importAlarms(response.json().alarm))

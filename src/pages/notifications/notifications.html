@@ -5,6 +5,11 @@
         <ion-icon name="menu"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onShowOptions($event)">
+        <ion-icon name="options"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>Notifications</ion-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchNotifications($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>

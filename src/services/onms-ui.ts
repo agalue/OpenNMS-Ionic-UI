@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { OnmsEvent } from '../models/onms-event';
 import { OnmsAlarm } from '../models/onms-alarm';
 import { OnmsOutage } from '../models/onms-outage';
+import { OnmsNotification } from '../models/onms-notification';
 import { OnmsSeverities } from '../models/onms-severities';
 
 @Injectable()
@@ -37,6 +38,19 @@ export class OnmsUIService {
 
   getAlarmIcon(alarm: OnmsAlarm) {
     const index = OnmsSeverities.getIndex(alarm.severity);
+    if (index > 5)
+      return 'flame';
+    if (index > 3)
+      return 'warning';
+    return 'alert';
+  }
+
+  getNotificationIconColor(notification: OnmsNotification) {
+    return notification.severity + '_';
+  }
+
+  getNotificationIcon(notification: OnmsNotification) {
+    const index = notification.getSeverityIndex();
     if (index > 5)
       return 'flame';
     if (index > 3)

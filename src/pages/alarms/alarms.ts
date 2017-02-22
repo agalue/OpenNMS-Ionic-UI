@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, AlertController, PopoverController } from 'ionic-angular';
 
 import { AlarmPage } from '../alarm/alarm';
+import { AlarmsOptionsPage } from '../alarms-options/alarms-options';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsAlarm } from '../../models/onms-alarm';
-import { OnmsApiFilter } from '../../models/onms-api-filter';
+import { OnmsApiFilter, AlarmOptions } from '../../models/onms-api-filter';
 import { OnmsUIService } from '../../services/onms-ui';
 import { OnmsAlarmsService } from '../../services/onms-alarms';
 
@@ -17,6 +18,11 @@ export class AlarmsPage {
   noAlarms = false;
   alarms: OnmsAlarm[] = [];
   alarmFilter: string;
+  options: AlarmOptions = {
+    limit: 20,
+    newestFirst: false,
+    showAcknowledged: false
+  };
 
   private start: number = 0;
 
@@ -25,6 +31,7 @@ export class AlarmsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
+    private popoverCtrl: PopoverController,
     private uiService: OnmsUIService,
     private alarmsService: OnmsAlarmsService
   ) {}
@@ -52,7 +59,21 @@ export class AlarmsPage {
         if (showLoading) loading.dismiss();
         this.noAlarms = this.alarms.length == 0
       })
-      .catch(() => loading.dismiss());
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Load Error', error);
+      });
+  }
+
+  onShowOptions(event: any) {
+    let popover = this.popoverCtrl.create(AlarmsOptionsPage, {
+      options: this.options,
+      onChange: (options:AlarmOptions) => {
+        this.options = options;
+        this.onUpdate();
+      }
+    });
+    popover.present({ ev: event });
   }
 
   onShowAlarm(alarm: OnmsAlarm) {
@@ -109,10 +130,12 @@ export class AlarmsPage {
 
   onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadAlarms().then((canScroll: boolean) => {
-      infiniteScroll.complete();
-      infiniteScroll.enable(canScroll);
-    });
+    this.loadAlarms()
+      .then((canScroll: boolean) => {
+        infiniteScroll.complete();
+        infiniteScroll.enable(canScroll);
+      })
+      .catch(error => this.alert('Load Error', error));
   }
 
   formatUei(uei: string) {
@@ -128,14 +151,14 @@ export class AlarmsPage {
   }
 
   private loadAlarms() : Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const filter = new OnmsApiFilter('description', this.alarmFilter);
-      this.alarmsService.getAlarms(this.start, [filter])
+      this.alarmsService.getAlarms(this.start, this.options, [filter])
         .then((alarms: OnmsAlarm[]) => {
           alarms.forEach(e => this.alarms.push(e));
           resolve(alarms.length > 0);
         })
-        .catch(error => this.alert('Load Error', error))
+        .catch(error => reject(error))
     });
   }
 

@@ -91,7 +91,7 @@ export class OnmsMapsService {
     tap: true,
     touchZoom: true,
     doubleClickZoom: true,
-    zoomControl: true,
+    zoomControl: false,
     dragging: true,
     attributionControl: false
   };

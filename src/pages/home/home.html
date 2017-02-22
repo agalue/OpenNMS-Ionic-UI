@@ -28,6 +28,7 @@
   </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'Availability'">
+      <br>
       <ion-grid *ngFor="let section of sections">
         <ion-row>
           <ion-col width-50><b>{{ section.name }}</b></ion-col>
@@ -42,6 +43,7 @@
       </ion-grid>
     </div>
     <div *ngSwitchCase="'Alarms'">
+      <br>
       <ion-grid>
         <ion-row>
           <ion-col><b>Severity</b></ion-col>
@@ -58,6 +60,7 @@
       </ion-grid>
     </div>
     <div *ngSwitchCase="'Outages'">
+      <br>
       <ion-grid>
         <ion-row>
           <ion-col><b>Node</b></ion-col>

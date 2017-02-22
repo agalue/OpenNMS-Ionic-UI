@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 
 import { OnmsNotification } from '../models/onms-notification';
 import { OnmsAck } from '../models/onms-ack';
+import { OnmsApiFilter, AlarmOptions } from '../models/onms-api-filter';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -10,14 +11,14 @@ import 'rxjs/Rx';
 @Injectable()
 export class OnmsNotificationsService {
 
-  notificationsPerPage: number = 20;
-
   constructor(private http: HttpService) {}
 
-  getNotifications(start: number = 0, filter: string = null) : Promise<OnmsNotification[]> {
-    let url = `/rest/notifications?order=desc&orderBy=id&offset=${start}&limit=${this.notificationsPerPage}`;
-    if (filter) {
-      url += `&comparator=ilike&textMessage=%25${filter}%25`;
+  getNotifications(start: number = 0, options: AlarmOptions, filters: OnmsApiFilter[] = []) : Promise<OnmsNotification[]> {
+    let order = options.newestFirst ? 'desc' : 'asc';
+    let url = `/rest/notifications?order=${order}&orderBy=notifyId&offset=${start}&limit=${options.limit}`;
+    filters.push(new OnmsApiFilter('answeredBy', options.showAcknowledged ? 'notnull' : 'null'));
+    if (filters.length > 0) {
+      url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`
     }
     return this.http.get(url)
       .map((response: Response) => OnmsNotification.importNotifications(response.json().notification))

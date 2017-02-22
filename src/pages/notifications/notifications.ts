@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, AlertController, PopoverController } from 'ionic-angular';
 
 import { NotificationPage } from '../notification/notification';
+import { AlarmsOptionsPage } from '../alarms-options/alarms-options';
 import { OnmsAck } from '../../models/onms-ack';
 import { OnmsNotification } from '../../models/onms-notification';
+import { OnmsApiFilter, AlarmOptions } from '../../models/onms-api-filter';
+import { OnmsUIService } from '../../services/onms-ui';
 import { OnmsNotificationsService } from '../../services/onms-notifications';
 
 @Component({
@@ -15,6 +18,11 @@ export class NotificationsPage {
   noNotifications = false;
   notifications: OnmsNotification[] = [];
   notificationFilter: string;
+  options: AlarmOptions = {
+    limit: 20,
+    newestFirst: false,
+    showAcknowledged: false
+  };
 
   private start: number = 0;
 
@@ -23,6 +31,8 @@ export class NotificationsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
+    private popoverCtrl: PopoverController,
+    private uiService: OnmsUIService,
     private notifyService: OnmsNotificationsService
   ) {}
 
@@ -49,7 +59,21 @@ export class NotificationsPage {
         if (showLoading) loading.dismiss();
         this.noNotifications = this.notifications.length == 0
       })
-      .catch(() => loading.dismiss());
+      .catch(error => {
+        if (showLoading) loading.dismiss();
+        this.alert('Load Error', error);
+      });
+  }
+
+  onShowOptions(event: any) {
+    let popover = this.popoverCtrl.create(AlarmsOptionsPage, {
+      options: this.options,
+      onChange: (options:AlarmOptions) => {
+        this.options = options;
+        this.onUpdate();
+      }
+    });
+    popover.present({ ev: event });
   }
 
   onShowNotification(notification: OnmsNotification) {
@@ -88,39 +112,35 @@ export class NotificationsPage {
 
   onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadNotifications().then((canScroll: boolean) => {
-      infiniteScroll.complete();
-      infiniteScroll.enable(canScroll);
-    });
+    this.loadNotifications()
+      .then((canScroll: boolean) => {
+        infiniteScroll.complete();
+        infiniteScroll.enable(canScroll);
+      })
+      .catch(error => this.alert('Load Error', error));
   }
 
   formatUei(uei: string) {
-    let ret: string = uei.replace(/^.*\//g, '');
-    ret = ret.search(/_/) == -1 ? ret.replace(/([A-Z])/g, ' $1') : ret.replace('_', ' ');
-    return ret.charAt(0).toUpperCase() + ret.slice(1);
+    return this.uiService.getFormattedUei(uei);
   }
 
   getIconColor(notification: OnmsNotification) {
-    return notification.severity + '_';
+    return this.uiService.getNotificationIconColor(notification);
   }
 
   getIcon(notification: OnmsNotification) {
-    const index = notification.getSeverityIndex();
-    if (index > 5)
-      return 'flame';
-    if (index > 3)
-      return 'warning';
-    return 'alert';
+    return this.uiService.getNotificationIcon(notification);
   }
 
   private loadNotifications() : Promise<boolean> {
-    return new Promise(resolve => {
-      this.notifyService.getNotifications(this.start, this.notificationFilter)
+    return new Promise((resolve, reject) => {
+      const filter = new OnmsApiFilter('textMessage', this.notificationFilter);
+      this.notifyService.getNotifications(this.start, this.options, [filter])
         .then((notifications: OnmsNotification[]) => {
           notifications.forEach(n => this.notifications.push(n));
           resolve(notifications.length > 0);
         })
-        .catch(error => this.alert('Load Error', error))
+        .catch(error => reject(error))
     });
   }
 

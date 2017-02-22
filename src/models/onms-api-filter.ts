@@ -1,3 +1,10 @@
+export interface AlarmOptions {
+
+  limit: number;
+  newestFirst: boolean;
+  showAcknowledged: boolean;
+}
+
 export class OnmsApiFilter {
 
   constructor(
@@ -6,7 +13,7 @@ export class OnmsApiFilter {
   ) {}
 
   encode() {
-    const v = this.value == 'null' ? this.value : `%25${this.value}%25`;
+    const v = this.value == 'null' || this.value == 'notnull' ? this.value : `%25${this.value}%25`;
     return `${this.key}=${v}`;
   }
 

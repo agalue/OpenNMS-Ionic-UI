@@ -1,5 +1,6 @@
 import { OnmsEvent } from './onms-event';
 import { OnmsAck } from './onms-ack';
+import { OnmsAlarmMemo } from './alarm-memo';
 import { OnmsParameter } from './onms-parameter';
 import { OnmsSeverities } from './onms-severities';
 
@@ -25,6 +26,8 @@ export class OnmsAlarm {
     public ackTime: number;
     public ackUser: string;
     public ifIndex: number;
+    public stickyMemo: OnmsAlarmMemo;
+    public journalMemo: OnmsAlarmMemo;
     public parameters: OnmsParameter[] = [];
 
     static importAlarm(rawAlarm: Object): OnmsAlarm {
@@ -34,6 +37,8 @@ export class OnmsAlarm {
         alarm.serviceName = rawAlarm['serviceType'] ? rawAlarm['serviceType']['name'] : null;
         alarm.parameters = OnmsParameter.importParameters(rawAlarm['parameters']);
         alarm.severity = OnmsSeverities.capitalize(rawAlarm['severity']);
+        if (rawAlarm['stickyMemo']) alarm.stickyMemo = Object.assign(new OnmsAlarmMemo(), rawAlarm['stickyMemo']);
+        if (rawAlarm['reductionKeyMemo']) alarm.journalMemo = Object.assign(new OnmsAlarmMemo(), rawAlarm['reductionKeyMemo']);
         return alarm;
     }
 

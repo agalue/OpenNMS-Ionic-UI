@@ -15,6 +15,7 @@ import { HomePage } from '../pages/home/home';
 import { EventsPage } from '../pages/events/events';
 import { EventPage } from '../pages/event/event';
 import { AlarmsPage } from '../pages/alarms/alarms';
+import { AlarmsOptionsPage } from '../pages/alarms-options/alarms-options';
 import { AlarmPage } from '../pages/alarm/alarm';
 import { OutagesPage } from '../pages/outages/outages';
 import { OutagePage } from '../pages/outage/outage';
@@ -65,6 +66,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     EventsPage,
     EventPage,
     AlarmsPage,
+    AlarmsOptionsPage,
     AlarmPage,
     OutagesPage,
     OutagePage,
@@ -100,6 +102,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     EventsPage,
     EventPage,
     AlarmsPage,
+    AlarmsOptionsPage,
     AlarmPage,
     OutagesPage,
     OutagePage,
