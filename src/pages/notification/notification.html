@@ -12,52 +12,58 @@
     </ion-card>
     <ion-row>
       <ion-col>
-        <h5><b>Name</b></h5>
+        <h5>ID</h5>
+        <p>{{ notification.id }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h5>Name</h5>
         <p>{{ notification.name }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>UEI</b></h5>
+        <h5>Severity</h5>
+        <p>{{ notification.severity }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h5>UEI</h5>
         <p>{{ notification.uei }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Notification Time</b></h5>
+        <h5>Notification Time</h5>
         <p>{{ notification.pageTime | date:'medium' }}</p>
         <button ion-button block outline icon-left small (click)="onShowEvent()">
           <ion-icon name="see"></ion-icon>Show Event
         </button>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <h5><b>Severity</b></h5>
-        <p>{{ notification.severity }}</p>
-      </ion-col>
-    </ion-row>
     <ion-row *ngIf="notification.nodeLabel">
       <ion-col>
-        <h5><b>Node</b></h5>
+        <h5>Node</h5>
         <p>{{ notification.nodeLabel }} ({{ notification.nodeId }})</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Subject</b></h5>
+        <h5>Subject</h5>
         <p [innerHTML]="notification.subject"></p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Description</b></h5>
+        <h5>Description</h5>
         <p [innerHTML]="notification.textMessage"></p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="notification.destinations.length > 0">
       <ion-col>
-        <h5><b>Destinations</b></h5>
+        <h5>Destinations</h5>
         <ul>
           <li *ngFor="let destination of notification.destinations">
           User {{ destination.userId }} notified using {{ destination.media }} at {{ destination.notifyTime | date:'medium' }}

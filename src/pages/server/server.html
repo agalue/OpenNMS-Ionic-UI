@@ -5,34 +5,43 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-card *ngIf="mode == 'Edit'">
+    <ion-card-content>
+      <ion-icon item-left name="desktop"></ion-icon>
+      <ion-grid>
+        <ion-row>
+          <ion-col><b>Type</b></ion-col><ion-col>{{ server.type }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Version</b></ion-col><ion-col>{{ server.version }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Default</b></ion-col><ion-col>{{ server.isDefault ? 'Yes' : 'No' }}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
   <form [formGroup]="serverForm">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-list>
-          <ion-item>
-            <ion-label stacked>Name</ion-label>
-            <ion-input type="text" formControlName="name" placeholder="Ex. Demo"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label stacked>Server URL</ion-label>
-            <ion-input type="url" formControlName="url" placeholder="Ex. https://demo.opennms.org/opennms"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label stacked>Username</ion-label>
-            <ion-input type="text" formControlName="username" placeholder="Ex. demo"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label stacked>Password</ion-label>
-            <ion-input type="password" formControlName="password" placeholder="Ex. demo"></ion-input>
-          </ion-item>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>Name</ion-label>
+        <ion-input type="text" formControlName="name" placeholder="Ex. Demo"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Server URL</ion-label>
+        <ion-input type="url" formControlName="url" placeholder="Ex. https://demo.opennms.org/opennms"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Username</ion-label>
+        <ion-input type="text" formControlName="username" placeholder="Ex. demo"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Password</ion-label>
+        <ion-input type="password" formControlName="password" placeholder="Ex. demo"></ion-input>
+      </ion-item>
+    </ion-list>
   </form>
 </ion-content>
-
 <ion-footer>
   <ion-toolbar>
     <ion-buttons start>

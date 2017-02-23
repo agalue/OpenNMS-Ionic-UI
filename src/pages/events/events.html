@@ -17,16 +17,17 @@
 
 <ion-content no-padding>
   <ion-grid *ngIf="noEvents">
-    <ion-row>
+    <ion-row padding>
       <ion-col>
-        <h2>There are no events, please try again later...</h2>
+        <p>There are no events, please try again later...</p>
       </ion-col>
     </ion-row>
   </ion-grid>
   <ion-list [virtualScroll]="events">
     <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
       <h2>{{ formatUei(event.uei) }}</h2>
-      <div class="event-time">{{ event.time | date:'medium' }}</div>
+      <div class="event-time" *ngIf="event.nodeLabel">for {{ event.nodeLabel }}</div>
+      <div class="event-time">At {{ event.time | date:'medium' }}; ID: {{ event.id }}</div>
       <br>
       <div class="event-message" [innerHTML]="event.logMessage"></div>
       <ion-icon item-left [name]="getIcon(event)" [color]="getIconColor(event)"></ion-icon>

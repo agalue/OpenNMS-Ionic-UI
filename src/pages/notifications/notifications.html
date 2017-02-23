@@ -25,9 +25,9 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-grid *ngIf="noNotifications">
-    <ion-row>
+    <ion-row padding>
       <ion-col>
-        <h2>There are no notifications, make sure they are enabled and try again later...</h2>
+        <p>There are no notifications, make sure they are enabled and try again later...</p>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -42,8 +42,9 @@
         <ion-icon item-left [name]="getIcon(notification)" [color]="getIconColor(notification)"></ion-icon>
       </button>
       <ion-item-options>
-        <button ion-button expandable color="Normal_" (click)="onAckNotification(notification)"   *ngIf="!notification.isAcknowledged()">Ack</button>
-        <button ion-button expandable color="Normal_" (click)="onUnackNotification(notification)" *ngIf="notification.isAcknowledged()">Unack</button>
+        <button ion-button expandable [color]="notification.isAcknowledged() ? 'Warning_' : 'Normal_'" (click)="onAckNotification(notification)">
+          <ion-icon [name]="notification.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>
+        </button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

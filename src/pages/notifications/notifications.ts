@@ -93,21 +93,14 @@ export class NotificationsPage {
   }
 
   onAckNotification(notification: OnmsNotification) {
-    this.notifyService.acknowledgeNotification(notification)
-      .then((ack: OnmsAck) => {
+    const acknowledge = ! notification.isAcknowledged();
+    let promise = acknowledge ? this.notifyService.acknowledgeNotification(notification) : this.notifyService.unacknowledgeNotification(notification);
+    let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
+    promise.then((ack: OnmsAck) => {
         notification.update(ack);
-        this.toast('Notification acknowledged!');
+        this.toast(`Notification ${title}!`);
       })
-      .catch(error => this.alert('Ack Error', error));
-  }
-
-  onUnackNotification(notification: OnmsNotification) {
-    this.notifyService.unacknowledgeNotification(notification)
-      .then((ack: OnmsAck) => {
-        notification.update(ack);
-        this.toast('Notification unacknowledged!');
-      })
-      .catch(error => this.alert('Unack Error', error));
+      .catch(error => this.alert(`${title} Error`, error));
   }
 
   onInfiniteScroll(infiniteScroll: any) {

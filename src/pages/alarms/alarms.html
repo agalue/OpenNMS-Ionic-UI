@@ -25,9 +25,9 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-grid *ngIf="noAlarms">
-    <ion-row>
+    <ion-row padding>
       <ion-col>
-        <h2>There are no alarms, please try again later...</h2>
+        <p>There are no alarms, please try again later...</p>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -35,18 +35,22 @@
     <ion-item-sliding *virtualItem="let alarm">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
         <h2>{{ formatUei(alarm.uei) }}</h2>
-        <div class="event-time">{{ alarm.nodeLabel ? ' for ' + alarm.nodeLabel : ''}}</div>
-        <div class="event-time">generated at {{ alarm.lastEventTime | date:'medium' }}</div>
+        <div class="event-time" *ngIf="alarm.nodeLabel">for {{ alarm.nodeLabel }}</div>
+        <div class="event-time">at {{ alarm.lastEventTime | date:'medium' }}; ID:{{ alarm.id}}</div>
         <div class="event-time" *ngIf="alarm.isAcknowledged()">acknowledged by {{ alarm.ackUser }} at {{ alarm.ackTime | date:'medium' }}</div>
         <br>
         <div class="event-message">{{ alarm.logMessage }}</div>
         <ion-icon item-left [name]="getIcon(alarm)" [color]="getIconColor(alarm)"></ion-icon>
+        <ion-badge item-right>{{ alarm.count }}</ion-badge>
       </button>
       <ion-item-options>
-        <button ion-button expandable color="Normal_"   (click)="onAckAlarm(alarm)"   *ngIf="!alarm.isAcknowledged()">Ack</button>
-        <button ion-button expandable color="Normal_"   (click)="onUnackAlarm(alarm)" *ngIf="alarm.isAcknowledged()">Unack</button>
-        <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">Clear</button>
-        <button ion-button expandable color="Critical_" (click)="onEscalateAlarm(alarm)">Escalate</button>
+        <button ion-button expandable (click)="onAckAlarm(alarm)" [color]="alarm.isAcknowledged() ? '_Warning' : '_Normal'">
+          <ion-icon [name]="alarm.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>{{ alarm.isAcknowledged() ? 'Unack' : 'Ack' }}
+        </button>
+        <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">
+          <ion-icon name="trash"></ion-icon>Clear</button>
+        <button ion-button expandable color="Critical_" (click)="onEscalateAlarm(alarm)">
+          <ion-icon name="flash"></ion-icon>Esc</button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

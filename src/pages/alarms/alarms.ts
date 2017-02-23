@@ -93,21 +93,14 @@ export class AlarmsPage {
   }
 
   onAckAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.acknowledgeAlarm(alarm)
-      .then((ack: OnmsAck) => {
+    const acknowledge = ! alarm.isAcknowledged();
+    let promise = acknowledge ? this.alarmsService.acknowledgeAlarm(alarm) : this.alarmsService.unacknowledgeAlarm(alarm);
+    let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
+    promise.then((ack: OnmsAck) => {
         alarm.update(ack);
-        this.toast('Alarm acknowledged!');
+        this.toast(`Alarm ${title}!`);
       })
-      .catch(error => this.alert('Ack Error', error));
-  }
-
-  onUnackAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.unacknowledgeAlarm(alarm)
-      .then((ack: OnmsAck) => {
-        alarm.update(ack);
-        this.toast('Alarm unacknowledged!');
-      })
-      .catch(error => this.alert('Unack Error', error));
+      .catch(error => this.alert(`${title} Error`, error));
   }
 
   onClearAlarm(alarm: OnmsAlarm) {

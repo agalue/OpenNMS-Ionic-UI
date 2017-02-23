@@ -6,28 +6,35 @@
 
 <ion-content [class]="getIconColor()" padding>
   <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h5>ID</h5>
+        <p>{{ outage.id }}</p>
+      </ion-col>
+    </ion-row>
     <ion-row *ngIf="outage.nodeLabel">
       <ion-col>
-        <h5><b>Node</b></h5>
+        <h5>Node</h5>
         <p>{{ outage.nodeLabel }} ({{ outage.nodeId }})</p>
         <p *ngIf="outage.foreignSource">{{ outage.foreignId }} @ {{ outage.foreignSource }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="outage.ipAddress">
       <ion-col>
-        <h5><b>IP Address</b></h5>
+        <h5>IP Address</h5>
         <p>{{ outage.ipAddress }}</p>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="outage.serviceName">
       <ion-col>
-        <h5><b>Service Name</b></h5>
+        <h5>Service Name</h5>
         <p>{{ outage.serviceName }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Lost Event</b></h5>
+        <h5>Lost Event</h5>
+        <p>{{ outage.serviceLostEvent.uei }}</p>
         <p>{{ outage.ifLostService | date:'medium' }}</p>
         <button ion-button block outline icon-left small (click)="onShowLostEvent()">
           <ion-icon name="see"></ion-icon>Show Lost Event
@@ -36,7 +43,8 @@
     </ion-row>
     <ion-row *ngIf="outage.ifRegainedService">
       <ion-col>
-        <h5><b>Regained Event</b></h5>
+        <h5>Regained Event</h5>
+        <p>{{ outage.serviceRegainedEvent.uei }}</p>
         <p>{{ outage.ifRegainedService | date:'medium' }}</p>
         <button ion-button block outline icon-left small (click)="onShowRegainedEvent()">
           <ion-icon name="see"></ion-icon>Show Regained Event

@@ -7,56 +7,54 @@
 <ion-content [class]="event.severity" padding>
   <ion-grid>
     <ion-row>
+      <ion-col><b>ID</b></ion-col>
+      <ion-col width-67>{{ event.id }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Severity</b></ion-col>
+      <ion-col width-67>{{ event.severity }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Time</b></ion-col>
+      <ion-col width-67>{{ event.time | date:'medium' }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col><b>Created</b></ion-col>
+      <ion-col width-67>{{ event.createTime | date:'medium' }}</ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.nodeLabel">
+      <ion-col><b>Node Label</b></ion-col>
+      <ion-col width-67>{{ event.nodeLabel }}</ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.nodeId">
+      <ion-col><b>Node ID</b></ion-col>
+      <ion-col width-67>{{ event.nodeId }}</ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.ipAddress">
+      <ion-col><b>IP Address</b></ion-col>
+      <ion-col width-67>{{ event.ipAddress }}</ion-col>
+    </ion-row>
+    <ion-row *ngIf="event.serviceName">
+      <ion-col><b>Service</b></ion-col>
+      <ion-col width-67>{{ event.serviceName }}</ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
       <ion-col>
-        <h5><b>UEI</b></h5>
+        <h5>UEI</h5>
         <p>{{ event.uei }}</p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Event Time</b></h5>
-        <p>{{ event.time | date:'medium' }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <h5><b>Event Create Time</b></h5>
-        <p>{{ event.createTime | date:'medium' }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <h5><b>Severity</b></h5>
-        <p>{{ event.severity }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="event.nodeLabel">
-      <ion-col>
-        <h5><b>Node</b></h5>
-        <p>{{ event.nodeLabel }} ({{ event.nodeId }})</p>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="event.ipAddress">
-      <ion-col>
-        <h5><b>IP Address</b></h5>
-        <p>{{ event.ipAddress }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="event.serviceName">
-      <ion-col>
-        <h5><b>Service Name</b></h5>
-        <p>{{ event.serviceName }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <h5><b>Log Message</b></h5>
+        <h5>Log Message</h5>
         <p [innerHTML]="event.logMessage"></p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5><b>Description</b></h5>
+        <h5>Description</h5>
         <p [innerHTML]="event.description"></p>
       </ion-col>
     </ion-row>
@@ -64,7 +62,7 @@
   <ion-list *ngIf="event.parameters.length > 0">
     <ion-list-header>Parameters</ion-list-header>
     <button ion-item detail-none text-wrap [color]="event.severity" *ngFor="let parameter of event.parameters">
-      <b>{{ parameter.name }}</b>
+      <p><b>{{ parameter.name }}</b></p>
       <p>{{ parameter.value }}</p>
     </button>
   </ion-list>
