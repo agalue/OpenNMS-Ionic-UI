@@ -10,7 +10,7 @@
         <ion-icon name="options"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title>Alarms</ion-title>
+    <onms-title title='Alarms'></onms-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchAlarms($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
@@ -24,13 +24,12 @@
       refreshingText="Reloading alarms...">
     </ion-refresher-content>
   </ion-refresher>
-  <ion-grid *ngIf="noAlarms">
-    <ion-row padding>
-      <ion-col>
-        <p>There are no alarms, please try again later...</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list paading no-lines *ngIf="noAlarms">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>There are no alarms, please try again later...</p>
+    </ion-item>
+  </ion-list>
   <ion-list [virtualScroll]="alarms" [approxItemHeight]="'100px'">
     <ion-item-sliding *virtualItem="let alarm">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">

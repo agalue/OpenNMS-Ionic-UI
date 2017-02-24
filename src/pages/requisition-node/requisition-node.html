@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{ node.nodeLabel }}</ion-title>
+    <ion-title>{{ isNew ? 'New Node' : node.nodeLabel }}</ion-title>
     <ion-buttons end>
       <button ion-button icon-left color="danger" (click)="onSave()" *ngIf="form.valid && form.dirty">
         <ion-icon name="cloud-upload"></ion-icon>

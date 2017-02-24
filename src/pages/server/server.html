@@ -6,19 +6,23 @@
 
 <ion-content padding>
   <ion-card *ngIf="mode == 'Edit'">
-    <ion-card-content>
-      <ion-icon item-left name="desktop"></ion-icon>
-      <ion-grid>
-        <ion-row>
-          <ion-col><b>Type</b></ion-col><ion-col>{{ server.type }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col><b>Version</b></ion-col><ion-col>{{ server.version }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col><b>Default</b></ion-col><ion-col>{{ server.isDefault ? 'Yes' : 'No' }}</ion-col>
-        </ion-row>
-      </ion-grid>
+    <ion-card-content no-padding>
+      <ion-list no-lines>
+        <ion-item color="Normal">
+          <ion-icon item-left name="desktop"></ion-icon>
+          <ion-grid>
+            <ion-row>
+              <ion-col><b>Type</b></ion-col><ion-col>{{ server.type }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Version</b></ion-col><ion-col>{{ server.version }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Default</b></ion-col><ion-col>{{ server.isDefault ? 'Yes' : 'No' }}</ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
   <form [formGroup]="serverForm">

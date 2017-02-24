@@ -3,12 +3,18 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Nodes</ion-title>
+    <onms-title title='Nodes'></onms-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchNodes($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
 
 <ion-content no-padding>
+  <ion-list paading no-lines *ngIf="nodes.length == 0">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>Use the search bar and start typing part of the node's label to find your nodes...</p>
+    </ion-item>
+  </ion-list>
   <ion-list [virtualScroll]="nodes">
     <button ion-item *virtualItem="let node" (click)="onShowNode(node)">
       <h2>{{ node.label }}</h2>

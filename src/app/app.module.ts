@@ -8,6 +8,8 @@ import { ClassNamePipe } from '../pipes/class-name';
 import { RequisitionFilterPipe } from '../pipes/req-filter';
 import { RequisitionNodeFilterPipe } from '../pipes/req-node-filter';
 
+import { OnmsTitleComponent } from '../components/title';
+
 import { SetupPage } from '../pages/setup/setup';
 import { ServersPage } from '../pages/servers/servers';
 import { ServerPage } from '../pages/server/server';
@@ -59,6 +61,8 @@ import { OnmsMapsService } from '../services/onms-maps';
     ClassNamePipe,
     RequisitionFilterPipe,
     RequisitionNodeFilterPipe,
+    // Components
+    OnmsTitleComponent,
     // Pages
     MyApp,
     SetupPage,

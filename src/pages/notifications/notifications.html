@@ -10,7 +10,7 @@
         <ion-icon name="options"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title>Notifications</ion-title>
+    <onms-title title='Notifications'></onms-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchNotifications($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
@@ -24,13 +24,12 @@
       refreshingText="Reloading notifications...">
     </ion-refresher-content>
   </ion-refresher>
-  <ion-grid *ngIf="noNotifications">
-    <ion-row padding>
-      <ion-col>
-        <p>There are no notifications, make sure they are enabled and try again later...</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list paading no-lines *ngIf="noNotifications">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>There are no notifications, make sure they are enabled and try again later...</p>
+    </ion-item>
+  </ion-list>
   <ion-list [virtualScroll]="notifications" [approxItemHeight]="'90px'">
     <ion-item-sliding *virtualItem="let notification">
       <button ion-item text-wrap [color]="notification.severity" (click)="onShowNotification(notification)">

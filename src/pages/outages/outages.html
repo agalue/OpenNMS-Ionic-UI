@@ -10,19 +10,18 @@
         <ion-icon name="refresh"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title>Outages</ion-title>
+    <onms-title title='Outages'></onms-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchOutages($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content no-padding>
-  <ion-grid *ngIf="noOutages">
-    <ion-row padding>
-      <ion-col>
-        <p>There are no outages, please try again later...</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list paading no-lines *ngIf="noOutages">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>There are no outages, please try again later...</p>
+    </ion-item>
+  </ion-list>
   <ion-list [virtualScroll]="outages" [approxItemHeight]="'65px'">
     <button ion-item text-wrap [color]="getIconColor(outage)" *virtualItem="let outage" (click)="onShowOutage(outage)">
       <h2>{{ outage.nodeLabel }}</h2>

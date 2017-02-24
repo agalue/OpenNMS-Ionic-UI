@@ -9,20 +9,19 @@
       <button ion-button icon-only (click)="onShowOptions()">
         <ion-icon name="settings"></ion-icon>
       </button>
-    </ion-buttons>    
-    <ion-title>Requisitions</ion-title>
+    </ion-buttons>
+    <onms-title title='Requisitions'></onms-title>
   </ion-navbar>
   <ion-searchbar [(ngModel)]="searchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content padding>
-  <ion-grid *ngIf="noRequisitions">
-    <ion-row>
-      <ion-col>
-        <h2>There are no requisitions, please try again later...</h2>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list paading no-lines *ngIf="noRequisitions">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>There are no requisitions, please try again later..</p>
+    </ion-item>
+  </ion-list>
   <ion-list>
     <ion-item-sliding *ngFor="let requisition of (requisitions | reqFilter:searchKeyword)">
       <button ion-item (click)="onShowRequisition(requisition)">

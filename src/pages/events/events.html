@@ -10,19 +10,18 @@
         <ion-icon name="refresh"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title>Events</ion-title>
+    <onms-title title='Events'></onms-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="onSearchEvents($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
 </ion-header>
 
 <ion-content no-padding>
-  <ion-grid *ngIf="noEvents">
-    <ion-row padding>
-      <ion-col>
-        <p>There are no events, please try again later...</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list paading no-lines *ngIf="noEvents">
+    <ion-item text-wrap>
+      <ion-icon item-left name='information-circle'></ion-icon>
+      <p>There are no events, please try again later...</p>
+    </ion-item>
+  </ion-list>
   <ion-list [virtualScroll]="events" [approxItemHeight]="'100px'">
     <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
       <h2>{{ formatUei(event.uei) }}</h2>
