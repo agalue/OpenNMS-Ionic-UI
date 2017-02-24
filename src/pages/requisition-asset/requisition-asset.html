@@ -30,15 +30,15 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons start>
-      <button ion-button icon-right type="button" (click)="onCancel()">
-        Cancel
+      <button ion-button icon-left type="button" (click)="onCancel()">
         <ion-icon name="close"></ion-icon>
+        Cancel
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button icon-right type="button" (click)="onSave()" [disabled]="!form.valid">
-        Save
+      <button ion-button icon-left type="button" (click)="onSave()" [disabled]="!form.valid">
         <ion-icon name="cloud-upload"></ion-icon>
+        Save
       </button>
     </ion-buttons>
   </ion-toolbar>

@@ -23,7 +23,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list [virtualScroll]="outages">
+  <ion-list [virtualScroll]="outages" [approxItemHeight]="'65px'">
     <button ion-item text-wrap [color]="getIconColor(outage)" *virtualItem="let outage" (click)="onShowOutage(outage)">
       <h2>{{ outage.nodeLabel }}</h2>
       <div class="event-time">{{ formatUei(outage.serviceLostEvent.uei) }}</div>

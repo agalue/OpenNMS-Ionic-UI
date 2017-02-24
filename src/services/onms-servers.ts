@@ -117,6 +117,14 @@ export class OnmsServersService {
     });
   }
 
+  supports(feature: string) : boolean {
+    switch(feature) {
+      case 'location':
+        const re = /^(19|2017)\./; return re.test(this.defaultServer.version);
+      default: return true;
+    }
+  }
+
   private updateVersion(server: OnmsServer) : Promise<any> {
     return new Promise((resolve, reject) => {
       let headers = new Headers();
@@ -127,7 +135,7 @@ export class OnmsServersService {
         .map((response: Response) => response.json())
         .toPromise()
         .then(info => {
-          server.type = info.packageDescription;
+          server.type = info.packageName == 'meridian' ? 'Meridian' : 'Horizon';
           server.version = info.displayVersion || 'Unknown';
           if (server.isDefault) {
             this.notify(server);

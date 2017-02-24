@@ -2,8 +2,9 @@
   <ion-navbar>
     <ion-title>{{ node.nodeLabel }}</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only color="danger" (click)="onSave()" *ngIf="form.invalid || form.dirty">
+      <button ion-button icon-left color="danger" (click)="onSave()" *ngIf="form.valid && form.dirty">
         <ion-icon name="cloud-upload"></ion-icon>
+        Save
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -32,7 +33,7 @@
           <ion-list-header>Basic</ion-list-header>
           <ion-item>
             <ion-label stacked [color]="getValidityColor('foreignId')">Foreign ID</ion-label>
-            <ion-input type="text" formControlName="foreignId" [disabled]="!isNew" (press)="onGenerateForeignId()"></ion-input>
+            <ion-input type="text" formControlName="foreignId" (press)="onGenerateForeignId()"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label stacked [color]="getValidityColor('nodeLabel')">Node Label</ion-label>

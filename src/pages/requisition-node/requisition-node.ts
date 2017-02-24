@@ -148,7 +148,8 @@ export class RequisitionNodePage implements OnInit {
   }
 
   getValidityColor(field: string) {
-    return this.form.controls[field].valid ? '' : 'danger';
+    const f = this.form.controls[field];
+    return f.disabled || f.valid ? '' : 'danger';
   }
 
   private chooseLocation(locations: string[]) {
@@ -224,7 +225,7 @@ export class RequisitionNodePage implements OnInit {
 
   private initForm() {
     this.form = new FormGroup({
-      'foreignId' : new FormControl(this.node.foreignId, Validators.required),
+      'foreignId' : new FormControl({ value: this.node.foreignId, disabled: !this.isNew }, Validators.required),
       'nodeLabel' : new FormControl(this.node.nodeLabel, Validators.required),
       'location' : new FormControl(this.node.location),
       'building' : new FormControl(this.node.building),

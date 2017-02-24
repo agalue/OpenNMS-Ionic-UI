@@ -11,11 +11,4 @@ export class OnmsServer {
         public isDefault: boolean = false
     ) {}
 
-    equalTo(other: OnmsServer) : boolean {
-        return this.name == other.name
-            && this.url == other.url
-            && this.username == other.username
-            && this.password == other.password;
-    }
-
 }

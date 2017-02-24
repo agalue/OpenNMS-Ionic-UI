@@ -11,15 +11,15 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons start>
-      <button ion-button icon-right type="button" (click)="onAbort()">
-        Cancel
+      <button ion-button icon-left type="button" (click)="onAbort()">
         <ion-icon name="close"></ion-icon>
+        Cancel
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button icon-right type="button" (click)="onConfirm()" [disabled]="!marker">
-        Confirm
+      <button ion-button icon-left type="button" (click)="onConfirm()" [disabled]="!marker">
         <ion-icon name="checkmark"></ion-icon>
+        Confirm
       </button>
     </ion-buttons>
   </ion-toolbar>

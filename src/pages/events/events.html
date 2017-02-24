@@ -23,7 +23,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list [virtualScroll]="events">
+  <ion-list [virtualScroll]="events" [approxItemHeight]="'100px'">
     <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
       <h2>{{ formatUei(event.uei) }}</h2>
       <div class="event-time" *ngIf="event.nodeLabel">for {{ event.nodeLabel }}</div>

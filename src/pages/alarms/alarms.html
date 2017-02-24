@@ -31,7 +31,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list [virtualScroll]="alarms">
+  <ion-list [virtualScroll]="alarms" [approxItemHeight]="'100px'">
     <ion-item-sliding *virtualItem="let alarm">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
         <h2>{{ formatUei(alarm.uei) }}</h2>

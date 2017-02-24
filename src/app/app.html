@@ -9,7 +9,7 @@
     <ion-list no-lines *ngIf="onmsServer">
       <ion-list-header>Current Server</ion-list-header>
       <ion-item>
-         <p>{{ onmsServer?.type }} {{ onmsServer?.name }}, v.{{ onmsServer?.version }}</p>
+         <p>{{ onmsServer?.type }} {{ onmsServer?.version }} {{ onmsServer?.name }}</p>
       </ion-item>
     </ion-list>
     <ion-list no-lines *ngFor="let g of groups">

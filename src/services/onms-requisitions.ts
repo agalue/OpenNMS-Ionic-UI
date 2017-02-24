@@ -8,6 +8,7 @@ import { OnmsRequisitionAsset } from '../models/onms-requisition-asset';
 import { OnmsRequisitionsCache } from '../models/onms-requisitions-cache';
 import { OnmsForeignSource } from '../models/onms-foreign-source';
 import { OnmsForeignSourceConfig } from '../models/onms-foreign-source-config';
+import { OnmsServersService } from './onms-servers';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -17,7 +18,7 @@ export class OnmsRequisitionsService {
 
   private cache = new OnmsRequisitionsCache();
 
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService, private serverService: OnmsServersService) {}
   
   private updateDeployedStats(requisitions: OnmsRequisition[]) : Promise<any> {
     return new Promise((resolve, reject) => {
@@ -43,13 +44,15 @@ export class OnmsRequisitionsService {
       .then(() => requisition.markAsDeployed())
   }
 
-  getRequisitions() : Promise<OnmsRequisition[]> {
+  getRequisitions(force: boolean = false) : Promise<OnmsRequisition[]> {
     return new Promise((resolve, reject) => {
-      let requisitions = this.cache.getCachedRequisitions();
-      if (requisitions) {
-        console.debug('getRequisitions: returning requisitions from the cache');
-        resolve(requisitions);
-        return;
+      if (!force) {
+        let requisitions = this.cache.getCachedRequisitions();
+        if (requisitions) {
+          console.debug('getRequisitions: returning requisitions from the cache');
+          resolve(requisitions);
+          return;
+        }
       }
       console.debug('getRequisitions: loading requisitions');
       this.http.get('/rest/requisitions')
@@ -159,6 +162,9 @@ export class OnmsRequisitionsService {
 
   saveNode(foreignSource: string, node: OnmsRequisitionNode, force: boolean = false) : Promise<any> {
     const rawNode = node.generateModel();
+    if (!this.serverService.supports('location')) {
+      delete rawNode['location'];
+    }
     return this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode)
       .toPromise()
       .then(() => {

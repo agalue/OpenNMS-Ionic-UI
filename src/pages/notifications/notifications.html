@@ -31,7 +31,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list [virtualScroll]="notifications">
+  <ion-list [virtualScroll]="notifications" [approxItemHeight]="'90px'">
     <ion-item-sliding *virtualItem="let notification">
       <button ion-item text-wrap [color]="notification.severity" (click)="onShowNotification(notification)">
         <h2>{{ formatUei(notification.uei) }}</h2>

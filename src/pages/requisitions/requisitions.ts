@@ -31,13 +31,13 @@ export class RequisitionsPage {
     this.onRefresh();
   }
 
-  onRefresh() {
+  onRefresh(force: boolean = false) {
     const loading = this.loadingCtrl.create({
       content: 'Loading requisitions. This could take a while, please wait...'
     });
     loading.present();
     this.requisitions = [];
-    this.requisitionsService.getRequisitions()
+    this.requisitionsService.getRequisitions(force)
       .then((requisitions: OnmsRequisition[]) => {
         this.requisitions = requisitions;
         this.noRequisitions = requisitions.length == 0;
@@ -63,7 +63,7 @@ export class RequisitionsPage {
         },
         {
           text: 'Refresh Requisitions',
-          handler: () => this.onRefresh()
+          handler: () => this.onRefresh(true)
         },
         {
           text: 'Cancel',
