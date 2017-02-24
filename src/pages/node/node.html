@@ -11,7 +11,7 @@
 
 <ion-content np-padding>
   <ion-segment padding [(ngModel)]="mode">
-    <ion-segment-button value="info">
+    <ion-segment-button value="info" (ionSelect)="onSegmentSelect()">
       Info
     </ion-segment-button>
     <ion-segment-button value="availability">

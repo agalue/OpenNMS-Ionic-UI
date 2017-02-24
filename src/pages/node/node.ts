@@ -64,8 +64,13 @@ export class NodePage implements OnInit {
     this.updateDependencies();
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.drawMap();
+  }
+
+  onSegmentSelect() {
+    this.map = undefined;
+    setTimeout(() => this.drawMap(), 500);
   }
 
   onShowOptions() {
