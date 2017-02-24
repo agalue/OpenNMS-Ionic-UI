@@ -41,6 +41,7 @@ import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regional-status-options';
 import { RegionalStatusPopupPage } from '../pages/regional-status-popup/regional-status-popup';
 import { SetLocationPage } from '../pages/set-location/set-location';
+import { MeasurementsPage } from '../pages/measurements/measurements';
 
 import { HttpService } from '../services/http';
 import { OnmsUIService } from '../services/onms-ui';
@@ -95,7 +96,8 @@ import { OnmsMapsService } from '../services/onms-maps';
     RegionalStatusPage,
     RegionalStatusOptionsPage,
     RegionalStatusPopupPage,
-    SetLocationPage
+    SetLocationPage,
+    MeasurementsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -136,7 +138,8 @@ import { OnmsMapsService } from '../services/onms-maps';
     RegionalStatusPage,
     RegionalStatusOptionsPage,
     RegionalStatusPopupPage,
-    SetLocationPage
+    SetLocationPage,
+    MeasurementsPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

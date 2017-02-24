@@ -5,9 +5,12 @@ import { OnmsNode } from '../models/onms-node';
 import { OnmsIpInterface } from '../models/onms-ip-interface';
 import { OnmsSnmpInterface } from '../models/onms-snmp-interface';
 import { OnmsResource } from '../models/onms-resource';
+import { OnmsQueryResponse } from '../models/onms-query-response';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
+
+declare function escape(s:string): string;
 
 @Injectable()
 export class OnmsNodesService {
@@ -47,6 +50,13 @@ export class OnmsNodesService {
   getResources(nodeId: number) : Promise<OnmsResource[]> {
     return this.http.get(`/rest/resources/fornode/${nodeId}`)
       .map((response: Response) => OnmsResource.importResources(response.json().children.resource))
+      .toPromise()
+  }
+
+  // TODO: POC get data for last 2 hours
+  getMetricData(resourceId: string, metricId: string) : Promise<OnmsQueryResponse> {
+    return this.http.get(`/rest/measurements/${escape(resourceId)}/${metricId}?start=-7200000`)
+      .map((response: Response) => OnmsQueryResponse.import(response.json()))
       .toPromise()
   }
 

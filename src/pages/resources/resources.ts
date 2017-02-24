@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
+import { MeasurementsPage } from '../measurements/measurements';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsResource, OnmsResourcesByType } from '../../models/onms-resource';
 import { OnmsNodesService } from '../../services/onms-nodes';
@@ -65,8 +66,7 @@ export class ResourcesPage {
   }
 
   private showData(resource: OnmsResource, metric: string) {
-    // FIXME Open Measurements Page to retrieve and show the data
-    this.alert('Show Data', `For ${metric} at ${resource.label} ... Not implemented yet, sorry :(`);
+    this.navCtrl.push(MeasurementsPage, { resource: resource, metric: metric });
   }
 
   private alert(title: string, message: string) {
