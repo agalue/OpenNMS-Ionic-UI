@@ -60,7 +60,7 @@ export class AlarmsPage {
         this.noAlarms = this.alarms.length == 0
       })
       .catch(error => {
-        loading.dismiss();
+        if (showLoading) loading.dismiss();
         this.alert('Load Error', error);
       });
   }
