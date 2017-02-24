@@ -35,9 +35,7 @@ export class HttpService implements OnDestroy {
       if (error.status == 0) {
         errMsg = 'Remote Server Unreachable.';
       } else {
-        const body = error.json() || '';
-        const err = body.error || JSON.stringify(body);
-        errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+        errMsg = `${error.status} - ${error.statusText}`;
       }
     } else {
       errMsg = error.message ? error.message : error.toString();

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ViewController, AlertController, NavParams } from 'ionic-angular';
+import { ViewController, AlertController, LoadingController, NavParams } from 'ionic-angular';
 
 import { OnmsServer } from '../../models/onms-server';
 import { OnmsServersService } from '../../services/onms-servers';
@@ -22,6 +22,7 @@ export class ServerPage implements OnInit {
   constructor(
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController,
     private navParams: NavParams,
     private serversService: OnmsServersService    
   ) {}
@@ -39,14 +40,24 @@ export class ServerPage implements OnInit {
     const v = this.serverForm.value;
     const server = new OnmsServer(v.name, v.url, v.username, v.password, this.isDefault);
     let promise: Promise<any>;
+    const loading = this.loadingCtrl.create({
+      content: this.server ? 'Updating Server ...' : 'Adding Server ...'
+    })
+    loading.present();
     if (this.server) {
       promise = this.serversService.updateServer(server, this.serverIndex);
     } else {
       promise = this.serversService.addServer(server);
     }
     promise
-      .then(() => this.viewCtrl.dismiss(true))
-      .catch(error => this.alert('Save Server', error));
+      .then(() => {
+        loading.dismiss();
+        this.viewCtrl.dismiss(true)
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Save Server', error)
+      });
   }
 
   onDelete() {

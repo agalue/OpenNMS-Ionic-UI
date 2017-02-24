@@ -142,12 +142,21 @@ export class OnmsServersService {
           }          
           resolve(server);
         })
-        .catch(error => {
+        .catch((error: Response|any) => {
           console.log(error);
-          let msg = 'Something wrong happened retrieving the server information from OpenNMS.'
-                  + ' Make sure the URL and the credentials are correct.'
-                  + ' Also verify that CORS is enabled on the server.'
-          reject(msg);
+          let errMsg = '';
+          if (error instanceof Response) {
+            if (error.status == 0) {
+              errMsg = 'Remote Server Unreachable. Make sure the URL is correct.';
+            } else {
+              errMsg = `${error.status} - ${error.statusText}`;
+            }
+          } else {
+            errMsg = 'Something wrong happened retrieving the server information from OpenNMS.'
+                + ' Make sure the URL and the credentials are correct.'
+                + ' Also verify that CORS is enabled on the server.'
+          }
+          reject(errMsg);
         })
     });
   }
