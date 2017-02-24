@@ -102,17 +102,6 @@ export class OnmsMapsService {
 
   private tileLayer: string = 'https://tiles.opennms.org/{z}/{x}/{y}.png';
 
-  private mapOptions: Leaflet.MapOptions = {
-    zoom: 1,
-    maxZoom: 15,
-    tap: true,
-    touchZoom: true,
-    doubleClickZoom: true,
-    zoomControl: false,
-    dragging: true,
-    attributionControl: false
-  };
-
   constructor(private http: HttpService) {}
 
   getGeolocations(request: GeolocationQuery) : Promise<GeolocationInfo[]> {
@@ -122,8 +111,10 @@ export class OnmsMapsService {
       .toPromise()
   }
 
-  createMap(mapId: string) : Leaflet.Map {
-    let map = Leaflet.map(mapId, this.mapOptions);
+  createMap(mapId: string, options: Leaflet.MapOptions) : Leaflet.Map {
+    options.attributionControl = false;
+    options.zoomControl = false;
+    let map = Leaflet.map(mapId, options);
     Leaflet.tileLayer(this.tileLayer).addTo(map);
     return map;
   }

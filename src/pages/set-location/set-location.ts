@@ -3,6 +3,7 @@ import { ViewController, NavParams } from 'ionic-angular';
 import * as Leaflet from 'leaflet';
 
 import { OnmsNode } from '../../models/onms-node';
+import { OnmsMapsService } from '../../services/onms-maps';
 
 @Component({
   selector: 'page-set-location',
@@ -14,24 +15,23 @@ export class SetLocationPage {
   marker: Leaflet.Marker;
 
   private map: Leaflet.Map;
-  private tileLayer: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private mapOptions: Leaflet.MapOptions = {
     tap: true,
+    dragging: true,
     touchZoom: true,
     doubleClickZoom: true,
-    maxZoom: 18,
-    zoomControl: false,
-    dragging: true,
-    attributionControl: false
+    maxZoom: 18
   };
 
-  constructor(private viewCtrl: ViewController, private navParams: NavParams) {
-  }
+  constructor(
+    private viewCtrl: ViewController,
+    private navParams: NavParams,
+    private mapService: OnmsMapsService
+  ) {}
 
   ionViewDidLoad() {
     let node: OnmsNode = this.navParams.get('node');
-    this.map = Leaflet.map('set-location-map', this.mapOptions);
-    Leaflet.tileLayer(this.tileLayer).addTo(this.map);
+    this.map = this.mapService.createMap('set-location-map', this.mapOptions);
     if (node.hasLocation()) {
       this.location = [ node.assetRecord.latitude, node.assetRecord.longitude ];
       this.marker = Leaflet.marker(this.location);

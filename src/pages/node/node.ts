@@ -18,6 +18,7 @@ import { OnmsNodesService } from '../../services/onms-nodes';
 import { OnmsEventsService } from '../../services/onms-events';
 import { OnmsOutagesService } from '../../services/onms-outages';
 import { OnmsAvailabilityService } from '../../services/onms-availability';
+import { OnmsMapsService } from '../../services/onms-maps';
 
 @Component({
   selector: 'page-node',
@@ -32,16 +33,13 @@ export class NodePage implements OnInit {
   outages: OnmsOutage[] = [];
 
   private map: Leaflet.Map;
-  private tileLayer: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private mapOptions: Leaflet.MapOptions = {
-    tap: true,
+    tap: false,
+    dragging: false,
     touchZoom: false,
     doubleClickZoom: false,
     scrollWheelZoom: false,
     maxZoom: 18,
-    zoomControl: false,
-    dragging: false,
-    attributionControl: false
   };
 
   constructor(
@@ -56,7 +54,8 @@ export class NodePage implements OnInit {
     private nodesService: OnmsNodesService,
     private eventsService: OnmsEventsService,
     private outagesService: OnmsOutagesService,
-    private availabilityService: OnmsAvailabilityService
+    private availabilityService: OnmsAvailabilityService,
+    private mapService: OnmsMapsService
   ) {}
 
   ngOnInit() {
@@ -68,6 +67,7 @@ export class NodePage implements OnInit {
     this.drawMap();
   }
 
+  // TODO Create a dedicated angular component to show the map to avoid this issue
   onSegmentSelect() {
     this.map = undefined;
     setTimeout(() => this.drawMap(), 500);
@@ -237,8 +237,7 @@ export class NodePage implements OnInit {
     if (this.node.hasLocation()) {
       let location: [number,number] = this.node.getLocation();
       if (!this.map) {
-        this.map = Leaflet.map('map', this.mapOptions);
-        Leaflet.tileLayer(this.tileLayer).addTo(this.map);
+        this.map = this.mapService.createMap('map', this.mapOptions);
       }
       this.map.setView(location, 16);
       Leaflet.marker(location).addTo(this.map);

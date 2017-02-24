@@ -18,6 +18,14 @@ export class RegionalStatusPage {
 
   private map: Leaflet.Map;
   private markersGroup: Leaflet.MarkerClusterGroup;
+  private mapOptions: Leaflet.MapOptions = {
+    tap: true,
+    dragging: true,
+    touchZoom: true,
+    doubleClickZoom: true,
+    maxZoom: 15,
+    zoom: 1,
+  };
 
   constructor(
     private alertCtrl: AlertController,
@@ -51,7 +59,7 @@ export class RegionalStatusPage {
 
   private initMap() {
     if (this.map) return;
-    this.map = this.mapService.createMap('map');
+    this.map = this.mapService.createMap('map', this.mapOptions);
     new SeverityLegendControl().addTo(this.map);
     this.markersGroup = this.mapService.createMarkerGroup().addTo(this.map);
     this.markersGroup.on('clusterclick', event => {
