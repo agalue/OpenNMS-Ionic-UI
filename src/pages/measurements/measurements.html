@@ -18,11 +18,11 @@
   <ion-grid *ngIf="hasData()">
     <ion-row>
       <ion-col><b>Timestamp</b></ion-col>
-      <ion-col><b>Value</b></ion-col>
+      <ion-col text-right><b>Value</b></ion-col>
     </ion-row>
     <ion-row *ngFor="let ts of query.timestamps; let i = index">
       <ion-col>{{ ts | date:'medium' }}</ion-col>
-      <ion-col>{{ query.columns[0].values[i] }}</ion-col>
+      <ion-col text-right>{{ getValue(i) == 'NaN' ? 'NaN' : ( getValue(i) | number:'1.2-2' ) }}</ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

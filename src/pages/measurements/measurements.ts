@@ -25,7 +25,6 @@ export class MeasurementsPage {
   ionViewDidLoad() {
     this.resource = this.navParams.get('resource');
     this.metric = this.navParams.get('metric');
-    console.log(this.resource);
     const loading = this.loadingCtrl.create({ content: 'Loading measurements data ...' });
     loading.present();
     this.nodesService.getMetricData(this.resource.id, this.metric)
@@ -42,6 +41,10 @@ export class MeasurementsPage {
 
   hasData() {
     return this.query && this.query.timestamps.length > 0;
+  }
+
+  getValue(index: number) {
+    return this.query.columns[0].values[index];
   }
 
   private alert(title: string, message: string) {

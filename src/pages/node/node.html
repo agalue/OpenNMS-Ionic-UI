@@ -96,7 +96,7 @@
       </ion-list>
       <ion-list>
         <ion-list-header>Recent Events</ion-list-header>
-        <ion-item *ngIf="events.length == 0">No recent events.</ion-item>
+        <ion-item *ngIf="events.length == 0"><p>No recent events.</p></ion-item>
         <button ion-item text-wrap [color]="event.severity" *ngFor="let event of events" (click)="onShowEvent(event)">
           <h2>{{ formatUei(event.uei) }}</h2>
           <div class="event-time">{{ event.time | date:'medium' }}</div>
@@ -106,7 +106,7 @@
       </ion-list>
       <ion-list>
         <ion-list-header>Current Outages</ion-list-header>
-        <ion-item *ngIf="outages.length == 0">No current outages.</ion-item>
+        <ion-item *ngIf="outages.length == 0"><p>No current outages.</p></ion-item>
         <button ion-item text-wrap [color]="getOutageColor(outage)" *ngFor="let outage of outages" (click)="onShowOutage(outage)">
           <h2>{{ formatUei(outage.serviceLostEvent.uei) }}</h2>
           <div class="event-time">{{ outage.serviceName }} lost on {{ outage.ipAddress }} at {{ outage.ifLostService | date:'medium' }}</div>
