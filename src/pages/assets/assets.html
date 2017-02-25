@@ -22,7 +22,24 @@
       <ion-item-divider color="primary">{{ group.title }}</ion-item-divider>
       <ion-item *ngFor="let field of group.fields">
         <ion-label stacked>{{ field.label }}</ion-label>
-        <ion-input type="text" [name]="field.model" [(ngModel)]="node.assetRecord[field.model]"></ion-input>
+        <ion-input *ngIf="field.type == 'text' || field.type == 'password'"
+          [type]="field.type == 'password' ? 'password' : 'text'"
+          [name]="field.model"
+          [(ngModel)]="node.assetRecord[field.model]"></ion-input>
+        <ion-datetime *ngIf="field.type == 'date'"
+          displayFormat="YYYY-MM-DD"
+          pickerFormat="YYYY-MM-DD"
+          [name]="field.model"
+          [(ngModel)]="node.assetRecord[field.model]"></ion-datetime>
+        <ion-select *ngIf="field.type == 'select'"
+          [name]="field.model"
+          [(ngModel)]="node.assetRecord[field.model]">
+          <ion-option *ngFor="let option of field.options" [value]="option">{{ option }}</ion-option>
+        </ion-select>
+        <ion-textarea *ngIf="field.type == 'textarea'"
+          elastic
+          [name]="field.model"
+          [(ngModel)]="node.assetRecord[field.model]"></ion-textarea>
       </ion-item>
     </ion-item-group>
   </form>
