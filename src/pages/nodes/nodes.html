@@ -15,8 +15,8 @@
       <p>Use the search bar and start typing part of the node's label to find your nodes...</p>
     </ion-item>
   </ion-list>
-  <ion-list [virtualScroll]="nodes">
-    <button ion-item *virtualItem="let node" (click)="onShowNode(node)">
+  <ion-list>
+    <button ion-item *ngFor="let node of nodes" (click)="onShowNode(node)">
       <h2>{{ node.label }}</h2>
       <div class="event-message" *ngIf="node.foreignSource">Requisition: {{ node.foreignSource }}, Foreign-ID: {{ node.foreignId }}</div>
       <div class="event-message" *ngIf="!node.foreignSource">Auto-discovered with nodeId: {{ node.id }}</div>

@@ -22,8 +22,8 @@
       <p>There are no events, please try again later...</p>
     </ion-item>
   </ion-list>
-  <ion-list [virtualScroll]="events" [approxItemHeight]="'100px'">
-    <button ion-item text-wrap [color]="event.severity" *virtualItem="let event" (click)="onShowEvent(event)">
+  <ion-list>
+    <button ion-item text-wrap [color]="event.severity" *ngFor="let event of events" (click)="onShowEvent(event)">
       <h2>{{ formatUei(event.uei) }}</h2>
       <div class="event-time" *ngIf="event.nodeLabel">for {{ event.nodeLabel }}</div>
       <div class="event-time">At {{ event.time | date:'medium' }}; ID: {{ event.id }}</div>

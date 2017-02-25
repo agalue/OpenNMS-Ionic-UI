@@ -22,8 +22,8 @@
       <p>There are no outages, please try again later...</p>
     </ion-item>
   </ion-list>
-  <ion-list [virtualScroll]="outages" [approxItemHeight]="'65px'">
-    <button ion-item text-wrap [color]="getIconColor(outage)" *virtualItem="let outage" (click)="onShowOutage(outage)">
+  <ion-list>
+    <button ion-item text-wrap [color]="getIconColor(outage)" *ngFor="let outage of outages" (click)="onShowOutage(outage)">
       <h2>{{ outage.nodeLabel }}</h2>
       <div class="event-time">{{ formatUei(outage.serviceLostEvent.uei) }}</div>
       <div class="event-time">{{ outage.serviceName }} lost on {{ outage.ipAddress }} at {{ outage.ifLostService | date:'medium' }}</div>

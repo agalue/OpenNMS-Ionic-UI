@@ -30,8 +30,8 @@
       <p>There are no alarms, please try again later...</p>
     </ion-item>
   </ion-list>
-  <ion-list [virtualScroll]="alarms" [approxItemHeight]="'100px'">
-    <ion-item-sliding *virtualItem="let alarm">
+  <ion-list>
+    <ion-item-sliding *ngFor="let alarm of alarms">
       <button ion-item text-wrap [color]="alarm.severity" (click)="onShowAlarm(alarm)">
         <h2>{{ formatUei(alarm.uei) }}</h2>
         <div class="event-time" *ngIf="alarm.nodeLabel">for {{ alarm.nodeLabel }}</div>
