@@ -60,6 +60,12 @@ export class OnmsNodesService {
       .toPromise()
   }
 
+  isNodeAffectedByScheduledOutage(nodeId: number) : Promise<boolean> {
+    return this.http.get(`/rest/sched-outages/nodeInOutage/${nodeId}`, 'text/plain')
+      .map((response: Response) => response.text() == 'true')
+      .toPromise()
+  }
+
   updateAssets(nodeId: number, asset: Object) {
     const assetParams =  this.http.encodeParams(asset);
     return this.http.put(`/rest/nodes/${nodeId}/assetRecord`, 'application/x-www-form-urlencoded', assetParams)

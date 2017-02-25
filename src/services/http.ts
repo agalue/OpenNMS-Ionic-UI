@@ -18,10 +18,10 @@ export class HttpService implements OnDestroy {
     serversService.defaultUpdated.subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
   }
 
-  private getOptions() : RequestOptions {
+  private getOptions(accept: string = 'application/json') : RequestOptions {
     let headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(this.defaultServer.username + ':' + this.defaultServer.password));
-    headers.append('Accept', 'application/json');
+    headers.append('Accept', accept);
     return new RequestOptions({ headers: headers });
   }
 
@@ -53,8 +53,8 @@ export class HttpService implements OnDestroy {
       .subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
   }
 
-  get(url: string) : Observable<Response> {
-    return this.http.get(this.getBaseUrl() + url, this.getOptions())
+  get(url: string, accept?: string) : Observable<Response> {
+    return this.http.get(this.getBaseUrl() + url, this.getOptions(accept))
       .catch(this.handleError);
   }
 

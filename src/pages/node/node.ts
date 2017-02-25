@@ -27,6 +27,7 @@ import { OnmsMapsService } from '../../services/onms-maps';
 export class NodePage implements OnInit {
 
   mode = 'info';
+  inScheduledOutage = false;
   node: OnmsNode;
   availability: OnmsNodeAvailability;
   events: OnmsEvent[] = [];
@@ -231,6 +232,10 @@ export class NodePage implements OnInit {
     this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
       .then(outages => this.outages = outages)
       .catch(error => console.error(`Cannot retrieve outages: ${error}`));
+    // In scheduled outage
+    this.nodesService.isNodeAffectedByScheduledOutage(this.node.id)
+      .then(inScheduledOutage => this.inScheduledOutage = inScheduledOutage)
+      .catch(error => console.error(`Cannot retrieve scheduled outage information: ${error}`));
   }
 
   private drawMap() {

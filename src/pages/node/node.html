@@ -26,6 +26,12 @@
   </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'info'">
+      <ion-list paading no-lines *ngIf="inScheduledOutage">
+        <button ion-item detail-none text-wrap color='Major'>
+          <ion-icon item-left name='warning' color='Major_'></ion-icon>
+          <p>This node is affected by an ongoing scheduled outage.</p>
+        </button>
+      </ion-list>
       <ion-grid>
         <ion-list-header>Details</ion-list-header>
         <ion-row>
