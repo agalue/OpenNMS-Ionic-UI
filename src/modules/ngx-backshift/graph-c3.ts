@@ -19,9 +19,8 @@ import { Graph } from './graph';
  *
  */
 
-// FIXME This is temporal
-declare var d3:any;
-declare var c3:any;
+import c3 from 'c3';
+import d3 from 'd3';
 
 export class GraphC3 extends Graph {
 
@@ -67,13 +66,13 @@ export class GraphC3 extends Graph {
     this.updatePlot();
   }
 
-  private shouldStack(k) {
+  private shouldStack(k) : boolean {
     // If there's stack following the area, set the area to stack
     if (this.model.series[k].type === "area") {
       var n = this.model.series.length;
       for (var i = k; i < n; i++) {
         if (this.model.series[i].type === "stack") {
-          return 1;
+          return true;
         }
       }
     }
@@ -176,13 +175,13 @@ export class GraphC3 extends Graph {
     console.log(statusText);
     var svg = d3.select(this.element).select('svg');
     if (svg) {
-      var boundingRect = svg.node().getBoundingClientRect();
+//      var boundingRect = svg.node().getBoundingClientRect();
       svg.select('#chart-status-text').remove();
       if (statusText) {
         svg.append('text')
           .attr("id", "chart-status-text")
-          .attr('x', boundingRect.width / 2)
-          .attr('y', boundingRect.height / 2.5)
+//          .attr('x', boundingRect.width / 2)
+//          .attr('y', boundingRect.height / 2.5)
           .attr('text-anchor', 'middle')
           .style('font-size', '2.5em')
           .text(statusText);
@@ -198,10 +197,8 @@ export class GraphC3 extends Graph {
   }
 
   private updatePlot() {
-    var self = this;
-
-    var plotConfig = {
-      bindto: d3.select(this.element),
+    let plotConfig: c3.ChartConfiguration = {
+      bindto: this.element, //d3.select(this.element),
       interaction: {
         enabled: this.interactive
       },
@@ -227,7 +224,7 @@ export class GraphC3 extends Graph {
           }
         },
         y: {
-          label: self.verticalLabel,
+          label: this.verticalLabel,
           tick: {
             format: d3.format(".2s")
           }
@@ -250,9 +247,10 @@ export class GraphC3 extends Graph {
       zoom: {
         enabled: this.zoom
       },
+      /*
       title: {
         text: this.title
-      },
+      },*/
       tooltip: {
         format: {
           title: function (d) { return d; },
@@ -263,10 +261,10 @@ export class GraphC3 extends Graph {
       }
     };
 
-    if (self.columns && self.columns.length > 0) {
+    if (this.columns && this.columns.length > 0) {
       plotConfig.axis.x.tick.count = 30;
 
-      var timestamps = self.columns[0];
+      var timestamps = this.columns[0];
       if (timestamps && timestamps.length >= 2) {
         // timestamp,value,...
         var oldest = timestamps[1];
@@ -295,7 +293,7 @@ export class GraphC3 extends Graph {
       delete plotConfig.axis.x.tick.count;
     }
 
-    self.chart = c3.generate(plotConfig);
+    this.chart = c3.generate(plotConfig);
   }
 
 }

@@ -1,5 +1,5 @@
 
-import { ConsolidatorFunction, PrefabGraph, GraphModel, TimeSpan, fail } from './models';
+import { GraphModel, TimeSpan, fail } from './models';
 import { DataSource } from './datasource';
 
 export abstract class Graph {

@@ -118,7 +118,7 @@ export class OnmsDataSource extends DataSource {
 
     if (json.constants) {
       let constants = {};
-      for (var c=0, len=json.constants.length, key, value, label; c < len; c++) {
+      for (var c=0, len=json.constants.length, key, value; c < len; c++) {
         key = json.constants[c].key;
         value = json.constants[c].value;
 

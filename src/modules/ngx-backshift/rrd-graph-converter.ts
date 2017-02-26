@@ -1,6 +1,6 @@
 import { RrdGraphVisitor } from './rrd-graph-visitor';
 import { RpnToJexlConverter } from './rpm-to-jexl-converter';
-import { ConsolidatorFunction, PrefabGraph, GraphModel } from './models';
+import { PrefabGraph, GraphModel } from './models';
 import { Consolidator } from './consolidator';
 
 export class RrdGraphConverter extends RrdGraphVisitor {

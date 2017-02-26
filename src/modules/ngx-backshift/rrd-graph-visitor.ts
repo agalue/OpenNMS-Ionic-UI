@@ -14,7 +14,7 @@ export abstract class RrdGraphVisitor {
 
   protected visit(graphDef: any) {
     var i, args, command, name, path, dsName, consolFun, rpnExpression, subParts, width, srcName,
-        color, legend, aggregation, value, seriesName;
+        color, legend, aggregation, value;
     var parts = this.parseCommandLine(graphDef.command, true);
     var n = parts.length;
     for (i = 0; i < n; i++) {
