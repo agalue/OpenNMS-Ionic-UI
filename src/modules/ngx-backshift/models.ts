@@ -18,14 +18,16 @@ export class PrefabGraph {
   public title: string;
   public columns: string[] = [];
   public command: string;
-  public externalValues: string[] = [];
-  public propertiesValues: string[] = [];
+  public externalValues?: string[] = [];
+  public propertiesValues?: string[] = [];
   public order: number;
   public types: string[] = [];
-  public description: string;
-  public graphWidth: number;
-  public graphHeight: number;
-  public supress: string[] = [];
+  public description?: string;
+  public graphWidth?: number;
+  public graphHeight?: number;
+  public supress?: string[] = [];
+  public width?: number;
+  public height?: number;
 }
 
 export class Metric {

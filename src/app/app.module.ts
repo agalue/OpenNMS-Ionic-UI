@@ -58,6 +58,8 @@ import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
 import { OnmsRequisitionsService } from '../services/onms-requisitions';
 import { OnmsMapsService } from '../services/onms-maps';
 
+import { BackshiftComponent } from '../modules/ngx-backshift/backshift.component';
+
 @NgModule({
   declarations: [
     // Pipes
@@ -68,6 +70,7 @@ import { OnmsMapsService } from '../services/onms-maps';
     ElasticDirective,
     // Components
     OnmsTitleComponent,
+    BackshiftComponent,
     // Pages
     MyApp,
     SetupPage,

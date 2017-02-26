@@ -166,6 +166,7 @@ export class Consolidator {
       case 'minimum': return new Minimum('minimum', metricName, argument);
       case 'max':
       case 'maximum': return new Maximum('maximum', metricName, argument);
+      case 'average': return new Average('average', metricName, argument);
       case 'stdev': return new StandardDeviation('stdev', metricName, argument);
       case 'last': return new Last('last', metricName, argument);
       case 'first': return new First('first', metricName, argument);

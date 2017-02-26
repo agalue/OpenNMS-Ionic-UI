@@ -19,8 +19,8 @@ import { Graph } from './graph';
  *
  */
 
-import c3 from 'c3';
-import d3 from 'd3';
+import * as c3 from 'c3';
+import * as d3 from 'd3';
 
 export class GraphC3 extends Graph {
 
@@ -33,14 +33,28 @@ export class GraphC3 extends Graph {
   zoom = true; // whether to allow zooming
   clipboardPrimed = false;
 
-  chart: any; // C3 object from c3.generate();
+  chart: c3.ChartAPI;
   columns = [];
   groups = [];
   colorMap = {};
   typeMap = {};
   nameMap = {};
 
-  onInit() {}
+  onInit(args) {}
+  onBegin() {}
+  onCancel() {}
+
+  onDestroy() {
+    // If we have a chart, destroy it
+    if (this.chart !== null) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+  }
+
+  onRender() {
+    this.updatePlot();
+  }
 
   resize(size) {
     // Store the width/height for any subsequent renders
@@ -50,20 +64,6 @@ export class GraphC3 extends Graph {
     if (this.chart !== null) {
       this.chart.resize(size);
     }
-  }
-
-  onBegin() {}
-  onCancel() {}
-
-  onDestroy() {
-    // If we have a chart, destroy it
-    if (this.chart !== null) {
-      this.chart = this.chart.destroy();
-    }
-  }
-
-  onRender() {
-    this.updatePlot();
   }
 
   private shouldStack(k) : boolean {
@@ -173,15 +173,16 @@ export class GraphC3 extends Graph {
 
   showStatus(statusText) {
     console.log(statusText);
-    var svg = d3.select(this.element).select('svg');
+    const svg = d3.select(this.element).select('svg');
+    svg.node()
     if (svg) {
-//      var boundingRect = svg.node().getBoundingClientRect();
+      const boundingRect = (<Element>svg.node()).getBoundingClientRect();
       svg.select('#chart-status-text').remove();
       if (statusText) {
         svg.append('text')
           .attr("id", "chart-status-text")
-//          .attr('x', boundingRect.width / 2)
-//          .attr('y', boundingRect.height / 2.5)
+          .attr('x', boundingRect.width / 2)
+          .attr('y', boundingRect.height / 2.5)
           .attr('text-anchor', 'middle')
           .style('font-size', '2.5em')
           .text(statusText);

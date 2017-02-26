@@ -58,6 +58,8 @@ export abstract class Graph {
     this.queryInProgress = false;
     this.lastSuccessfulQuery = 0;
     this.timer = null;
+    this.start = args.start;
+    this.end = args.end;
 
     this.onInit(args);
   }

@@ -17,27 +17,16 @@ export class OnmsDataSource extends DataSource {
     this.password = args.password;
   }
 
-  post(data: Object) : Promise<any> {
-    let headers = new Headers();
+  query(start: number, end: number, resolution: number, args?: any) : Promise<any> {
+    const headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(this.username + ':' + this.password));
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.url, JSON.stringify(data), options)
-      .map((response:Response) => response.json())
+    const options = new RequestOptions({ headers: headers });
+    const data = this.getQueryRequest(start, end, resolution);
+    return this.http.post(this.url + '/rest/measurements', JSON.stringify(data), options)
+      .map((response:Response) => this.parseResponse(response.json()))
       .toPromise()
-  };
-
-  query(start: number, end: number, resolution: number, args?: any) : Promise<any> {
-    return new Promise((resolve, reject) => {
-      const data = this.getQueryRequest(start, end, resolution);
-      this.post(data)
-        .then(results => {
-          this.parseResponse(results);
-          resolve();
-        })
-        .catch(error => reject(error));
-    });    
   }
 
   getQueryRequest(start, end, resolution) {
