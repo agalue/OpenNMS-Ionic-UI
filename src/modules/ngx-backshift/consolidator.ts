@@ -1,3 +1,5 @@
+import { ConsolidatorFunction, fail } from './models';
+
 /**
  * References:
  *   http://oss.oetiker.ch/rrdtool/doc/rrdgraph_data.en.html
@@ -8,9 +10,6 @@
  * RRDtool currently supports a very limited subset of expressions - they must have the following form:
  * 'SERIES,[PARAMETER,]FUNCTION' whereas SERIES is a existing series and PARAMETER is a value.
  */
-
-import { ConsolidatorFunction, fail } from './models';
-
 class Minimum extends ConsolidatorFunction {
   handler(timestamps: number[], values: number[]) : [number, number] {
     let minimumTimestamp = undefined;

@@ -1,3 +1,9 @@
+export class Server {
+  public url: string;
+  public username: string;
+  public password: string;
+}
+
 export class TimeSpan {
   public start: number;
   public end: number;

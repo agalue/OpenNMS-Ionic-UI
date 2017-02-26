@@ -1,30 +1,27 @@
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { Server, Metric } from './models';
 import { DataSource } from './datasource';
 import 'rxjs/Rx';
 
 export class OnmsDataSource extends DataSource {
 
-  url: string;
-  username: string;
-  password: string;
-  http: Http;
+  private server: Server;
+  private http: Http;
 
-  constructor(http: Http, args: any) {
-    super(args);
+  constructor(http: Http, server: Server, metrics: Metric[]) {
+    super(metrics);
     this.http = http;
-    this.url = args.url;
-    this.username = args.username;
-    this.password = args.password;
+    this.server = server;
   }
 
-  query(start: number, end: number, resolution: number, args?: any) : Promise<any> {
+  query(start: number, end: number, resolution: number) : Promise<any> {
     const headers = new Headers();
-    headers.append('Authorization', 'Basic ' + btoa(this.username + ':' + this.password));
+    headers.append('Authorization', 'Basic ' + btoa(this.server.username + ':' + this.server.password));
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({ headers: headers });
     const data = this.getQueryRequest(start, end, resolution);
-    return this.http.post(this.url + '/rest/measurements', JSON.stringify(data), options)
+    return this.http.post(`${this.server.url}/rest/measurements`, JSON.stringify(data), options)
       .map((response:Response) => this.parseResponse(response.json()))
       .toPromise()
   }

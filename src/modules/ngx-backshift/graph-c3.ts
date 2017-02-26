@@ -1,4 +1,6 @@
 import { Graph } from './graph';
+import * as c3 from 'c3';
+import * as d3 from 'd3';
 
 /**
  * Current issues:
@@ -18,10 +20,6 @@ import { Graph } from './graph';
  *      }
  *
  */
-
-import * as c3 from 'c3';
-import * as d3 from 'd3';
-
 export class GraphC3 extends Graph {
 
   interactive = true; // whether to do fancier chart navigation with mouse input events

@@ -25,9 +25,6 @@
     <ion-segment-button value="Outages">
       Outages
     </ion-segment-button>
-    <ion-segment-button value="Sample Graph">
-      Sample Graph
-    </ion-segment-button>
   </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'Availability'">
@@ -74,10 +71,6 @@
           <ion-col width-33 text-right>{{ outage.getTimeInfo() }}</ion-col>
         </ion-row>
       </ion-grid>
-    </div>
-    <div *ngSwitchCase="'Sample Graph'">
-      <br>
-      <backshift-graph [width]="400" [height]="600"></backshift-graph>
     </div>
   </div>
 </ion-content>

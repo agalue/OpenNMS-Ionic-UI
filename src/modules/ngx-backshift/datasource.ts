@@ -4,13 +4,13 @@ export abstract class DataSource {
 
   metrics: Metric[] = [];
 
-  constructor(args: any) {
-    if (args.metrics === undefined || args.metrics.length === 0) {
+  constructor(metrics: Metric[]) {
+    if (metrics === undefined || metrics.length === 0) {
       fail('DataSource needs one or more metrics.');
     }
-    this.metrics = args.metrics;
+    this.metrics = metrics;
   }
 
-  abstract query(start: number, end: number, resolution: number, args?: any) : Promise<any>;
+  abstract query(start: number, end: number, resolution: number) : Promise<any>;
 
 }

@@ -11,6 +11,7 @@ import { RequisitionNodeFilterPipe } from '../pipes/req-node-filter';
 import { ElasticDirective } from '../directives/elastic';
 
 import { OnmsTitleComponent } from '../components/title';
+import { OnmsBackshiftComponent } from '../components/backshift';
 
 import { SetupPage } from '../pages/setup/setup';
 import { ServersPage } from '../pages/servers/servers';
@@ -29,6 +30,7 @@ import { NodesPage } from '../pages/nodes/nodes';
 import { NodePage } from '../pages/node/node';
 import { AssetsPage } from '../pages/assets/assets';
 import { ResourcesPage } from '../pages/resources/resources';
+import { ResourceGraphsPage } from '../pages/resource-graphs/resource-graphs';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
 import { RequisitionPage } from '../pages/requisition/requisition';
@@ -58,8 +60,6 @@ import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
 import { OnmsRequisitionsService } from '../services/onms-requisitions';
 import { OnmsMapsService } from '../services/onms-maps';
 
-import { BackshiftComponent } from '../modules/ngx-backshift/backshift.component';
-
 @NgModule({
   declarations: [
     // Pipes
@@ -70,7 +70,7 @@ import { BackshiftComponent } from '../modules/ngx-backshift/backshift.component
     ElasticDirective,
     // Components
     OnmsTitleComponent,
-    BackshiftComponent,
+    OnmsBackshiftComponent,
     // Pages
     MyApp,
     SetupPage,
@@ -90,6 +90,7 @@ import { BackshiftComponent } from '../modules/ngx-backshift/backshift.component
     NodePage,
     AssetsPage,
     ResourcesPage,
+    ResourceGraphsPage,
     SnmpConfigPage,
     RequisitionsPage,
     RequisitionPage,
@@ -132,6 +133,7 @@ import { BackshiftComponent } from '../modules/ngx-backshift/backshift.component
     NodePage,
     AssetsPage,
     ResourcesPage,
+    ResourceGraphsPage,
     SnmpConfigPage,
     RequisitionsPage,
     RequisitionPage,

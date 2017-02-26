@@ -53,9 +53,14 @@ export class OnmsNodesService {
       .toPromise()
   }
 
-  // TODO: POC get data for last 2 hours
-  getMetricData(resourceId: string, metricId: string) : Promise<OnmsQueryResponse> {
-    return this.http.get(`/rest/measurements/${escape(resourceId)}/${metricId}?start=-7200000`)
+  getAvailableGraphs(resourceId: string) : Promise<string[]> {
+    return this.http.get(`/rest/graphs/for/${escape(resourceId)}`)
+      .map((response: Response) => response.json().name as string[])
+      .toPromise();
+  }
+
+  getMetricData(resourceId: string, metricId: string, start: number = -7200000) : Promise<OnmsQueryResponse> {
+    return this.http.get(`/rest/measurements/${escape(resourceId)}/${metricId}?start=${start}`)
       .map((response: Response) => OnmsQueryResponse.import(response.json()))
       .toPromise()
   }

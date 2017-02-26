@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      {{ reportName }}
+      <p class="subtitle">{{ resource?.id }}</p>
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+  <ion-list>
+    <ion-item>
+      <backshift-graph
+        [width]="width"
+        [height]="height"
+        [start]="start"
+        [end]="end"
+        [resourceId]="resource.id"
+        [reportName]="reportName">
+      </backshift-graph>
+    </ion-item>
+  </ion-list>
+</ion-content>

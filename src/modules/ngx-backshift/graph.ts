@@ -1,4 +1,3 @@
-
 import { GraphModel, TimeSpan, fail } from './models';
 import { DataSource } from './datasource';
 

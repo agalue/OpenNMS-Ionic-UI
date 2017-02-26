@@ -1,4 +1,3 @@
-
 export abstract class RrdGraphVisitor {
 
   protected abstract onTitle(title);

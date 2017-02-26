@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
+import { ResourceGraphsPage } from '../resource-graphs/resource-graphs';
 import { MeasurementsPage } from '../measurements/measurements';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsResource, OnmsResourcesByType } from '../../models/onms-resource';
@@ -40,9 +41,25 @@ export class ResourcesPage {
       });
   }
 
-  onShowMetrics(resource: OnmsResource) {
+  onShowGraphs(resource: OnmsResource) {
+    const loading = this.loadingCtrl.create({
+      content: 'Loading graphs...'
+    })
+    loading.present();
+    this.nodesService.getAvailableGraphs(resource.id)
+      .then((reports: string[]) => {
+        loading.dismiss();
+        this.showGraphs(resource, reports);
+      })
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Load Error', error)
+      });
+  }
+
+  private showGraphs(resource: OnmsResource, reports: string[]) {
     const options = this.alertCtrl.create({
-      title: 'Choose Metric',
+      title: 'Choose Report',
       buttons: [
         {
           text: 'Cancel',
@@ -50,19 +67,23 @@ export class ResourcesPage {
         },
         {
           text: 'Ok',
-          handler: metric => this.showData(resource, metric)
+          handler: reportName => this.showGraph(resource, reportName)
         }
       ]
     });
-    resource.rrdGraphAttributes.forEach(service => {
+    reports.forEach(reportName => {
       options.addInput({
         name: 'options',
-        value: service,
-        label: service,
+        value: reportName,
+        label: reportName,
         type: 'radio'
       })
     })
     options.present();
+  }
+
+  private showGraph(resource: OnmsResource, reportName: string) {
+    this.navCtrl.push(ResourceGraphsPage, { resource: resource, reportName: reportName });
   }
 
   private showData(resource: OnmsResource, metric: string) {
