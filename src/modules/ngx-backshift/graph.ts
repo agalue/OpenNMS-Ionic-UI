@@ -16,8 +16,8 @@ export abstract class Graph {
   lastSuccessfulQuery: number;
   timer: any;
 
-  width: number = 400;
-  height: number = 240;
+  width: number;
+  height: number;
   resolution: number = 0;
   start: number = 0;
   end: number = 0;

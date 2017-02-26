@@ -24,10 +24,6 @@ import * as d3 from 'd3';
 
 export class GraphC3 extends Graph {
 
-  width: number;
-  height: number;
-  title: string;
-  verticalLabel: string;
   interactive = true; // whether to do fancier chart navigation with mouse input events
   step = false; // treats points a segments (similar to rrdgraph)
   zoom = true; // whether to allow zooming

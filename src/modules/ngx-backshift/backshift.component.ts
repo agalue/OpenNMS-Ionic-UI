@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Http } from '@angular/http';
 
 import { PrefabGraph } from './models';
@@ -15,6 +15,8 @@ import { GraphC3 } from './graph-c3';
 export class BackshiftComponent implements OnInit {
 
   @ViewChild('backshiftGraph') element:ElementRef;
+  @Input('width') width: number;
+  @Input('height') height: number;
 
   constructor(private http: Http) {}
 
@@ -47,11 +49,12 @@ export class BackshiftComponent implements OnInit {
         metrics: graphModel.metrics
     });
     console.log(ds);
-
+    console.log(this.width);
+    console.log(this.height)
     // Build and render the graph
     const graph = new GraphC3({
-        width: 640,
-        height: 480,
+        width: this.width,
+        height: this.height,
         element: targetElement,
         start: start,
         end: end,
