@@ -1,11 +1,10 @@
-import { GraphModel, TimeSpan, fail } from './models';
-import { DataSource } from './datasource';
+import { GraphOptions, DataSource, GraphModel, TimeSpan, fail } from './models';
 
 export abstract class Graph {
 
   model: GraphModel;
   dataSource: DataSource;
-  element: string;
+  element: HTMLElement;
 
   title: string;
   verticalLabel: string;
@@ -26,18 +25,18 @@ export abstract class Graph {
   stream: boolean = true;
   checkInterval: number = 15 * 1000; // 15 seconds
 
-  constructor(args: any) {
-    if (args.dataSource === undefined) {
+  constructor(options: GraphOptions) {
+    if (options.dataSource === undefined) {
       fail('Graph needs a data source.');
     }
-    this.dataSource = args.dataSource;
+    this.dataSource = options.dataSource;
 
-    if (args.element === undefined) {
+    if (options.element === undefined) {
       fail('Graph needs an element.');
     }
 
-    this.element = args.element;
-    this.model = args.model || {};
+    this.element = options.element;
+    this.model = options.model;
     if (!this.model.metrics) {
       this.model.metrics = [];
     }
@@ -50,17 +49,15 @@ export abstract class Graph {
     if (!this.model.printStatements) {
       this.model.printStatements = [];
     }
-    this.title = args.title || this.model.title;
-    this.verticalLabel = args.verticalLabel || this.model.verticalLabel;
+    this.title = options.title || this.model.title;
+    this.verticalLabel = options.verticalLabel || this.model.verticalLabel;
     this.regexes = {};
     this.values = {};
     this.queryInProgress = false;
     this.lastSuccessfulQuery = 0;
     this.timer = null;
-    this.start = args.start;
-    this.end = args.end;
-
-    this.onInit(args);
+    this.start = options.start;
+    this.end = options.end;
   }
 
   render() {
@@ -86,8 +83,6 @@ export abstract class Graph {
     this.onCancel();
   }
 
-  abstract resize(size);
-
   destroy() {
     this.hideStatus();
     this.destroyTimer();
@@ -111,12 +106,12 @@ export abstract class Graph {
     }
   }
 
-  setStart(start) {
+  setStart(start: number) {
     this.start = start;
     this.refresh();
   }
 
-  setEnd(end) {
+  setEnd(end: number) {
     this.end = end;
     this.refresh();
   }
@@ -222,11 +217,11 @@ export abstract class Graph {
     }
   }
 
-  abstract showStatus(statusText);
+  abstract resize(size);
+
+  abstract showStatus(statusText: string);
 
   abstract hideStatus();
-
-  abstract onInit(args);
 
   abstract onRender();
 
@@ -238,7 +233,7 @@ export abstract class Graph {
 
   abstract onQuerySuccess(results);
 
-  abstract onQueryFailed(reason);
+  abstract onQueryFailed(reason: string);
 
   abstract onAfterQuery();
 

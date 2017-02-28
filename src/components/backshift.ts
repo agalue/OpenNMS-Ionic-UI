@@ -5,9 +5,9 @@ import { OnmsServersService } from '../services/onms-servers';
 import { HttpService } from '../services/http';
 
 import { Server, PrefabGraph } from '../modules/ngx-backshift/models';
-import { RrdGraphConverter } from '../modules/ngx-backshift/rrd-graph-converter';
-import { OnmsDataSource } from '../modules/ngx-backshift/datasource-opennms';
-import { GraphC3 } from '../modules/ngx-backshift/graph-c3';
+import { RrdGraphConverter } from '../modules/ngx-backshift/rrdgraph.converter';
+import { OnmsDataSource } from '../modules/ngx-backshift/datasource.opennms';
+import { GraphC3 } from '../modules/ngx-backshift/graph.c3';
 
 import 'rxjs/Rx';
 

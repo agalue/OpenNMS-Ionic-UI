@@ -1,3 +1,5 @@
+import { PrefabGraph } from './models';
+
 export abstract class RrdGraphVisitor {
 
   protected abstract onTitle(title);
@@ -11,12 +13,12 @@ export abstract class RrdGraphVisitor {
   protected abstract onGPrint(srcName, aggregation, value);
   protected abstract onComment(value);
 
-  protected visit(graphDef: any) {
-    var i, args, command, name, path, dsName, consolFun, rpnExpression, subParts, width, srcName,
-        color, legend, aggregation, value;
+  protected visit(graphDef: PrefabGraph) {
+    var args, command, name, path, dsName, consolFun, rpnExpression,
+      subParts, width, srcName, color, legend, aggregation, value;
     var parts = this.parseCommandLine(graphDef.command, true);
     var n = parts.length;
-    for (i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       if (parts[i].indexOf("--") === 0) {
         args = /--(.*)=(.*)/.exec(parts[i]);
         if (args === null) {

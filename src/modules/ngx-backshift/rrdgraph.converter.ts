@@ -1,5 +1,5 @@
-import { RrdGraphVisitor } from './rrd-graph-visitor';
-import { RpnToJexlConverter } from './rpm-to-jexl-converter';
+import { RrdGraphVisitor } from './rrdgraph.visitor';
+import { RpnToJexlConverter } from './rpn2jexl.converter';
 import { PrefabGraph, GraphModel } from './models';
 import { Consolidator } from './consolidator';
 
@@ -186,6 +186,6 @@ export class RrdGraphConverter extends RrdGraphVisitor {
       value: NaN,
       format: "%g " + legend
     });
- }
+  }
 
 }

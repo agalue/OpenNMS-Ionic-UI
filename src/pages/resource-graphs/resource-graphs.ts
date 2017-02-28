@@ -2,9 +2,15 @@ import { Component } from '@angular/core';
 import { NavParams, AlertController } from 'ionic-angular';
 
 import { OnmsResource } from '../../models/onms-resource';
-
 import { OnmsNodesService } from '../../services/onms-nodes';
 
+/*
+ * TODO: Add a select to choose the period.
+ *       Calculate the width according with the device or viewport width.
+ *       Make sure to adjust the width if the orientation changes.
+ *       Create FavoriteGraphsService to locally store the favorite graphs.
+ *       Add buttons for adding a graph to favorites or use slide options.
+ */
 @Component({
   selector: 'page-resource-graphs',
   templateUrl: 'resource-graphs.html'
@@ -27,7 +33,7 @@ export class ResourceGraphsPage {
   ionViewWillLoad() {
     this.resource = this.navParams.get('resource');
     this.end = Date.now();
-    this.start = this.end - (12*60*60*1000); // (30*24*60*60*1000); // 30 days ago
+    this.start = this.end - 86400000; // 24 hours
     this.nodesService.getAvailableGraphs(this.resource.id)
       .then((reports: string[]) => {
         this.reports = reports;

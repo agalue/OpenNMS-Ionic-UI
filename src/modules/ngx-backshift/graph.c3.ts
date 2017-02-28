@@ -1,6 +1,6 @@
 import { Graph } from './graph';
-import * as c3 from 'c3';
-import * as d3 from 'd3';
+import * as C3 from 'c3';
+import * as D3 from 'd3';
 
 /**
  * Current issues:
@@ -27,14 +27,13 @@ export class GraphC3 extends Graph {
   zoom = true; // whether to allow zooming
   clipboardPrimed = false;
 
-  chart: c3.ChartAPI;
+  chart: C3.ChartAPI;
   columns = [];
   groups = [];
   colorMap = {};
   typeMap = {};
   nameMap = {};
 
-  onInit(args) {}
   onBegin() {}
   onCancel() {}
 
@@ -60,7 +59,7 @@ export class GraphC3 extends Graph {
     }
   }
 
-  private shouldStack(k) : boolean {
+  private shouldStack(k: number) : boolean {
     // If there's stack following the area, set the area to stack
     if (this.model.series[k].type === "area") {
       var n = this.model.series.length;
@@ -161,13 +160,13 @@ export class GraphC3 extends Graph {
     this.updatePlot();
   }
 
-  onQueryFailed(reason) {
+  onQueryFailed(reason: string) {
     this.showStatus('Query failed.');
   }
 
-  showStatus(statusText) {
+  showStatus(statusText: string) {
     console.log(statusText);
-    const svg = d3.select(this.element).select('svg');
+    const svg = D3.select(this.element).select('svg');
     svg.node()
     if (svg) {
       const boundingRect = (<Element>svg.node()).getBoundingClientRect();
@@ -185,15 +184,15 @@ export class GraphC3 extends Graph {
   }
 
   hideStatus() {
-    var svg = d3.select(this.element).select('svg');
+    var svg = D3.select(this.element).select('svg');
     if (svg) {
       svg.select("#chart-status-text").remove();
     }
   }
 
   private updatePlot() {
-    let plotConfig: c3.ChartConfiguration = {
-      bindto: this.element, //d3.select(this.element),
+    let plotConfig: C3.ChartConfiguration = {
+      bindto: this.element, //D3.select(this.element),
       interaction: {
         enabled: this.interactive
       },
@@ -221,7 +220,7 @@ export class GraphC3 extends Graph {
         y: {
           label: this.verticalLabel,
           tick: {
-            format: d3.format(".2s")
+            format: D3.format(".2s")
           }
         }
       },
@@ -242,15 +241,11 @@ export class GraphC3 extends Graph {
       zoom: {
         enabled: this.zoom
       },
-      /*
-      title: {
-        text: this.title
-      },*/
       tooltip: {
         format: {
           title: function (d) { return d; },
           value: function (value, ratio, id) {
-            return d3.format(".4s")(value);
+            return D3.format(".4s")(value);
           }
         }
       }
@@ -288,7 +283,7 @@ export class GraphC3 extends Graph {
       delete plotConfig.axis.x.tick.count;
     }
 
-    this.chart = c3.generate(plotConfig);
+    this.chart = C3.generate(plotConfig);
   }
 
 }

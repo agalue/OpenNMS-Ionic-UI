@@ -146,9 +146,9 @@ export class RpnToJexlConverter {
 
   }
 
-  convert(rpn) {
+  convert(rpn: string) : string {
     var token, tokens, n, i, stack = [];
-    tokens = rpn.split(",");
+    tokens = rpn.split(',');
     n = tokens.length;
     for (i = 0; i < n; i++) {
       token = tokens[i];

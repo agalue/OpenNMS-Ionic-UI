@@ -1,7 +1,7 @@
-export class Server {
-  public url: string;
-  public username: string;
-  public password: string;
+export interface Server {
+  url: string;
+  username: string;
+  password: string;
 }
 
 export class TimeSpan {
@@ -36,32 +36,32 @@ export class PrefabGraph {
   public height?: number;
 }
 
-export class Metric {
-  public name: string;
-  public transient?: boolean;
-  public attribute?: string;
-  public resourceId?: string;
-  public datasource?: string;
-  public aggregation?: string;
-  public expression?: string;
-  public type?: string;
-  public parameter?: string;
+export interface Metric {
+  name: string;
+  transient?: boolean;
+  attribute?: string;
+  resourceId?: string;
+  datasource?: string;
+  aggregation?: string;
+  expression?: string;
+  type?: string;
+  parameter?: string;
 }
 
-export class Value {
-  public name: string;
-  public expression: ConsolidatorFunction
+export interface Value {
+  name: string;
+  expression: ConsolidatorFunction
 }
 
-export class Serie {
-  public metric: string;
-  public type: string;
+export interface Serie {
+  metric: string;
+  type: string;
 }
 
-export class PrintStatement {
-  public metric?: string;
-  public value?: number;
-  public format: string;
+export interface PrintStatement {
+  metric?: string;
+  value?: number;
+  format: string;
 }
 
 export class GraphModel {
@@ -72,6 +72,36 @@ export class GraphModel {
   public series: Serie[] = [];
   public printStatements: PrintStatement[] = [];
   public properties: Object = {};
+}
+
+export interface GraphOptions {
+  width: number,
+  height: number,
+  element: HTMLElement,
+  start: number,
+  end: number,
+  dataSource: DataSource,
+  model: GraphModel,
+  step: boolean,
+  title: string,
+  verticalLabel: string,
+  interactive: boolean,
+  beginOnRender: boolean
+}
+
+export abstract class DataSource {
+
+  metrics: Metric[] = [];
+
+  constructor(metrics: Metric[]) {
+    if (metrics === undefined || metrics.length === 0) {
+      fail('DataSource needs one or more metrics.');
+    }
+    this.metrics = metrics;
+  }
+
+  abstract query(start: number, end: number, resolution: number) : Promise<any>;
+
 }
 
 export abstract class ConsolidatorFunction {

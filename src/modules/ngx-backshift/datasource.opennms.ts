@@ -1,6 +1,5 @@
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
-import { Server, Metric } from './models';
-import { DataSource } from './datasource';
+import { DataSource, Server, Metric } from './models';
 import 'rxjs/Rx';
 
 export class OnmsDataSource extends DataSource {
@@ -64,7 +63,7 @@ export class OnmsDataSource extends DataSource {
           label: metric.name,
           transient: metric.transient
         };
-        qrSource.value = qrSource.value.replace("{diffTime}", timeDeltaInSeconds);
+        qrSource.value = qrSource.value.replace("__diff_time", timeDeltaInSeconds);
         queryRequest.expression.push(qrSource);
       }
     });
