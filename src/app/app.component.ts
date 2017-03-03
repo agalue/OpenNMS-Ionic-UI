@@ -27,7 +27,7 @@ export class MyApp implements OnDestroy {
 
   rootPage: any;
   onmsServer: OnmsServer;
-  groups: Array<{name: string, pages: Array<{title: string, component: any}>}>;
+  groups: Array<{name: string, pages: Array<{title: string, icon: string, component: any}>}>;
 
   private subscription: Subscription;
 
@@ -42,20 +42,20 @@ export class MyApp implements OnDestroy {
       {
         name: 'Status',
         pages: [
-          { title: 'Home', component: HomePage },
-          { title: 'Events', component: EventsPage },
-          { title: 'Alarms', component: AlarmsPage },
-          { title: 'Outages', component: OutagesPage },
-          { title: 'Notifications', component: NotificationsPage },
-          { title: 'Nodes', component: NodesPage },
-          { title: 'Regional Status', component: RegionalStatusPage }
+          { title: 'Home', icon: 'home', component: HomePage },
+          { title: 'Events', icon: 'information-circle', component: EventsPage },
+          { title: 'Alarms', icon: 'alarm', component: AlarmsPage },
+          { title: 'Outages', icon: 'thunderstorm', component: OutagesPage },
+          { title: 'Notifications', icon: 'notifications', component: NotificationsPage },
+          { title: 'Nodes', icon: 'laptop', component: NodesPage },
+          { title: 'Regional Status', icon: 'map', component: RegionalStatusPage }
         ]
       },{
         name: 'Admin',
         pages: [
-          { title: 'SNMP Config', component: SnmpConfigPage },
-          { title: 'Requisitions', component: RequisitionsPage },
-          { title: 'Servers', component: ServersPage }
+          { title: 'SNMP Config', icon: 'hammer', component: SnmpConfigPage },
+          { title: 'Requisitions', icon: 'settings', component: RequisitionsPage },
+          { title: 'Servers', icon: 'desktop', component: ServersPage }
         ]
       }
     ];

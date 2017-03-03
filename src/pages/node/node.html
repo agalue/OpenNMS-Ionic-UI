@@ -80,18 +80,18 @@
           <div class="category">{{ c.name }}</div>
         </ion-item>
       </ion-list>
-      <ion-list >
+      <ion-list>
         <ion-list-header>Location</ion-list-header>
         <ion-item>
           <div id="map" *ngIf="node.hasLocation()"></div>
-          <ion-grid>
+          <ion-grid no-padding>
             <ion-row>
-              <ion-col>
+              <ion-col width-50>
                 <button ion-button small block outline icon-left type="button" (click)="onUseCurrentLocation()">
                   <ion-icon name="locate"></ion-icon> Use current location
                 </button>
               </ion-col>
-              <ion-col>
+              <ion-col width-50>
                 <button ion-button small block outline icon-left type="button" (click)="onSelectOnMap()">
                   <ion-icon name="map"></ion-icon> Select on Map
                 </button>
