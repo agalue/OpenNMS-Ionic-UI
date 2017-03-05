@@ -36,7 +36,10 @@ export class NodesPage {
         loading.dismiss();
         this.noNodes = this.nodes.length == 0
       })
-      .catch(() => loading.dismiss());
+      .catch(error => {
+        loading.dismiss()
+        this.alert('Load Error', error);
+      });
   }
 
   onShowNode(node: OnmsNode) {
@@ -57,20 +60,22 @@ export class NodesPage {
 
   onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadNodes().then((canScroll: boolean) => {
-      infiniteScroll.complete();
-      infiniteScroll.enable(canScroll);
-    });
+    this.loadNodes()
+      .then((canScroll: boolean) => {
+        infiniteScroll.complete();
+        infiniteScroll.enable(canScroll);
+      })
+      .catch(error => this.alert('Load Error', error));
   }
 
   private loadNodes() : Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.nodesService.getNodes(this.start, this.nodeFilter)
         .then((nodes: OnmsNode[]) => {
           nodes.forEach(n => this.nodes.push(n));
           resolve(nodes.length > 0);
         })
-        .catch(error => this.alert('Load Error', error))
+        .catch(error => reject(error));
     });
   }
 

@@ -43,7 +43,10 @@ export class EventsPage {
         loading.dismiss();
         this.noEvents = this.events.length == 0
       })
-      .catch(() => loading.dismiss());
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Load Error', error);
+      });
   }
 
   onShowEvent(event: OnmsEvent) {
@@ -64,10 +67,12 @@ export class EventsPage {
 
   onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadEvents().then((canScroll: boolean) => {
-      infiniteScroll.complete();
-      infiniteScroll.enable(canScroll);
-    });
+    this.loadEvents()
+      .then((canScroll: boolean) => {
+        infiniteScroll.complete();
+        infiniteScroll.enable(canScroll);
+      })
+      .catch(error => this.alert('Load Error', error));
   }
 
   formatUei(uei: string) {
@@ -83,14 +88,14 @@ export class EventsPage {
   }
 
   private loadEvents() : Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const filter = new OnmsApiFilter('eventDescr', this.eventFilter);
       this.eventsService.getEvents(this.start, [filter])
         .then((events: OnmsEvent[]) => {
           events.forEach(e => this.events.push(e));
           resolve(events.length > 0);
         })
-        .catch(error => this.alert('Load Error', error))
+        .catch(error => reject(error))
     });
   }
 
