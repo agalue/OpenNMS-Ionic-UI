@@ -2,22 +2,37 @@
   <ion-navbar>
     <ion-title>
       Graphs
-      <p class="subtitle">{{ resource?.id }}</p>
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content no-padding text-center>
-  <p>{{ resource?.label }}</p>
-  <ion-list>
-    <ion-item *ngFor="let report of reports">
-      <backshift-graph
+<ion-content no-padding>
+  <ion-list no-lines>
+    <ion-item>
+      {{ resource?.label }}
+      <p>{{ resource?.id }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked>Choose Range</ion-label>
+      <ion-select [(ngModel)]="timeRangeSelected" [disabled]="!timeRanges || timeRanges.length == 0" (ionChange)="onTimeRangeChange()">
+        <ion-option *ngFor="let timeRange of timeRanges" [value]="timeRange.range">{{ timeRange.title }}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>Choose Graph</ion-label>
+      <ion-select [(ngModel)]="prefabGraph" [disabled]="!prefabs || prefabs.length == 0">
+        <ion-option *ngFor="let prefab of prefabs" [value]="prefab">{{ prefab.title }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <backshift-graph *ngIf="prefabGraph"
         [width]="width"
         [height]="height"
         [start]="start"
         [end]="end"
         [resourceId]="resource.id"
-        [reportName]="report">
+        [(prefabGraph)]="prefabGraph">
       </backshift-graph>
     </ion-item>
   </ion-list>

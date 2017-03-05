@@ -1,13 +1,11 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { Http, Response } from '@angular/http';
-
-import { OnmsServersService } from '../services/onms-servers';
-import { HttpService } from '../services/http';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, ViewChild, ElementRef } from '@angular/core';
+import { Http } from '@angular/http';
 
 import { Server, PrefabGraph } from '../modules/ngx-backshift/models';
 import { RrdGraphConverter } from '../modules/ngx-backshift/rrdgraph.converter';
 import { OnmsDataSource } from '../modules/ngx-backshift/datasource.opennms';
 import { GraphC3 } from '../modules/ngx-backshift/graph.c3';
+import { OnmsServersService } from '../services/onms-servers';
 
 import 'rxjs/Rx';
 
@@ -18,14 +16,14 @@ import 'rxjs/Rx';
     <div #backshiftGraph></div>
   `
 })
-export class OnmsBackshiftComponent implements OnInit {
+export class OnmsBackshiftComponent implements OnInit, OnChanges {
 
   @ViewChild('backshiftGraph') element:ElementRef;
 
   @Input('width') width: number;
   @Input('height') height: number;
   @Input('resourceId') resourceId: string;
-  @Input('reportName') reportName: string;
+  @Input('prefabGraph') prefabGraph: PrefabGraph;
   @Input('start') start: number;
   @Input('end') end: number;
 
@@ -34,7 +32,6 @@ export class OnmsBackshiftComponent implements OnInit {
 
   constructor(
     private http: Http,
-    private httpService: HttpService,
     private serversService: OnmsServersService
   ) {}
 
@@ -42,19 +39,21 @@ export class OnmsBackshiftComponent implements OnInit {
     this.serversService.getDefaultServer()
       .then(server => {
         this.server = server as Server;
-        this.getPrefabGraph()
-          .then(prefab => this.renderGraph(prefab))
-          .catch(error => console.error(error));
+        this.renderGraph();
       })
       .catch(error => console.error(error));
   }
 
-  private renderGraph(prefabGraph: PrefabGraph) {
-    this.graphTitle = prefabGraph.title;
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.server) this.renderGraph();
+  }
+
+  private renderGraph() {
+    this.graphTitle = this.prefabGraph.title;
     const targetElement = this.element.nativeElement;
 
     // Convert the graph definition to a supported model
-    const rrdGraphConverter = new RrdGraphConverter(prefabGraph, this.resourceId);
+    const rrdGraphConverter = new RrdGraphConverter(this.prefabGraph, this.resourceId);
     const graphModel = rrdGraphConverter.model;
 
     // Build the data-source
@@ -77,13 +76,6 @@ export class OnmsBackshiftComponent implements OnInit {
     });
 
     graph.render();
-    setTimeout(() => graph.begin(), 1000);
-  }
-
-  getPrefabGraph() : Promise<PrefabGraph> {
-    return this.httpService.get(`/rest/graphs/${this.reportName}`)
-      .map((response: Response) => response.json() as PrefabGraph)
-      .toPromise();
   }
 
 }

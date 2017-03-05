@@ -9,9 +9,9 @@ import * as C3 from 'c3';
 
 export class GraphC3 extends Graph {
 
-  interactive = true; // whether to do fancier chart navigation with mouse input events
+  interactive = false; // whether to do fancier chart navigation with mouse input events
   step = false; // treats points a segments (similar to rrdgraph)
-  zoom = true; // whether to allow zooming
+  zoom = false; // whether to allow zooming
   clipboardPrimed = false;
 
   chart: C3.ChartAPI;

@@ -6,6 +6,7 @@ import { OnmsIpInterface } from '../models/onms-ip-interface';
 import { OnmsSnmpInterface } from '../models/onms-snmp-interface';
 import { OnmsResource } from '../models/onms-resource';
 import { OnmsQueryResponse } from '../models/onms-query-response';
+import { PrefabGraph } from '../modules/ngx-backshift/models';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -53,10 +54,24 @@ export class OnmsNodesService {
       .toPromise()
   }
 
-  getAvailableGraphs(resourceId: string) : Promise<string[]> {
-    return this.http.get(`/rest/graphs/for/${escape(resourceId)}`)
-      .map((response: Response) => response.json().name as string[])
-      .toPromise();
+  getAvailableGraphs(resourceId: string) : Promise<PrefabGraph[]> {
+    return new Promise((resolve, reject) => {
+      this.http.get(`/rest/graphs/for/${escape(resourceId)}`)
+        .map((response: Response) => response.json().name as string[])
+        .toPromise()
+        .then((reports: string[]) => {
+          let promises: Promise<PrefabGraph>[] = [];
+          reports.forEach(report =>
+            promises.push(this.http.get(`/rest/graphs/${report}`)
+              .map((response: Response) => response.json() as PrefabGraph)
+              .toPromise())
+          );
+          Promise.all(promises)
+            .then((prefabs: PrefabGraph[]) => resolve(prefabs))
+            .catch(error => reject(error));
+        })
+        .catch(error => reject(error))
+    })
   }
 
   getMetricData(resourceId: string, metricId: string, start: number = -7200000) : Promise<OnmsQueryResponse> {
