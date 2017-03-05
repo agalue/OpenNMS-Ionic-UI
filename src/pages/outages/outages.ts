@@ -43,7 +43,10 @@ export class OutagesPage {
         loading.dismiss();
         this.noOutages = this.outages.length == 0
       })
-      .catch(() => loading.dismiss());
+      .catch(error => {
+        loading.dismiss();
+        this.alert('Load Error', error);
+      });
   }
 
   onShowOutage(outage: OnmsOutage) {
@@ -64,10 +67,12 @@ export class OutagesPage {
 
   onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadOutages().then((canScroll: boolean) => {
-      infiniteScroll.complete();
-      infiniteScroll.enable(canScroll);
-    });
+    this.loadOutages()
+      .then((canScroll: boolean) => {
+        infiniteScroll.complete();
+        infiniteScroll.enable(canScroll);
+      })
+      .catch(error => this.alert('Load Error', error));
   }
 
   formatUei(uei: string) {
@@ -79,14 +84,14 @@ export class OutagesPage {
   }
 
   private loadOutages() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const filter = new OnmsApiFilter('serviceLostEvent.eventDescr', this.outageFilter);
       this.outagesService.getOutages(this.start, [filter])
         .then(outages => {
           outages.forEach(e => this.outages.push(e));
           resolve(true);
         })
-        .catch(error => this.alert('Load Error', error))
+        .catch(error => reject(error))
     });
   }
 
