@@ -1,15 +1,10 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.Consolidator.js
+ */
+
 import { ConsolidatorFunction, fail } from './models';
 
-/**
- * References:
- *   http://oss.oetiker.ch/rrdtool/doc/rrdgraph_data.en.html
- *   http://oss.oetiker.ch/rrdtool/doc/rrdgraph_rpn.en.html
- *
- * > Note that currently only aggregation functions work in VDEF rpn expressions.
- *
- * RRDtool currently supports a very limited subset of expressions - they must have the following form:
- * 'SERIES,[PARAMETER,]FUNCTION' whereas SERIES is a existing series and PARAMETER is a value.
- */
 class Minimum extends ConsolidatorFunction {
   handler(timestamps: number[], values: number[]) : [number, number] {
     let minimumTimestamp = undefined;

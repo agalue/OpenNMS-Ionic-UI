@@ -1,10 +1,10 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.RpnToJexlConverter.js
+ */
+
 import { fail } from './models';
 
-/**
- * References:
- *   http://oss.oetiker.ch/rrdtool/doc/rrdgraph_rpn.en.html
- *   http://commons.apache.org/proper/commons-jexl/reference/syntax.html
- */
 export class RpnToJexlConverter {
 
   operators = {};

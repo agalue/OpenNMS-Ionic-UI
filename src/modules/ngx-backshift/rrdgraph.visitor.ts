@@ -1,3 +1,8 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.RrdGraphVisitor.js
+ */
+
 import { PrefabGraph } from './models';
 
 export abstract class RrdGraphVisitor {

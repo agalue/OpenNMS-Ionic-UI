@@ -1,3 +1,8 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Graph.js
+ */
+
 import { GraphOptions, DataSource, GraphModel, TimeSpan, fail } from './models';
 
 export abstract class Graph {

@@ -1,3 +1,8 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.DataSource.OpenNMS.js
+ */
+
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { DataSource, Server, Metric } from './models';
 import 'rxjs/Rx';

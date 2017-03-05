@@ -1,3 +1,8 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.RrdGraphConverter.js
+ */
+
 import { RrdGraphVisitor } from './rrdgraph.visitor';
 import { RpnToJexlConverter } from './rpn2jexl.converter';
 import { PrefabGraph, GraphModel } from './models';

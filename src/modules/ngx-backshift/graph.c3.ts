@@ -1,25 +1,12 @@
+/*
+ * Original JavaScript source:
+ * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Graph.C3.js
+ */
+
 import { Graph } from './graph';
 import * as C3 from 'c3';
 import * as D3 from 'd3';
 
-/**
- * Current issues:
- *   - Can't tell the difference between 0 and NaN without mouseover - use regions to identify these?
- *
- * Features to add:
- *   - Improved X-axis legend - the format should depend on the time-span
- *   - Add support for retrieving min/max and average values
- *   - Identify outages with regions: http://c3js.org/samples/region_timeseries.html
- *   - Identify events with grid lines: http://c3js.org/samples/grid_x_lines.html
- *
- * Notes:
- *   - Opacity for the area can be set with:
- *     .c3-area {
- *          stroke-width: 0;
- *          opacity: 1.0;
- *      }
- *
- */
 export class GraphC3 extends Graph {
 
   interactive = true; // whether to do fancier chart navigation with mouse input events
