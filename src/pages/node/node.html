@@ -7,23 +7,25 @@
     </ion-buttons>
     <ion-title>{{ node.label }}</ion-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment padding [(ngModel)]="mode">
+      <ion-segment-button value="info" (ionSelect)="onSegmentSelect()">
+        Info
+      </ion-segment-button>
+      <ion-segment-button value="availability">
+        Availability
+      </ion-segment-button>
+      <ion-segment-button value="ip">
+        IP
+      </ion-segment-button>
+      <ion-segment-button value="snmp">
+        SNMP
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content no-padding>
-  <ion-segment padding [(ngModel)]="mode">
-    <ion-segment-button value="info" (ionSelect)="onSegmentSelect()">
-      Info
-    </ion-segment-button>
-    <ion-segment-button value="availability">
-      Availability
-    </ion-segment-button>
-    <ion-segment-button value="ip">
-      IP
-    </ion-segment-button>
-    <ion-segment-button value="snmp">
-      SNMP
-    </ion-segment-button>
-  </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'info'">
       <ion-list paading no-lines *ngIf="inScheduledOutage">
@@ -121,29 +123,28 @@
     </div>
     <div *ngSwitchCase="'availability'">
       <div *ngIf="availability">
-        <br>
         <ion-list>
           <ion-item>
             <ion-grid no-padding>
               <ion-row>
-                <ion-col width-67><b>Overall Availability</b></ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75><b>Overall Availability</b></ion-col>
+                <ion-col width-35 text-right [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }}%</ion-col>
               </ion-row>
               <ion-row>
-                <ion-col width-67><b>Services Down</b></ion-col>
-                <ion-col width-33>{{ availability.serviceDownCount }} of {{ availability.serviceCount }}</ion-col>
+                <ion-col width-75><b>Services Down</b></ion-col>
+                <ion-col width-25 text-right>{{ availability.serviceDownCount }} of {{ availability.serviceCount }}</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
           <ion-item *ngFor="let intf of availability.ipInterfaces">
             <ion-grid no-padding>
               <ion-row>
-                <ion-col width-67>{{ intf.address }}</ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75>{{ intf.address }}</ion-col>
+                <ion-col width-25 text-right [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.4-4' }}%</ion-col>
               </ion-row>
               <ion-row *ngFor="let service of intf.services">
-                <ion-col width-67>&nbsp;&nbsp;&nbsp;&nbsp;{{ service.name }}</ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75>&nbsp;&nbsp;&nbsp;&nbsp;{{ service.name }}</ion-col>
+                <ion-col width-25 text-right [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.4-4' }}%</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
@@ -151,7 +152,6 @@
       </div>
     </div>
     <div *ngSwitchCase="'ip'">
-      <br>
       <ion-list>
         <ion-item *ngFor="let intf of node.ipInterfaces">
           <ion-grid no-padding>
@@ -161,6 +161,10 @@
             <ion-row>
               <ion-col width-33><b>Status</b></ion-col>
               <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col width-33><b>Is Primary ?</b></ion-col>
+              <ion-col width-67>{{ intf.snmpPrimary == 'P' ? 'Yes' : 'No' }}</ion-col>
             </ion-row>
             <ion-row *ngIf="intf.snmpInterface">
               <ion-col width-33><b>Interface</b></ion-col>
@@ -175,12 +179,10 @@
               <ion-col width-67>{{ intf.monitoredServiceCount }}</ion-col>
             </ion-row>
           </ion-grid>
-          <ion-icon item-left [name]="intf.snmpPrimary == 'P' ? 'attach' : ''"></ion-icon>
         </ion-item>
       </ion-list>
     </div>
     <div *ngSwitchCase="'snmp'">
-      <br>
       <ion-list>
         <ion-item *ngFor="let intf of node.snmpInterfaces">
           <ion-grid no-padding>
