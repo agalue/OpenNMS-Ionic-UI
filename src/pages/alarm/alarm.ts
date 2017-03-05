@@ -60,34 +60,12 @@ export class AlarmPage {
   }
 
   onShareAlarm() {
-    SocialSharing.canShareViaEmail().then(() => {
-      let alert = this.alertCtrl.create({
-        title: 'Email Recipient',
-        inputs: [
-          {
-            name: 'recipient',
-            placeholder: 'Email Address',
-            type: 'email'
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-          },
-          {
-            text: 'Send',
-            handler: data => this.shareAlarm(data.recipient)
-          }
-        ]
-      });
-      alert.present();
-    }).catch(() => {
-      this.alert('Cannot Share', 'Sorry, it is not possible to share via email.');
-    });
+    SocialSharing.canShareViaEmail()
+      .then(() => this.shareAlarm())
+      .catch(() => this.alert('Cannot Share', 'Sorry, it is not possible to share via email.'));
   }
 
-  private shareAlarm(recipient: string) {
+  private shareAlarm() {
     let subject = `OpenNMS Alarm ${this.alarm.id}: ${this.uiService.getFormattedUei(this.alarm.uei)}`;
     let body = `
       <b>${this.alarm.uei}</b>
@@ -97,11 +75,8 @@ export class AlarmPage {
       <br><b>Description</b><br>
       ${this.alarm.description}
     `;
-    SocialSharing.shareViaEmail(body, subject, [recipient]).then(() => {
-      this.toast(`Alarm sent to ${recipient}`);
-    }).catch(error => {
-      this.alert('Cannt send Email', error);
-    });
+    SocialSharing.shareViaEmail(body, subject, null)
+      .catch(error => this.alert('Cannot Send Email', error));
   }
 
   private toast(message: string) {
