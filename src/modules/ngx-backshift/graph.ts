@@ -35,11 +35,9 @@ export abstract class Graph {
       fail('Graph needs a data source.');
     }
     this.dataSource = options.dataSource;
-
     if (options.element === undefined) {
       fail('Graph needs an element.');
     }
-
     this.element = options.element;
     this.model = options.model;
     if (!this.model.metrics) {
@@ -95,13 +93,10 @@ export abstract class Graph {
   }
 
   createTimer() {
-    var self = this;
-    self.destroyTimer();
-    self.timer = setInterval(function () {
-      if (self.shouldRefresh()) {
-        self.refresh();
-      }
-    }, self.checkInterval);
+    this.destroyTimer();
+    this.timer = setInterval(() => {
+      if (this.shouldRefresh()) this.refresh()
+    }, this.checkInterval);
   }
 
   destroyTimer() {
@@ -145,7 +140,6 @@ export abstract class Graph {
     this.values = {};
     for (var i = 0; i < this.model.values.length; i++) {
       var value = this.model.values[i];
-
       this.values[value.name] = {
         metricName: value.expression.metricName,
         functionName: value.expression.functionName,
@@ -202,7 +196,6 @@ export abstract class Graph {
     if (this.start === 0 && this.end === 0 && this.last === 0) {
       fail('Graph needs start and end, or last to be non-zero.');
     }
-
     var timeSpan = new TimeSpan();
     if (this.last > 0) {
       timeSpan.end = Date.now();

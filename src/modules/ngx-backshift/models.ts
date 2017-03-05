@@ -140,6 +140,6 @@ export abstract class ConsolidatorFunction {
 }
 
 export function fail(msg: string) {
-  console.log(`Error: ${msg}`);
+  console.error(`Error: ${msg}`);
   throw `Error: ${msg}`;  
 }

@@ -52,17 +52,13 @@ export class OnmsBackshiftComponent implements OnInit {
   private renderGraph(prefabGraph: PrefabGraph) {
     this.graphTitle = prefabGraph.title;
     const targetElement = this.element.nativeElement;
-    console.log(prefabGraph);
-    console.log(targetElement);
 
     // Convert the graph definition to a supported model
     const rrdGraphConverter = new RrdGraphConverter(prefabGraph, this.resourceId);
     const graphModel = rrdGraphConverter.model;
-    console.log(graphModel);
 
     // Build the data-source
     const ds = new OnmsDataSource(this.http, this.server, graphModel.metrics);
-    console.log(ds);
 
     // Build and render the graph
     const graph = new GraphC3({
@@ -79,7 +75,6 @@ export class OnmsBackshiftComponent implements OnInit {
         interactive: false,
         beginOnRender: false
     });
-    console.log(graph);
 
     graph.render();
     setTimeout(() => graph.begin(), 1000);

@@ -32,12 +32,12 @@ export class OnmsDataSource extends DataSource {
 
   getQueryRequest(start, end, resolution) {
     var queryRequest = {
-      "start": start,
-      "end": end,
-      "step": resolution > 0 ? Math.floor((end - start) / resolution) : 1,
-      "source": [],
-      "expression": [],
-      "filter": []
+      start: start,
+      end: end,
+      step: resolution > 0 ? Math.floor((end - start) / resolution) : 1,
+      source: [],
+      expression: [],
+      filter: []
     };
 
     var timeDeltaInSeconds = end - start;

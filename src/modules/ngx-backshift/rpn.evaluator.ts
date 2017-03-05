@@ -3,6 +3,8 @@
  * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.RpnEvaluator.js
  */
 
+import { fail } from './models';
+
 export class RpnEvaluator {
 
   operators = {};
@@ -124,7 +126,7 @@ export class RpnEvaluator {
     if (stack.length === 1) {
       return stack.pop();
     } else {
-      this.fail('Too many input values in RPN express. RPN: ' + rpn + ' Stack: ' + JSON.stringify(stack));
+      fail(`Too many input values in RPN express. RPN: ${rpn} Stack: ${JSON.stringify(stack)}`);
     }
   }
 
@@ -134,11 +136,6 @@ export class RpnEvaluator {
 
   private eval(token, stack, context) {
     return this.operators[token](stack, context);
-  }
-
-  private fail(msg: string) {
-    console.log(`Error: ${msg}`);
-    throw `Error: ${msg}`;
   }
 
 }
