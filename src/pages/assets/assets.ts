@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Http, Response } from '@angular/http';
 import { NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
-import 'rxjs/Rx';
 
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsRequisitionAsset } from '../../models/onms-requisition-asset';
-import { OnmsAssetConfig } from '../../models/onms-asset-config';
+import { OnmsAssetConfig, OnmsAssetConfigGroups } from '../../models/onms-asset-config';
 import { OnmsNodesService } from '../../services/onms-nodes';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
@@ -17,7 +15,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 export class AssetsPage {
 
   node: OnmsNode;
-  configGroups: OnmsAssetConfig[] = [];
+  configGroups: OnmsAssetConfig[] = OnmsAssetConfigGroups;
 
   constructor(
     private navCtrl: NavController,
@@ -26,15 +24,9 @@ export class AssetsPage {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private nodesService: OnmsNodesService,
-    private requisitionsService: OnmsRequisitionsService,
-    private http: Http
+    private requisitionsService: OnmsRequisitionsService
   ) {
     this.node = navParams.get('node');
-    this.http.get('/assets/assets-config.json')
-      .map((response: Response) => OnmsAssetConfig.importAll(response.json()))
-      .toPromise()
-      .then(items => this.configGroups = items)
-      .catch(error => this.alert('Load Config', 'Cannot load configuration.'));
   }
 
   onSave(form: NgForm) {
