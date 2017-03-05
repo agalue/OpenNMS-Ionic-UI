@@ -7,23 +7,25 @@
     </ion-buttons>
     <ion-title>{{ node.label }}</ion-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment padding [(ngModel)]="mode">
+      <ion-segment-button value="info" (ionSelect)="onSegmentSelect()">
+        Info
+      </ion-segment-button>
+      <ion-segment-button value="availability">
+        Availability
+      </ion-segment-button>
+      <ion-segment-button value="ip">
+        IP
+      </ion-segment-button>
+      <ion-segment-button value="snmp">
+        SNMP
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content np-padding>
-  <ion-segment padding [(ngModel)]="mode">
-    <ion-segment-button value="info" (ionSelect)="onSegmentSelect()">
-      Info
-    </ion-segment-button>
-    <ion-segment-button value="availability">
-      Availability
-    </ion-segment-button>
-    <ion-segment-button value="ip">
-      IP
-    </ion-segment-button>
-    <ion-segment-button value="snmp">
-      SNMP
-    </ion-segment-button>
-  </ion-segment>
+<ion-content no-padding>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'info'">
       <ion-list paading no-lines *ngIf="inScheduledOutage">
@@ -80,18 +82,18 @@
           <div class="category">{{ c.name }}</div>
         </ion-item>
       </ion-list>
-      <ion-list >
+      <ion-list>
         <ion-list-header>Location</ion-list-header>
         <ion-item>
           <div id="map" *ngIf="node.hasLocation()"></div>
-          <ion-grid>
+          <ion-grid no-padding>
             <ion-row>
-              <ion-col>
+              <ion-col width-50>
                 <button ion-button small block outline icon-left type="button" (click)="onUseCurrentLocation()">
-                  <ion-icon name="locate"></ion-icon> Use current location
+                  <ion-icon name="locate"></ion-icon> Locate Me
                 </button>
               </ion-col>
-              <ion-col>
+              <ion-col width-50>
                 <button ion-button small block outline icon-left type="button" (click)="onSelectOnMap()">
                   <ion-icon name="map"></ion-icon> Select on Map
                 </button>
@@ -121,29 +123,28 @@
     </div>
     <div *ngSwitchCase="'availability'">
       <div *ngIf="availability">
-        <br>
         <ion-list>
           <ion-item>
-            <ion-grid>
+            <ion-grid no-padding>
               <ion-row>
-                <ion-col><b>Overall Availability</b></ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75><b>Overall Availability</b></ion-col>
+                <ion-col width-35 text-right [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }}%</ion-col>
               </ion-row>
               <ion-row>
-                <ion-col><b>Services Down</b></ion-col>
-                <ion-col width-33>{{ availability.serviceDownCount }} of {{ availability.serviceCount }}</ion-col>
+                <ion-col width-75><b>Services Down</b></ion-col>
+                <ion-col width-25 text-right>{{ availability.serviceDownCount }} of {{ availability.serviceCount }}</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
           <ion-item *ngFor="let intf of availability.ipInterfaces">
-            <ion-grid>
+            <ion-grid no-padding>
               <ion-row>
-                <ion-col><b>{{ intf.address }}</b></ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75>{{ intf.address }}</ion-col>
+                <ion-col width-25 text-right [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.4-4' }}%</ion-col>
               </ion-row>
               <ion-row *ngFor="let service of intf.services">
-                <ion-col>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ service.name }}</b></ion-col>
-                <ion-col width-33 [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.5-5' }} %</ion-col>
+                <ion-col width-75>&nbsp;&nbsp;&nbsp;&nbsp;{{ service.name }}</ion-col>
+                <ion-col width-25 text-right [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.4-4' }}%</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
@@ -151,64 +152,69 @@
       </div>
     </div>
     <div *ngSwitchCase="'ip'">
-      <br>
       <ion-list>
         <ion-item *ngFor="let intf of node.ipInterfaces">
-          <h2>{{ intf.ipAddress }}</h2>
-          <ion-grid>
+          <ion-grid no-padding>
             <ion-row>
-              <ion-col><b>Status</b></ion-col>
+              <ion-col>{{ intf.ipAddress }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col width-33><b>Status</b></ion-col>
               <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col width-33><b>Is Primary ?</b></ion-col>
+              <ion-col width-67>{{ intf.snmpPrimary == 'P' ? 'Yes' : 'No' }}</ion-col>
+            </ion-row>
             <ion-row *ngIf="intf.snmpInterface">
-              <ion-col><b>Interface</b></ion-col>
+              <ion-col width-33><b>Interface</b></ion-col>
               <ion-col width-67>{{ intf.snmpInterface.ifName || intf.snmpInterface.ifDescr }} ({{ intf.snmpInterface.ifIndex }})</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Hostname</b></ion-col>
+              <ion-col width-33><b>Hostname</b></ion-col>
               <ion-col width-67>{{ intf.hostName }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b># Services</b></ion-col>
+              <ion-col width-33><b># Services</b></ion-col>
               <ion-col width-67>{{ intf.monitoredServiceCount }}</ion-col>
             </ion-row>
           </ion-grid>
-          <ion-icon item-left [name]="intf.snmpPrimary == 'P' ? 'attach' : ''"></ion-icon>
         </ion-item>
       </ion-list>
     </div>
     <div *ngSwitchCase="'snmp'">
-      <br>
       <ion-list>
         <ion-item *ngFor="let intf of node.snmpInterfaces">
-          <h2>{{ intf.ifName }}</h2>
-          <ion-grid>
+          <ion-grid no-padding>
             <ion-row>
-              <ion-col><b>Oper Status</b></ion-col>
+              <ion-col><h2>{{ intf.ifName }}</h2></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col width-33><b>Oper Status</b></ion-col>
               <ion-col width-67 [class]="intf.ifOperStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getOperStatus() }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Admin Status</b></ion-col>
+              <ion-col width-33><b>Admin Status</b></ion-col>
               <ion-col width-67 [class]="intf.ifAdminStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getAdminStatus() }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Interface Index</b></ion-col>
+              <ion-col width-33><b>Interface Index</b></ion-col>
               <ion-col width-67>{{ intf.ifIndex }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Speed</b></ion-col>
+              <ion-col width-33><b>Speed</b></ion-col>
               <ion-col width-67>{{ intf.ifSpeed || 'N/A' }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Description</b></ion-col>
+              <ion-col width-33><b>Description</b></ion-col>
               <ion-col width-67>{{ intf.ifDescr || 'N/A' }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>Alias</b></ion-col>
+              <ion-col width-33><b>Alias</b></ion-col>
               <ion-col width-67>{{ intf.ifAlias || 'N/A' }}</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col><b>MAC</b></ion-col>
+              <ion-col width-33><b>MAC</b></ion-col>
               <ion-col width-67>{{ intf.physAddr || 'N/A' }}</ion-col>
             </ion-row>
           </ion-grid>

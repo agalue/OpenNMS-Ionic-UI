@@ -7,14 +7,14 @@
 
   <ion-content>
     <ion-list no-lines *ngIf="onmsServer">
-      <ion-list-header>Current Server</ion-list-header>
       <ion-item>
          <p>{{ onmsServer?.type }} {{ onmsServer?.version }} {{ onmsServer?.name }}</p>
       </ion-item>
     </ion-list>
     <ion-list no-lines *ngFor="let g of groups">
       <ion-list-header>{{ g.name }}</ion-list-header>
-      <button menuClose ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
+      <button menuClose small ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
+        <ion-icon item-left [name]="p.icon"></ion-icon>
         <p>{{ p.title }}</p>
       </button>
     </ion-list>

@@ -44,6 +44,8 @@ To test the application using your browser, clone the project and then execute t
 
 ```
 npm install
+ionic plugin add cordova-plugin-geolocation
+ionic plugin add cordova-plugin-x-socialsharing
 ionic serve
 ```
 

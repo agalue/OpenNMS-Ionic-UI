@@ -112,6 +112,11 @@
           <ion-icon name="flame"></ion-icon>Escalate
         </button>
       </ion-col>
+      <ion-col>
+        <button ion-button block outline icon-left small type="button" (click)="onShareAlarm()">
+          <ion-icon name="mail"></ion-icon>Email
+        </button>
+      </ion-col>
     </ion-row>
   </ion-grid>
   <ion-fab top right>
@@ -120,8 +125,15 @@
       <button ion-fab (click)="onAckAlarm(!alarm.isAcknowledged())">
         <ion-icon [name]="alarm.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>
       </button>
-      <button ion-fab><ion-icon name="trash" (click)="onClearAlarm()"></ion-icon></button>
-      <button ion-fab><ion-icon name="flame" (click)="onEscalateAlarm()"></ion-icon></button>
+      <button ion-fab (click)="onClearAlarm()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+      <button ion-fab (click)="onEscalateAlarm()">
+        <ion-icon name="flame"></ion-icon>
+      </button>
+      <button ion-fab (click)="onShareAlarm()">
+        <ion-icon name="mail"></ion-icon>
+      </button>
     </ion-fab-list>
   </ion-fab>
 </ion-content>
