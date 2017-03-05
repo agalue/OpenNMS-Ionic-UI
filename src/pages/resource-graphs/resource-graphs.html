@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Graphs
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+  <ion-list no-lines>
+    <ion-item>
+      {{ resource?.label }}
+      <p>{{ resource?.id }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked>Choose Range</ion-label>
+      <ion-select [(ngModel)]="timeRangeSelected" [disabled]="!timeRanges || timeRanges.length == 0" (ionChange)="onTimeRangeChange()">
+        <ion-option *ngFor="let timeRange of timeRanges" [value]="timeRange.range">{{ timeRange.title }}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>Choose Graph</ion-label>
+      <ion-select [(ngModel)]="prefabGraph" [disabled]="!prefabs || prefabs.length == 0">
+        <ion-option *ngFor="let prefab of prefabs" [value]="prefab">{{ prefab.title }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <backshift-graph *ngIf="prefabGraph"
+        [width]="width"
+        [height]="height"
+        [start]="start"
+        [end]="end"
+        [resourceId]="resource.id"
+        [(prefabGraph)]="prefabGraph">
+      </backshift-graph>
+    </ion-item>
+  </ion-list>
+</ion-content>

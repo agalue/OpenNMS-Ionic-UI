@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
-import { MeasurementsPage } from '../measurements/measurements';
+import { ResourceGraphsPage } from '../resource-graphs/resource-graphs';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsResource, OnmsResourcesByType } from '../../models/onms-resource';
 import { OnmsNodesService } from '../../services/onms-nodes';
@@ -40,33 +40,8 @@ export class ResourcesPage {
       });
   }
 
-  onShowMetrics(resource: OnmsResource) {
-    const options = this.alertCtrl.create({
-      title: 'Choose Metric',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Ok',
-          handler: metric => this.showData(resource, metric)
-        }
-      ]
-    });
-    resource.rrdGraphAttributes.forEach(service => {
-      options.addInput({
-        name: 'options',
-        value: service,
-        label: service,
-        type: 'radio'
-      })
-    })
-    options.present();
-  }
-
-  private showData(resource: OnmsResource, metric: string) {
-    this.navCtrl.push(MeasurementsPage, { resource: resource, metric: metric });
+  onShowGraphs(resource: OnmsResource) {
+    this.navCtrl.push(ResourceGraphsPage, { resource: resource });
   }
 
   private alert(title: string, message: string) {

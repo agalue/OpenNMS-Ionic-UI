@@ -63,6 +63,7 @@ https://ionicframework.com/docs/guide/testing.html
 * Searching capabilities for events, alarms, outages and notifications.
 * Ack, Unack, Clear or Escalate alarms, if the user has the appropriate permissions.
 * Visualize the nodes and its SNMP settings, IP interfaces, SNMP interfaces, Service Availability, Assets and Resources.
+* Visualize graphs using the available templates per resource type.
 * Set the node's location based on your device's current geo-location, or pick one from the map.
 * Visualize the Reginal Status Map (based on either alarms or outages, as it is available on Horizon 19. Older versions won't support this feature).
 * Configure SNMP Settings (if the user has the appropriate permissions).
@@ -70,10 +71,8 @@ https://ionicframework.com/docs/guide/testing.html
 
 # Future Enhancements
 
-* Add support for graphing resource metrics.
-* Add support for configuring scheduled outages per node.
-* Manage users and groups.
-* Modify sticky and journal notes for alarms.
+* Add support for configuring scheduled outages per node (requires API changes).
+* Modify sticky and journal notes for alarms (requires API changes).
 * Hide unsupported features based on the version of the target OpenNMS server.
 * [Native Component] Copy alarms, notifications or outages to the clipboard.
 * [Native Component] Share alarms, notifications or outages (email, sms, whatsapp, etc.).

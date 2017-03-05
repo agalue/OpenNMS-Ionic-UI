@@ -7,7 +7,7 @@
 <ion-content no-padding>
   <ion-item-group *ngFor="let group of resourceGroups">
     <ion-item-divider color="primary"><div class="resource-type">{{ group.resourceType }}</div></ion-item-divider>
-    <button ion-item *ngFor="let resource of group.resources" (click)="onShowMetrics(resource)">
+    <button ion-item *ngFor="let resource of group.resources" (click)="onShowGraphs(resource)">
       <div class="resource-label">{{ resource.label }}</div>
       <div class="resource-id">{{ resource.id }}</div>
     </button>
