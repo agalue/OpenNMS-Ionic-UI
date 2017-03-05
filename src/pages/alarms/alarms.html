@@ -42,14 +42,18 @@
         <ion-icon item-left [name]="getIcon(alarm)" [color]="getIconColor(alarm)"></ion-icon>
         <ion-badge item-right>{{ alarm.count }}</ion-badge>
       </button>
-      <ion-item-options>
+      <ion-item-options side="left" (ionSwipe)="onAckAlarm(alarm)">
         <button ion-button expandable (click)="onAckAlarm(alarm)" [color]="alarm.isAcknowledged() ? '_Warning' : '_Normal'">
           <ion-icon [name]="alarm.isAcknowledged() ? 'sad' : 'happy'"></ion-icon>{{ alarm.isAcknowledged() ? 'Unack' : 'Ack' }}
         </button>
-        <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">
-          <ion-icon name="trash"></ion-icon>Clear</button>
+      </ion-item-options>
+      <ion-item-options side="right">
         <button ion-button expandable color="Critical_" (click)="onEscalateAlarm(alarm)">
-          <ion-icon name="flash"></ion-icon>Esc</button>
+          <ion-icon name="flash"></ion-icon>Escalate
+        </button>
+        <button ion-button expandable color="Cleared_"  (click)="onClearAlarm(alarm)">
+          <ion-icon name="trash"></ion-icon>Clear
+        </button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
