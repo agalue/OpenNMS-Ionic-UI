@@ -26,9 +26,6 @@ export abstract class Graph {
   end: number = 0;
   last: number = 0;
   refreshRate: number = 0;
-  beginOnRender: boolean = true;
-  stream: boolean = true;
-  checkInterval: number = 15 * 1000; // 15 seconds
 
   constructor(options: GraphOptions) {
     if (options.dataSource === undefined) {
@@ -68,42 +65,13 @@ export abstract class Graph {
       clearInterval(this.timer);
       this.timer = null;
     }
-
     this.onRender();
-    if (this.beginOnRender) {
-      this.begin();
-    }
-  }
-
-  begin() {
-    this.onBegin();
     this.refresh();
-    this.createTimer();
-  }
-
-  cancel() {
-    this.destroyTimer();
-    this.onCancel();
   }
 
   destroy() {
     this.hideStatus();
-    this.destroyTimer();
     this.onDestroy();
-  }
-
-  createTimer() {
-    this.destroyTimer();
-    this.timer = setInterval(() => {
-      if (this.shouldRefresh()) this.refresh()
-    }, this.checkInterval);
-  }
-
-  destroyTimer() {
-    if (this.timer !== null) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
   }
 
   setStart(start: number) {
@@ -222,10 +190,6 @@ export abstract class Graph {
   abstract hideStatus();
 
   abstract onRender();
-
-  abstract onBegin();
-
-  abstract onCancel();
 
   abstract onBeforeQuery();
 

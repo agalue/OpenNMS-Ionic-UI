@@ -24,9 +24,6 @@ export class GraphC3 extends Graph {
   yMin: number = 0;
   yMax: number = 0;
 
-  onBegin() {}
-  onCancel() {}
-
   onDestroy() {
     // If we have a chart, destroy it
     if (this.chart !== null) {

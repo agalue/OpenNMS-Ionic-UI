@@ -12,7 +12,6 @@ import 'rxjs/Rx';
 @Component({
   selector: 'backshift-graph',
   template: `
-    <p>{{ graphTitle }}</p>
     <div #backshiftGraph></div>
   `
 })
@@ -27,7 +26,6 @@ export class OnmsBackshiftComponent implements OnInit, OnChanges {
   @Input('start') start: number;
   @Input('end') end: number;
 
-  graphTitle: string;
   server: Server;
 
   constructor(
@@ -49,7 +47,6 @@ export class OnmsBackshiftComponent implements OnInit, OnChanges {
   }
 
   private renderGraph() {
-    this.graphTitle = this.prefabGraph.title;
     const targetElement = this.element.nativeElement;
 
     // Convert the graph definition to a supported model
