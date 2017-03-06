@@ -9,6 +9,7 @@ import { AlarmsPage } from '../pages/alarms/alarms';
 import { OutagesPage } from '../pages/outages/outages';
 import { NotificationsPage } from '../pages/notifications/notifications';
 import { NodesPage } from '../pages/nodes/nodes';
+import { NodeMapsPage } from '../pages/node-maps/node-maps';
 import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 import { SnmpConfigPage } from '../pages/snmp-config/snmp-config';
 import { RequisitionsPage } from '../pages/requisitions/requisitions';
@@ -47,8 +48,13 @@ export class MyApp implements OnDestroy {
           { title: 'Alarms', icon: 'alarm', component: AlarmsPage },
           { title: 'Outages', icon: 'thunderstorm', component: OutagesPage },
           { title: 'Notifications', icon: 'notifications', component: NotificationsPage },
-          { title: 'Nodes', icon: 'laptop', component: NodesPage },
-          { title: 'Regional Status', icon: 'map', component: RegionalStatusPage }
+          { title: 'Nodes', icon: 'laptop', component: NodesPage }
+        ]
+      },{
+        name: 'Maps',
+        pages: [
+          { title: 'Regional Status', icon: 'map', component: RegionalStatusPage },
+          { title: 'Node Maps', icon: 'compass', component: NodeMapsPage }
         ]
       },{
         name: 'Admin',

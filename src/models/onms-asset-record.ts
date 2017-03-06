@@ -3,6 +3,8 @@ export class OnmsAssetRecord {
     public id: number;
 
     public additionalhardware: string;
+    public address1: string;
+    public address2: string;
     public admin: string;
     public assetNumber: string;
     public autoenable: string;
@@ -55,6 +57,7 @@ export class OnmsAssetRecord {
     public serialNumber: string;
     public slot: string;
     public snmpcommunity: string;
+    public state: string;
     public storagectrl: string;
     public supportPhone: string;
     public thresholdCategory: string;
@@ -68,5 +71,6 @@ export class OnmsAssetRecord {
     public vmwareManagementServer: string;
     public vmwareState: string;
     public vmwareTopologyInfo: string;
+    public zip: string;
 
 }

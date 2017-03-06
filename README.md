@@ -62,6 +62,8 @@ https://ionicframework.com/docs/guide/testing.html
 * Visualize the list of events, alarms, outages and notifications, using infinite-scroll with server side fetch for paging.
 * Searching capabilities for events, alarms, outages and notifications.
 * Ack, Unack, Clear or Escalate alarms, if the user has the appropriate permissions.
+* Visualize the Regional Status Map based on alarms or outages (for geo-located nodes).
+* Visualize the Nodes Map (for geo-located nodes).
 * Visualize the nodes and its SNMP settings, IP interfaces, SNMP interfaces, Service Availability, Assets and Resources.
 * Visualize graphs using the available templates per resource type.
 * Set the node's location based on your device's current geo-location, or pick one from the map.

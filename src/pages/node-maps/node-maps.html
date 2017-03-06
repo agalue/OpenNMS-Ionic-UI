@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <onms-title title='Node Maps'></onms-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+  <div class="geomap" id="map"></div>
+  <ion-fab right bottom>
+    <button ion-fab mini icon-only (click)="onCenter()">
+      <ion-icon name="locate"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

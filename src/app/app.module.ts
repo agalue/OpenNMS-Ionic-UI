@@ -73,6 +73,7 @@ import { DetectorPage } from '../pages/detector/detector';
 import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regional-status-options';
 import { RegionalStatusPopupPage } from '../pages/regional-status-popup/regional-status-popup';
+import { NodeMapsPage } from '../pages/node-maps/node-maps';
 import { SetLocationPage } from '../pages/set-location/set-location';
 
 // Module Declaration
@@ -125,6 +126,7 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     RegionalStatusPage,
     RegionalStatusOptionsPage,
     RegionalStatusPopupPage,
+    NodeMapsPage,
     SetLocationPage
   ],
   imports: [
@@ -167,6 +169,7 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     RegionalStatusPage,
     RegionalStatusOptionsPage,
     RegionalStatusPopupPage,
+    NodeMapsPage,
     SetLocationPage
   ],
   providers: [

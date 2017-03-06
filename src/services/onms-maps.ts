@@ -6,6 +6,10 @@ import * as Leaflet from 'leaflet';
 import 'leaflet.markercluster';
 import 'rxjs/Rx';
 
+import { OnmsNode } from '../models/onms-node';
+import { OnmsAlarm } from '../models/onms-alarm';
+import { OnmsSeverities } from '../models/onms-severities';
+
 export class GeolocationQuery {
 
   public includeAcknowledgedAlarms: boolean = false;
@@ -76,6 +80,35 @@ export class GeolocationInfo {
     return locations;
   }
 
+  static import(node: OnmsNode, alarms: OnmsAlarm[]) : GeolocationInfo {
+    let location = new GeolocationInfo();
+    location.nodeInfo = new NodeInfo();
+    location.nodeInfo.nodeId = node.id;
+    location.nodeInfo.foreignId = node.foreignId;
+    location.nodeInfo.foreignSource = node.foreignSource;
+    location.nodeInfo.ipAddress = node.getPrimaryIP();
+    location.coordinates = new Coordinates();
+    location.coordinates.latitude = node.getLocation()[0];
+    location.coordinates.longitude = node.getLocation()[1];
+    location.addressInfo = new AddressInfo();
+    location.addressInfo.address1 = node.assetRecord.address1;
+    location.addressInfo.address2 = node.assetRecord.address2;
+    location.addressInfo.city = node.assetRecord.city;
+    location.addressInfo.state = node.assetRecord.state;
+    location.addressInfo.zip = node.assetRecord.zip;
+    location.addressInfo.country = node.assetRecord.country;
+    location.severityInfo = new SeverityInfo();
+    alarms.filter(a => a.nodeId == node.id).forEach(a => {
+        if (!a.ackUser) location.alarmUnackedCount++;
+        const severity = OnmsSeverities.getIndex(a.severity);
+        if (severity > location.severityInfo.id) {
+          location.severityInfo.id = severity;
+          location.severityInfo.label = a.severity;
+        }
+    });
+    return location;
+  }
+
 }
 
 export class SeverityLegendControl extends Leaflet.Control {
@@ -93,6 +126,10 @@ export class SeverityLegendControl extends Leaflet.Control {
     return container;
   }
 
+  static addToMap(map: Leaflet.Map) {
+    new SeverityLegendControl().addTo(map);
+  }
+
 }
 
 @Injectable()
@@ -104,11 +141,31 @@ export class OnmsMapsService {
 
   constructor(private http: HttpService) {}
 
-  getGeolocations(request: GeolocationQuery) : Promise<GeolocationInfo[]> {
+  getAlarmGeolocations(request: GeolocationQuery) : Promise<GeolocationInfo[]> {
     return this.http.post('/api/v2/geolocation', 'application/json', request)
       .retry(this.retries)
       .map((response: Response) => GeolocationInfo.importLocations(response.json()))
       .toPromise()
+  }
+
+  getNodeGeolocations() : Promise<GeolocationInfo[]> {
+    return new Promise<GeolocationInfo[]>((resolve, reject) => {
+      const nodesPromise = this.http.get('/rest/nodes?limit=0')
+        .map((response: Response) => OnmsNode.importNodes(response.json().node))
+        .toPromise();
+      const alarmsPromise = this.http.get('/rest/alarms?limit=0')
+        .map((response: Response) => OnmsAlarm.importAlarms(response.json().alarm))
+        .toPromise();
+      Promise.all([nodesPromise, alarmsPromise])
+        .catch(error => reject(error))
+        .then(data => {
+          const nodes: OnmsNode[] = data[0];
+          const alarms: OnmsAlarm[] = data[1];
+          let locations: GeolocationInfo[] = [];
+          nodes.filter(n => n.hasLocation()).forEach(n => locations.push(GeolocationInfo.import(n, alarms)));
+          resolve(locations);
+        })
+    });
   }
 
   createMap(mapId: string, options: Leaflet.MapOptions) : Leaflet.Map {
@@ -144,7 +201,7 @@ export class OnmsMapsService {
     });
   }
 
-  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[], onClickHandler: Leaflet.EventHandlerFn) {
+  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[], onClickHandler?: Leaflet.EventHandlerFn) {
     markersGroup.clearLayers();
     locations.forEach(location => {
       if (location.coordinates) {
@@ -152,10 +209,18 @@ export class OnmsMapsService {
         let latlng = Leaflet.latLng(location.coordinates.latitude, location.coordinates.longitude);
         let marker = Leaflet.marker(latlng, { icon: icon });
         marker['data'] = location;
-        marker.on('click', onClickHandler);
+        if (onClickHandler) marker.on('click', onClickHandler);
         markersGroup.addLayer(marker);
       }
     });
+  }
+
+  centerMap(map: Leaflet.Map, markersGroup: Leaflet.MarkerClusterGroup) {
+    if (markersGroup.getBounds().isValid()) {
+      map.fitBounds(markersGroup.getBounds(), {padding: [15, 15]});
+    } else {
+      map.setView([34.5133, -94.1629], 1); // center of earth
+    }
   }
 
   private getIcon(severityInfo: SeverityInfo) : Leaflet.Icon {
