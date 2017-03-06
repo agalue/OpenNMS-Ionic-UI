@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { AlertController, PopoverController, LoadingController } from 'ionic-angular';
 
-import { RegionalStatusPopupPage } from '../regional-status-popup/regional-status-popup';
-import { GeolocationQuery, GeolocationInfo, SeverityLegendControl, OnmsMapsService } from '../../services/onms-maps';
+import { MapStatusPopupPage } from '../map-status-popup/map-status-popup';
+import { GeolocationInfo, SeverityLegendControl, OnmsMapsService } from '../../services/onms-maps';
 
 import * as Leaflet from 'leaflet';
 import 'leaflet.markercluster';
@@ -61,7 +61,7 @@ export class NodeMapsPage {
     this.markersGroup.on('clusterclick', event => {
       let group = event['layer'] as Leaflet.MarkerClusterGroup;
       let locations = group.getAllChildMarkers().map(m => m['data']);
-      const popup = this.popoverCtrl.create(RegionalStatusPopupPage, { locations: locations });
+      const popup = this.popoverCtrl.create(MapStatusPopupPage, { locations: locations });
       popup.present({ ev: event['originalEvent'] });
     });
   }
@@ -86,7 +86,7 @@ export class NodeMapsPage {
   private updateMap(locations: GeolocationInfo[]) {
     this.mapService.resetMap(this.markersGroup, locations, event => {
       let location: GeolocationInfo = event.target['data'] as GeolocationInfo;
-      const popup = this.popoverCtrl.create(RegionalStatusPopupPage, { locations: [location] });
+      const popup = this.popoverCtrl.create(MapStatusPopupPage, { locations: [location] });
       popup.present({ ev: event['originalEvent'] });
     });
     this.onCenter();

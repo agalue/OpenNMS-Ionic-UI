@@ -72,7 +72,7 @@ import { PolicyPage } from '../pages/policy/policy';
 import { DetectorPage } from '../pages/detector/detector';
 import { RegionalStatusPage } from '../pages/regional-status/regional-status';
 import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regional-status-options';
-import { RegionalStatusPopupPage } from '../pages/regional-status-popup/regional-status-popup';
+import { MapStatusPopupPage } from '../pages/map-status-popup/map-status-popup';
 import { NodeMapsPage } from '../pages/node-maps/node-maps';
 import { SetLocationPage } from '../pages/set-location/set-location';
 
@@ -125,7 +125,7 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     DetectorPage,
     RegionalStatusPage,
     RegionalStatusOptionsPage,
-    RegionalStatusPopupPage,
+    MapStatusPopupPage,
     NodeMapsPage,
     SetLocationPage
   ],
@@ -168,7 +168,7 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     DetectorPage,
     RegionalStatusPage,
     RegionalStatusOptionsPage,
-    RegionalStatusPopupPage,
+    MapStatusPopupPage,
     NodeMapsPage,
     SetLocationPage
   ],

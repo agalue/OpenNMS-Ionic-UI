@@ -4,10 +4,10 @@ import { NavParams } from 'ionic-angular';
 import { GeolocationInfo } from '../../services/onms-maps';
 
 @Component({
-  selector: 'page-regional-status-popup',
-  templateUrl: 'regional-status-popup.html'
+  selector: 'page-map-status-popup',
+  templateUrl: 'map-status-popup.html'
 })
-export class RegionalStatusPopupPage {
+export class MapStatusPopupPage {
 
  locations: GeolocationInfo[] = [];
 
