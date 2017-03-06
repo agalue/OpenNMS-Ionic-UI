@@ -3,6 +3,7 @@ import { NavController, NavParams, ToastController, ModalController, AlertContro
 import { Geolocation } from 'ionic-native';
 import * as Leaflet from 'leaflet';
 
+import { IANA_IFTYPES } from '../../models/iana-iftypes';
 import { AssetsPage } from '../assets/assets';
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
@@ -26,8 +27,11 @@ import { OnmsMapsService } from '../../services/onms-maps';
 })
 export class NodePage implements OnInit {
 
-  mode = 'info';
-  inScheduledOutage = false;
+  mode: string = 'info';
+  inScheduledOutage: boolean = false;
+  ipSearchKeyword: string = '';
+  snmpSearchKeyword: string = '';
+  availSearchKeyword: string = '';
   node: OnmsNode;
   availability: OnmsNodeAvailability;
   events: OnmsEvent[] = [];
@@ -40,7 +44,7 @@ export class NodePage implements OnInit {
     touchZoom: false,
     doubleClickZoom: false,
     scrollWheelZoom: false,
-    maxZoom: 18,
+    maxZoom: 18
   };
 
   constructor(
@@ -193,6 +197,10 @@ export class NodePage implements OnInit {
 
   formatUei(uei: string) : string {
     return this.uiService.getFormattedUei(uei);
+  }
+
+  getInterfaceType(ifType: number) {
+    return IANA_IFTYPES[ifType];
   }
 
   getOutageColor(outage: OnmsOutage) : string {

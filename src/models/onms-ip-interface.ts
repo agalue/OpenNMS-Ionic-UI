@@ -27,4 +27,10 @@ export class OnmsIpInterface {
         return interfaces;
     }
 
+    contains(keyword: string ) : boolean {
+        const k = keyword.toLowerCase();
+        return this.ipAddress.includes(k)
+            || this.hostName.toLowerCase().includes(k);
+    }
+
 }

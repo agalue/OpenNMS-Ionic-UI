@@ -2,16 +2,45 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
+// Main Component
+
 import { MyApp } from './app.component';
 
+// Angular Pipes
+
 import { ClassNamePipe } from '../pipes/class-name';
+import { MacAddressPipe } from '../pipes/mac-address';
+import { IpAvailabilityFilterPipe } from '../pipes/ip-availability-filter';
+import { IpInterfaceFilterPipe } from '../pipes/ip-interface-filter';
+import { SnmpInterfaceFilterPipe } from '../pipes/snmp-interface-filter';
 import { RequisitionFilterPipe } from '../pipes/req-filter';
 import { RequisitionNodeFilterPipe } from '../pipes/req-node-filter';
 
+// Angular Directives
+
 import { ElasticDirective } from '../directives/elastic';
+
+// Angular Components
 
 import { OnmsTitleComponent } from '../components/title';
 import { OnmsBackshiftComponent } from '../components/backshift';
+
+// Angular Services
+
+import { HttpService } from '../services/http';
+import { OnmsUIService } from '../services/onms-ui';
+import { OnmsServersService } from '../services/onms-servers';
+import { OnmsAvailabilityService } from '../services/onms-availability';
+import { OnmsEventsService } from '../services/onms-events';
+import { OnmsAlarmsService } from '../services/onms-alarms';
+import { OnmsOutagesService } from '../services/onms-outages';
+import { OnmsNotificationsService } from '../services/onms-notifications';
+import { OnmsNodesService } from '../services/onms-nodes';
+import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
+import { OnmsRequisitionsService } from '../services/onms-requisitions';
+import { OnmsMapsService } from '../services/onms-maps';
+
+// Ionic Pages
 
 import { SetupPage } from '../pages/setup/setup';
 import { ServersPage } from '../pages/servers/servers';
@@ -46,23 +75,16 @@ import { RegionalStatusOptionsPage } from '../pages/regional-status-options/regi
 import { RegionalStatusPopupPage } from '../pages/regional-status-popup/regional-status-popup';
 import { SetLocationPage } from '../pages/set-location/set-location';
 
-import { HttpService } from '../services/http';
-import { OnmsUIService } from '../services/onms-ui';
-import { OnmsServersService } from '../services/onms-servers';
-import { OnmsAvailabilityService } from '../services/onms-availability';
-import { OnmsEventsService } from '../services/onms-events';
-import { OnmsAlarmsService } from '../services/onms-alarms';
-import { OnmsOutagesService } from '../services/onms-outages';
-import { OnmsNotificationsService } from '../services/onms-notifications';
-import { OnmsNodesService } from '../services/onms-nodes';
-import { OnmsSnmpConfigService } from '../services/onms-snmp-config';
-import { OnmsRequisitionsService } from '../services/onms-requisitions';
-import { OnmsMapsService } from '../services/onms-maps';
+// Module Declaration
 
 @NgModule({
   declarations: [
     // Pipes
     ClassNamePipe,
+    MacAddressPipe,
+    IpAvailabilityFilterPipe,
+    IpInterfaceFilterPipe,
+    SnmpInterfaceFilterPipe,
     RequisitionFilterPipe,
     RequisitionNodeFilterPipe,
     // Directives,

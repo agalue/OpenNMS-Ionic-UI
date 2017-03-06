@@ -51,4 +51,11 @@ export class OnmsSnmpInterface {
         return 'N/A';
     }
 
+    contains(keyword: string) : boolean {
+        const k = keyword.toLowerCase();
+        return this.ifName.toLowerCase().includes(k)
+            || this.ifDescr.toLowerCase().includes(k)
+            || this.ifAlias.toLowerCase().includes(k);
+    }
+
 }

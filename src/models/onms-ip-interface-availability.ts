@@ -19,4 +19,10 @@ export class OnmsIpInterfaceAvailability {
         return interfaces;
     }
 
+    contains(keyword: string) : boolean {
+        const k = keyword.toLowerCase();
+        return this.address.includes(k)
+            || this.services.filter(s => s.name.toLowerCase().includes(k)).length > 0;
+    }
+
 }

@@ -123,6 +123,7 @@
     </div>
     <div *ngSwitchCase="'availability'">
       <div *ngIf="availability">
+        <ion-searchbar [(ngModel)]="availSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
         <ion-list>
           <ion-item>
             <ion-grid no-padding>
@@ -136,7 +137,7 @@
               </ion-row>
             </ion-grid>
           </ion-item>
-          <ion-item *ngFor="let intf of availability.ipInterfaces">
+          <ion-item *ngFor="let intf of (availability.ipInterfaces | ipAvailFilter:availSearchKeyword)">
             <ion-grid no-padding>
               <ion-row>
                 <ion-col width-75>{{ intf.address }}</ion-col>
@@ -152,15 +153,21 @@
       </div>
     </div>
     <div *ngSwitchCase="'ip'">
+      <ion-searchbar [(ngModel)]="ipSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
       <ion-list>
-        <ion-item *ngFor="let intf of node.ipInterfaces">
+        <ion-item *ngFor="let intf of (node.ipInterfaces | ipIntfFilter:ipSearchKeyword)">
           <ion-grid no-padding>
             <ion-row>
-              <ion-col>{{ intf.ipAddress }}</ion-col>
+              <ion-col width-33><b>IP</b></ion-col>
+              <ion-col width-67>{{ intf.ipAddress }}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col width-33><b>Status</b></ion-col>
               <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col width-33><b>Is Managed ?</b></ion-col>
+              <ion-col width-67 [class]="intf.isManaged != 'M' ? 'Critical' : 'Normal'">{{ intf.isManaged == 'M' ? 'Yes' : 'No' }}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col width-33><b>Is Primary ?</b></ion-col>
@@ -183,11 +190,13 @@
       </ion-list>
     </div>
     <div *ngSwitchCase="'snmp'">
+      <ion-searchbar [(ngModel)]="snmpSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
       <ion-list>
-        <ion-item *ngFor="let intf of node.snmpInterfaces">
+        <ion-item text-wrap *ngFor="let intf of (node.snmpInterfaces | snmpIntfFilter:snmpSearchKeyword)">
           <ion-grid no-padding>
             <ion-row>
-              <ion-col><h2>{{ intf.ifName }}</h2></ion-col>
+              <ion-col width-33><b>Name</b></ion-col>
+              <ion-col width-67>{{ intf.ifName }}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col width-33><b>Oper Status</b></ion-col>
@@ -206,6 +215,10 @@
               <ion-col width-67>{{ intf.ifSpeed || 'N/A' }}</ion-col>
             </ion-row>
             <ion-row>
+              <ion-col width-33><b>Type</b></ion-col>
+              <ion-col width-67>{{ getInterfaceType(intf.ifType) }}</ion-col>
+            </ion-row>
+            <ion-row>
               <ion-col width-33><b>Description</b></ion-col>
               <ion-col width-67>{{ intf.ifDescr || 'N/A' }}</ion-col>
             </ion-row>
@@ -215,7 +228,7 @@
             </ion-row>
             <ion-row>
               <ion-col width-33><b>MAC</b></ion-col>
-              <ion-col width-67>{{ intf.physAddr || 'N/A' }}</ion-col>
+              <ion-col width-67>{{ (intf.physAddr | macAddress) || 'N/A' }}</ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>

@@ -53,6 +53,13 @@ export class OnmsRequisitionNode {
         return ip ? ip.ipAddress + ' (P)' : this.interfaces[0].ipAddress
     }
 
+    contains(keyword: string) : boolean {
+        const k = keyword.toLowerCase();
+        return this.nodeLabel.toLowerCase().includes(k)
+            || this.interfaces.filter(ip => ip.ipAddress.toLowerCase().includes(k)).length > 0
+            || this.categories.filter(c => c.name.toLowerCase().includes(k)).length > 0;
+    }
+
     generateModel() : Object {
         let rawNode: Object = {
             'foreign-id': this.foreignId,

@@ -70,6 +70,12 @@ export class OnmsRequisition {
         });
     }
 
+    contains(keyword: string) : boolean {
+        const k = keyword.toLowerCase();
+        return this.foreignSource.toLowerCase().includes(k)
+            || this.nodes.filter(n => n.contains(k)).length > 0;
+    }
+
     generateModel() : Object {
         let rawRequisition: Object = {
             'foreign-source': this.foreignSource,
