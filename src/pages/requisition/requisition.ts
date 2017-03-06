@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Keyboard } from 'ionic-native';
 import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
 
 import { ForeignSourcePage } from '../foreign-source/foreign-source';
@@ -151,6 +152,11 @@ export class RequisitionPage {
       ]
     });
     alert.present();
+  }
+
+  onSearchNodes(event: any) {
+    this.searchKeyword = event.target.value;
+    setTimeout(() => Keyboard.close(), 500);
   }
 
   private importRequisition(requisition: OnmsRequisition, rescanExisting: string) {

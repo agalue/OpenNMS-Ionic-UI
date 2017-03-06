@@ -12,7 +12,7 @@
     </ion-buttons>
     <onms-title title='Requisitions'></onms-title>
   </ion-navbar>
-  <ion-searchbar [(ngModel)]="searchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
+  <ion-searchbar (ionInput)="onSearchRequisitions($event)" [value]="searchKeyword" [debounce]="500" placeholder="Search Requisitions..."></ion-searchbar>
 </ion-header>
 
 <ion-content padding>

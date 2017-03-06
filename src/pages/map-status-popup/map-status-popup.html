@@ -4,7 +4,7 @@
       <ion-col><b>Node</b></ion-col>
       <ion-col>{{ locations[0].nodeInfo.nodeLabel }}</ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="locations[0].nodeInfo.ipAddress">
       <ion-col><b>IP Address</b></ion-col>
       <ion-col>{{ locations[0].nodeInfo.ipAddress }}</ion-col>
     </ion-row>

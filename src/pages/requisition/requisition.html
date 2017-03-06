@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title>{{ requisition.foreignSource }}</ion-title>
   </ion-navbar>
-  <ion-searchbar [(ngModel)]="searchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>  
+  <ion-searchbar (ionInput)="onSearchNodes($event)" [value]="searchKeyword" [debounce]="500" placeholder="Search Nodes..."></ion-searchbar>
 </ion-header>
 
 <ion-content padding>

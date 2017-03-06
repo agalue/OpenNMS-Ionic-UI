@@ -123,7 +123,7 @@
     </div>
     <div *ngSwitchCase="'availability'">
       <div *ngIf="availability">
-        <ion-searchbar [(ngModel)]="availSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
+        <ion-searchbar (ionInput)="onSearchAvailInterfaces($event)" [value]="availSearchKeyword"></ion-searchbar>
         <ion-list>
           <ion-item>
             <ion-grid no-padding>
@@ -153,7 +153,7 @@
       </div>
     </div>
     <div *ngSwitchCase="'ip'">
-      <ion-searchbar [(ngModel)]="ipSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
+      <ion-searchbar (ionInput)="onSearchIpInterfaces($event)" [value]="ipSearchKeyword"></ion-searchbar>
       <ion-list>
         <ion-item *ngFor="let intf of (node.ipInterfaces | ipIntfFilter:ipSearchKeyword)">
           <ion-grid no-padding>
@@ -190,7 +190,7 @@
       </ion-list>
     </div>
     <div *ngSwitchCase="'snmp'">
-      <ion-searchbar [(ngModel)]="snmpSearchKeyword" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
+      <ion-searchbar (ionInput)="onSearchSnmpInterfaces($event)" [value]="snmpSearchKeyword"></ion-searchbar>
       <ion-list>
         <ion-item text-wrap *ngFor="let intf of (node.snmpInterfaces | snmpIntfFilter:snmpSearchKeyword)">
           <ion-grid no-padding>
