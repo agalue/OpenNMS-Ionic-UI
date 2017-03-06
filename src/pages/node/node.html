@@ -167,11 +167,11 @@
             </ion-row>
             <ion-row>
               <ion-col width-33><b>Is Managed ?</b></ion-col>
-              <ion-col width-67 [class]="intf.isManaged != 'M' ? 'Critical' : 'Normal'">{{ intf.isManaged == 'M' ? 'Yes' : 'No' }}</ion-col>
+              <ion-col width-67 [class]="!intf.managed() ? 'Critical' : 'Normal'">{{ intf.managed() ? 'Yes' : 'No' }}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col width-33><b>Is Primary ?</b></ion-col>
-              <ion-col width-67>{{ intf.snmpPrimary == 'P' ? 'Yes' : 'No' }}</ion-col>
+              <ion-col width-67>{{ intf.isPrimary() ? 'Yes' : 'No' }}</ion-col>
             </ion-row>
             <ion-row *ngIf="intf.snmpInterface">
               <ion-col width-33><b>Interface</b></ion-col>

@@ -22,7 +22,7 @@ export class OnmsNode {
     public snmpInterfaces: OnmsSnmpInterface[] = [];
 
     static importNode(rawNode: Object) : OnmsNode {
-        let node = Object.assign(new OnmsNode(), rawNode);
+        let node : OnmsNode = Object.assign(new OnmsNode(), rawNode);
         node.assetRecord = Object.assign(new OnmsAssetRecord(), rawNode['assetRecord']);
         if (rawNode['categories'].length > 0) {
             node.categories = [];
@@ -48,9 +48,14 @@ export class OnmsNode {
     }
 
     getPrimaryIP() : string {
-        if (this.ipInterfaces.length == 0) return null;
-        const ip = this.ipInterfaces.find(i => i.snmpPrimary == 'P');
+        const ip = this.ipInterfaces.find(i => i.isPrimary());
         return ip ? ip.ipAddress : null;
+    }
+
+    getFirstIP() : string {
+        const primary = this.getPrimaryIP();
+        if (primary) return primary;
+        return (this.ipInterfaces.length > 0 ? this.ipInterfaces[0].ipAddress : null);
     }
 
     isDown() : boolean {

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController } from 'ionic-angular';
+import { AlertController, PopoverController, LoadingController } from 'ionic-angular';
 
-import { RegionalStatusOptionsPage } from '../regional-status-options/regional-status-options';
 import { RegionalStatusPopupPage } from '../regional-status-popup/regional-status-popup';
 import { GeolocationQuery, GeolocationInfo, SeverityLegendControl, OnmsMapsService } from '../../services/onms-maps';
 
@@ -24,9 +23,11 @@ export class NodeMapsPage {
     maxZoom: 15,
     zoom: 1,
   };
+  private locations: GeolocationInfo[] = [];
 
   constructor(
     private alertCtrl: AlertController,
+    private popoverCtrl: PopoverController,
     private loadingCtrl: LoadingController,
     private mapService: OnmsMapsService
   ) {}
@@ -40,11 +41,29 @@ export class NodeMapsPage {
     this.mapService.centerMap(this.map, this.markersGroup);
   }
 
+  onSearchNodes(event: any) {
+    const keyword = event && event.target && event.target.value ? event.target.value : undefined;
+    if (!keyword) return;
+    const locations = this.locations.filter(l => l.contains(keyword));
+    console.log(locations);
+    this.updateMap(locations);
+  }
+
+  onCancelSearch(event: any) {
+    this.updateMap(this.locations);
+  }
+
   private initMap() {
     if (this.map) return;
-    this.map = this.mapService.createMap('map', this.mapOptions);
+    this.map = this.mapService.createMap('nodes-map', this.mapOptions);
     SeverityLegendControl.addToMap(this.map);
     this.markersGroup = this.mapService.createMarkerGroup().addTo(this.map);
+    this.markersGroup.on('clusterclick', event => {
+      let group = event['layer'] as Leaflet.MarkerClusterGroup;
+      let locations = group.getAllChildMarkers().map(m => m['data']);
+      const popup = this.popoverCtrl.create(RegionalStatusPopupPage, { locations: locations });
+      popup.present({ ev: event['originalEvent'] });
+    });
   }
 
   private loadGeolocations() {
@@ -54,14 +73,23 @@ export class NodeMapsPage {
     loading.present();
     this.mapService.getNodeGeolocations()
       .then(locations => {
-        this.mapService.resetMap(this.markersGroup, locations);
-        this.onCenter();
+        this.locations = locations;
+        this.updateMap(this.locations);
         loading.dismiss();
       })
       .catch(error => {
         loading.dismiss();
-        this.alert('Load Map', error);
+        this.alert('Load Nodes', error);
       });
+  }
+
+  private updateMap(locations: GeolocationInfo[]) {
+    this.mapService.resetMap(this.markersGroup, locations, event => {
+      let location: GeolocationInfo = event.target['data'] as GeolocationInfo;
+      const popup = this.popoverCtrl.create(RegionalStatusPopupPage, { locations: [location] });
+      popup.present({ ev: event['originalEvent'] });
+    });
+    this.onCenter();
   }
 
   private alert(title: string, message: string) {

@@ -30,12 +30,31 @@ export class NodeInfo {
   public ipAddress: string;
   public categories: string[] = [];
 
+  static fromNode(node: OnmsNode) : NodeInfo {
+    const nodeInfo = new NodeInfo();
+    nodeInfo.nodeId = node.id;
+    nodeInfo.nodeLabel = node.label;
+    nodeInfo.foreignId = node.foreignId;
+    nodeInfo.foreignSource = node.foreignSource;
+    nodeInfo.ipAddress = node.getFirstIP(); // Not necessarily available initially
+    node.categories.forEach(c => nodeInfo.categories.push(c.name));
+    return nodeInfo;
+  }
+
 }
 
 export class Coordinates {
 
   public latitude: number;
   public longitude: number;
+
+  static fromNode(node: OnmsNode) : Coordinates {
+    const coords = new Coordinates();
+    const data = node.getLocation();
+    coords.latitude = data[0];
+    coords.longitude = data[1];
+    return coords;
+  }
 
 }
 
@@ -54,6 +73,19 @@ export class AddressInfo {
   public state: string;
   public zip: string;
   public country: string;
+
+  static fromNode(node: OnmsNode) : AddressInfo {
+    const addressInfo = new AddressInfo();
+    if (node.assetRecord) {
+      addressInfo.address1 = node.assetRecord.address1;
+      addressInfo.address2 = node.assetRecord.address2;
+      addressInfo.city = node.assetRecord.city;
+      addressInfo.state = node.assetRecord.state;
+      addressInfo.zip = node.assetRecord.zip;
+      addressInfo.country = node.assetRecord.country;
+    }
+    return addressInfo;
+  }
 
 }
 
@@ -82,21 +114,9 @@ export class GeolocationInfo {
 
   static import(node: OnmsNode, alarms: OnmsAlarm[]) : GeolocationInfo {
     let location = new GeolocationInfo();
-    location.nodeInfo = new NodeInfo();
-    location.nodeInfo.nodeId = node.id;
-    location.nodeInfo.foreignId = node.foreignId;
-    location.nodeInfo.foreignSource = node.foreignSource;
-    location.nodeInfo.ipAddress = node.getPrimaryIP();
-    location.coordinates = new Coordinates();
-    location.coordinates.latitude = node.getLocation()[0];
-    location.coordinates.longitude = node.getLocation()[1];
-    location.addressInfo = new AddressInfo();
-    location.addressInfo.address1 = node.assetRecord.address1;
-    location.addressInfo.address2 = node.assetRecord.address2;
-    location.addressInfo.city = node.assetRecord.city;
-    location.addressInfo.state = node.assetRecord.state;
-    location.addressInfo.zip = node.assetRecord.zip;
-    location.addressInfo.country = node.assetRecord.country;
+    location.nodeInfo = NodeInfo.fromNode(node);
+    location.coordinates = Coordinates.fromNode(node);
+    location.addressInfo = AddressInfo.fromNode(node);
     location.severityInfo = new SeverityInfo();
     alarms.filter(a => a.nodeId == node.id).forEach(a => {
         if (!a.ackUser) location.alarmUnackedCount++;
@@ -107,6 +127,14 @@ export class GeolocationInfo {
         }
     });
     return location;
+  }
+
+  contains(keyword: string) : boolean {
+    const k = keyword.toLowerCase();
+    return this.nodeInfo.nodeLabel.toLowerCase().includes(k)
+        || (this.nodeInfo.ipAddress ? this.nodeInfo.ipAddress.toLowerCase().includes(k) : false)
+        || (this.nodeInfo.foreignSource ? this.nodeInfo.foreignSource.toLowerCase().includes(k) : false)
+        || (this.nodeInfo.categories.filter(c => c.toLowerCase().includes(k)).length > 0)
   }
 
 }
@@ -148,6 +176,8 @@ export class OnmsMapsService {
       .toPromise()
   }
 
+  // NOTE: At this level, the IP interfaces for each node are unknown.
+  //       It seems expensive to retrieve the primary interface for each node.
   getNodeGeolocations() : Promise<GeolocationInfo[]> {
     return new Promise<GeolocationInfo[]>((resolve, reject) => {
       const nodesPromise = this.http.get('/rest/nodes?limit=0')
@@ -157,14 +187,12 @@ export class OnmsMapsService {
         .map((response: Response) => OnmsAlarm.importAlarms(response.json().alarm))
         .toPromise();
       Promise.all([nodesPromise, alarmsPromise])
-        .catch(error => reject(error))
-        .then(data => {
-          const nodes: OnmsNode[] = data[0];
-          const alarms: OnmsAlarm[] = data[1];
+        .then((results: any[]) => {
           let locations: GeolocationInfo[] = [];
-          nodes.filter(n => n.hasLocation()).forEach(n => locations.push(GeolocationInfo.import(n, alarms)));
+          results[0].filter(n => n.hasLocation()).forEach(n => locations.push(GeolocationInfo.import(n, results[1])));
           resolve(locations);
         })
+        .catch(error => reject(error))
     });
   }
 

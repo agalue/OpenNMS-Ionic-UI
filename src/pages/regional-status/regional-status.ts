@@ -55,7 +55,7 @@ export class RegionalStatusPage {
 
   private initMap() {
     if (this.map) return;
-    this.map = this.mapService.createMap('map', this.mapOptions);
+    this.map = this.mapService.createMap('regional-map', this.mapOptions);
     SeverityLegendControl.addToMap(this.map);
     this.markersGroup = this.mapService.createMarkerGroup().addTo(this.map);
     this.markersGroup.on('clusterclick', event => {

@@ -15,9 +15,8 @@ export class OnmsIpInterface {
     public snmpInterface: OnmsSnmpInterface;
 
     static importInterface(rawInterface: Object) : OnmsIpInterface {
-        let snmp = Object.assign(new OnmsSnmpInterface(), rawInterface['snmpInterface']);
-        let intf = Object.assign(new OnmsIpInterface(), rawInterface);
-        if (snmp) intf.snmpInterface = snmp;
+        let intf : OnmsIpInterface = Object.assign(new OnmsIpInterface(), rawInterface);
+        intf.snmpInterface = Object.assign(new OnmsSnmpInterface(), rawInterface['snmpInterface']);
         return intf;
     }
 
@@ -25,6 +24,14 @@ export class OnmsIpInterface {
         let interfaces: OnmsIpInterface[] = [];
         rawInterfaces.forEach(i => interfaces.push(OnmsIpInterface.importInterface(i)));
         return interfaces;
+    }
+
+    isPrimary() : boolean {
+        return this.snmpPrimary == 'P';
+    }
+
+    managed() : boolean {
+        return this.isManaged == 'M';
     }
 
     contains(keyword: string ) : boolean {

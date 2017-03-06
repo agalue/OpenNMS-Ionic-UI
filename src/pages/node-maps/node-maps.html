@@ -7,10 +7,11 @@
     </ion-buttons>
     <onms-title title='Node Maps'></onms-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="onSearchNodes($event)" (ionCancel)="onCancelSearch($event)" [showCancelButton]="true" [debounce]="500" placeholder="Search..."></ion-searchbar>
 </ion-header>
 
 <ion-content no-padding>
-  <div class="geomap" id="map"></div>
+  <div class="geomap" id="nodes-map"></div>
   <ion-fab right bottom>
     <button ion-fab mini icon-only (click)="onCenter()">
       <ion-icon name="locate"></ion-icon>
