@@ -68,6 +68,9 @@ export class OnmsServersService {
           console.debug(`updating server ${updatedServer.name} with version ${updatedServer.version}`);
           const backup = this.servers.slice();
           this.servers[index] = updatedServer;
+          if (updatedServer.isDefault) {
+            this.defaultServer = updatedServer
+          }
           this.storage.set('onms-servers', this.servers)
             .then(() => resolve(updatedServer))
             .catch(error => {
