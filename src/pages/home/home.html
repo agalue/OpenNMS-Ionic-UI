@@ -12,20 +12,22 @@
     </ion-buttons>
     <onms-title title='Home'></onms-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="mode">
+      <ion-segment-button value="Availability">
+        Availability
+      </ion-segment-button>
+      <ion-segment-button value="Alarms">
+        Alarms
+      </ion-segment-button>
+      <ion-segment-button value="Outages">
+        Outages
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-segment [(ngModel)]="mode">
-    <ion-segment-button value="Availability">
-      Availability
-    </ion-segment-button>
-    <ion-segment-button value="Alarms">
-      Alarms
-    </ion-segment-button>
-    <ion-segment-button value="Outages">
-      Outages
-    </ion-segment-button>
-  </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'Availability'">
       <br>
