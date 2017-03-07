@@ -30,6 +30,7 @@ import { OutagesSummaryComponent } from '../components/summary-outages';
 import { NodeAvailabilityComponent } from '../components/node-availability';
 import { NodeIpInterfacesComponent } from '../components/node-ip-interfaces';
 import { NodeSnmpInterfacesComponent } from '../components/node-snmp-interfaces';
+import { NodeLocationComponent } from '../components/node-location';
 
 // Angular Services
 
@@ -105,6 +106,7 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     NodeAvailabilityComponent,
     NodeIpInterfacesComponent,
     NodeSnmpInterfacesComponent,
+    NodeLocationComponent,
     // Pages
     MyApp,
     SetupPage,

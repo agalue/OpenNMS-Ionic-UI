@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, ModalController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
-import { Geolocation } from 'ionic-native';
-import * as Leaflet from 'leaflet';
 
 import { AssetsPage } from '../assets/assets';
 import { EventPage } from '../event/event';
@@ -18,7 +16,6 @@ import { OnmsNodesService } from '../../services/onms-nodes';
 import { OnmsEventsService } from '../../services/onms-events';
 import { OnmsOutagesService } from '../../services/onms-outages';
 import { OnmsAvailabilityService } from '../../services/onms-availability';
-import { OnmsMapsService } from '../../services/onms-maps';
 
 @Component({
   selector: 'page-node',
@@ -33,16 +30,6 @@ export class NodePage implements OnInit {
   events: OnmsEvent[] = [];
   outages: OnmsOutage[] = [];
 
-  private map: Leaflet.Map;
-  private mapOptions: Leaflet.MapOptions = {
-    tap: false,
-    dragging: false,
-    touchZoom: false,
-    doubleClickZoom: false,
-    scrollWheelZoom: false,
-    maxZoom: 18
-  };
-
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
@@ -55,23 +42,12 @@ export class NodePage implements OnInit {
     private nodesService: OnmsNodesService,
     private eventsService: OnmsEventsService,
     private outagesService: OnmsOutagesService,
-    private availabilityService: OnmsAvailabilityService,
-    private mapService: OnmsMapsService
+    private availabilityService: OnmsAvailabilityService
   ) {}
 
   ngOnInit() {
     this.node = this.navParams.get('node');
     this.updateDependencies();
-  }
-
-  ionViewDidEnter() {
-    this.drawMap();
-  }
-
-  // TODO Create a dedicated angular component to show the map to avoid this issue
-  onSelectInfo() {
-    this.map = undefined;
-    setTimeout(() => this.drawMap(), 500);
   }
 
   onShowOptions() {
@@ -112,7 +88,6 @@ export class NodePage implements OnInit {
       .then(node => {
         Object.assign(this.node, node);
         this.updateDependencies();
-        this.drawMap();
         loading.dismiss();
       })
       .catch(error => {
@@ -149,37 +124,6 @@ export class NodePage implements OnInit {
       .catch(error => {
         loading.dismiss();
         this.alert('Force Rescan Error', error)
-      });
-  }
-
-  onUseCurrentLocation() {
-    const loading = this.loadingCtrl.create({
-      content: 'Getting your location...'
-    });
-    loading.present();
-    Geolocation.getCurrentPosition()
-      .then(r => {
-        loading.dismiss();
-        const alert = this.alertCtrl.create({
-          title: 'Set Node Location',
-          subTitle: `latitude=${r.coords.latitude}, longitude=${r.coords.longitude}`,
-          message: 'Are you want to override the node location? This cannot be undone.',
-          buttons: [
-            {
-              text: 'Cancel',
-              role: 'cancel'
-            },
-            {
-              text: 'Save Coordinates',
-              handler: () => this.saveCoordinates({ latitude: r.coords.latitude, longitude: r.coords.longitude})
-            }
-          ]
-        });
-        alert.present();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Could not get location', error.message)
       });
   }
 
@@ -232,17 +176,6 @@ export class NodePage implements OnInit {
       .catch(error => console.error(`Cannot retrieve scheduled outage information: ${error}`));
   }
 
-  private drawMap() {
-    if (this.node.hasLocation()) {
-      let location: [number,number] = this.node.getLocation();
-      if (!this.map) {
-        this.map = this.mapService.createMap('map', this.mapOptions);
-      }
-      this.map.setView(location, 16);
-      Leaflet.marker(location).addTo(this.map);
-    }
-  }
-
   private saveCoordinates(coords: {latitude: number, longitude: number}) {
     this.node.assetRecord.latitude = coords.latitude;
     this.node.assetRecord.longitude = coords.longitude;
@@ -252,7 +185,6 @@ export class NodePage implements OnInit {
       .then(() => {
         loading.dismiss();
         this.toast('Coordinates updated!');
-        this.drawMap();
       })
       .catch(error => {
         loading.dismiss();

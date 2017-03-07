@@ -9,7 +9,7 @@
   </ion-navbar>
   <ion-toolbar>
     <ion-segment padding [(ngModel)]="mode">
-      <ion-segment-button value="info" (ionSelect)="onSelectInfo()">
+      <ion-segment-button value="info">
         Info
       </ion-segment-button>
       <ion-segment-button value="availability">
@@ -28,6 +28,8 @@
 <ion-content no-padding>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'info'">
+
+      <!-- Basic Information Panel -->
       <ion-list paading no-lines *ngIf="inScheduledOutage">
         <button ion-item detail-none text-wrap color='Major'>
           <ion-icon item-left name='warning' color='Major_'></ion-icon>
@@ -82,26 +84,15 @@
           <div class="category">{{ c.name }}</div>
         </ion-item>
       </ion-list>
-      <ion-list>
-        <ion-list-header>Location</ion-list-header>
-        <ion-item>
-          <div id="map" *ngIf="node.hasLocation()"></div>
-          <ion-grid no-padding>
-            <ion-row>
-              <ion-col width-50>
-                <button ion-button small block outline icon-left type="button" (click)="onUseCurrentLocation()">
-                  <ion-icon name="locate"></ion-icon> Locate Me
-                </button>
-              </ion-col>
-              <ion-col width-50>
-                <button ion-button small block outline icon-left type="button" (click)="onSelectOnMap()">
-                  <ion-icon name="map"></ion-icon> Select on Map
-                </button>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
-      </ion-list>
+
+      <!-- Node Location -->
+      <node-location [node]="node"
+        [loadingCtrl]="loadingCtrl"
+        [alertCtrl]="alertCtrl"
+        (onSelect)="onSelectOnMap()"
+        (onSave)="saveCoordinates($event)"></node-location>
+
+      <!-- Recent Events -->
       <ion-list>
         <ion-list-header>Recent Events</ion-list-header>
         <ion-item *ngIf="events.length == 0"><p>No recent events.</p></ion-item>
@@ -112,6 +103,8 @@
           <div class="event-message" [innerHTML]="event.logMessage"></div>
         </button>
       </ion-list>
+
+      <!-- Recent Outages -->
       <ion-list>
         <ion-list-header>Current Outages</ion-list-header>
         <ion-item *ngIf="outages.length == 0"><p>No current outages.</p></ion-item>
@@ -121,14 +114,18 @@
         </button>
       </ion-list>
     </div>
+
     <div *ngSwitchCase="'availability'">
       <node-availability [availability]="availability"></node-availability>
     </div>
+
     <div *ngSwitchCase="'ip'">
       <node-ip-interfaces [ipInterfaces]="node.ipInterfaces"></node-ip-interfaces>
     </div>
+
     <div *ngSwitchCase="'snmp'">
       <node-snmp-interfaces [snmpInterfaces]="node.snmpInterfaces"></node-snmp-interfaces>
     </div>
+
   </div>
 </ion-content>
