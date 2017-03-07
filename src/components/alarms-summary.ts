@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnChanges, AfterViewInit, SimpleChanges, Input } from '@angular/core';
 import { OnmsSeverities } from '../models/onms-severities';
 import { OnmsAlarmStats } from '../models/onms-alarm-stats';
 import * as C3 from 'c3';
@@ -8,7 +8,7 @@ import * as C3 from 'c3';
   template: `
     <div id="alarmsChart"></div>
     <br>
-    <ion-grid>
+    <ion-grid *ngIf="alarms">
       <ion-row>
         <ion-col><b>Severity</b></ion-col>
         <ion-col width-20 text-right><b>Total</b></ion-col>
@@ -24,30 +24,39 @@ import * as C3 from 'c3';
     </ion-grid>  
   `
 })
-export class AlarmsSummaryComponent {
+export class AlarmsSummaryComponent implements AfterViewInit, OnChanges {
 
-    @Input('alarms') alarms: OnmsAlarmStats[];
+  @Input('alarms') alarms: OnmsAlarmStats[];
 
-    ngAfterViewInit() {
-      let columns = [];
-      let total: number = 0;
-      this.alarms.forEach(a => {
-        if (a.totalCount > 0) {
-          columns.push([a.severity, a.totalCount]);
-          total += a.totalCount;
-        }
-      });
-      C3.generate({
-        bindto: '#alarmsChart',
-        data: {
-          type: 'donut',
-          columns: columns,
-          colors: OnmsSeverities.getColorMap()
-        },
-        donut: {
-          title: `${total} ${total == 1 ? 'Alarm' : 'Alarms'}`
-        },
-      });
-    }
+  ngAfterViewInit() {
+    this.renderChart();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.renderChart();
+  }
+
+  private renderChart() {
+    if (!this.alarms || this.alarms.length == 0) return;
+    let columns = [];
+    let total: number = 0;
+    this.alarms.forEach(a => {
+      if (a.totalCount > 0) {
+        columns.push([a.severity, a.totalCount]);
+        total += a.totalCount;
+      }
+    });
+    C3.generate({
+      bindto: '#alarmsChart',
+      data: {
+        type: 'donut',
+        columns: columns,
+        colors: OnmsSeverities.getColorMap()
+      },
+      donut: {
+        title: `${total} ${total == 1 ? 'Alarm' : 'Alarms'}`
+      },
+    });
+  }
 
 }

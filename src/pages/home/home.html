@@ -49,7 +49,7 @@
     <div *ngSwitchCase="'Outages'">
       <br>
       <outages-summary [outages]="outagesPerService"></outages-summary>
-      <ion-grid>
+      <ion-grid *ngIf="outages">
         <ion-row>
           <ion-col><b>Node</b></ion-col>
           <ion-col width-33 text-right><b>Time Down</b></ion-col>

@@ -48,7 +48,6 @@ export class HomePage {
         this.alarms = results[1];
         this.outages = results[2];
         this.outagesPerService = results[3];
-        console.log(this.outagesPerService);
         loading.dismiss();
       })
       .catch(error => {
