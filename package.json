@@ -41,12 +41,17 @@
     "typescript": "2.0.9"
   },
   "cordovaPlugins": [
+    "ionic-plugin-keyboard",
     "cordova-plugin-whitelist",
-    "cordova-plugin-statusbar",
     "cordova-plugin-console",
+    "cordova-plugin-statusbar",
     "cordova-plugin-device",
     "cordova-plugin-splashscreen",
-    "ionic-plugin-keyboard"
+    "cordova-plugin-geolocation",
+    "cordova-plugin-compat",
+    "cordova-plugin-x-socialsharing",
+    "cordova-plugin-badge",
+    "cordova-plugin-app-event"
   ],
   "cordovaPlatforms": [
     "ios",
@@ -54,6 +59,11 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
+    },
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
     }
   ],
   "description": "OpenNMS UI: A mobile application implemented with Ionic 2"

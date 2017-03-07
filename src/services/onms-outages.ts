@@ -31,4 +31,20 @@ export class OnmsOutagesService {
       .toPromise()
   }
 
+  getCurrentOutagesPerService() : Promise<{[service: string] : number}> {
+    return this.http.get('/rest/outages?limit=0&ifRegainedService=null')
+      .map((response: Response) => {
+        let outagesPerService : {[service: string] : number} = {};
+        OnmsOutage.importOutages(response.json().outage)
+          .forEach(outage => {
+            if (!outagesPerService[outage.serviceName]) {
+              outagesPerService[outage.serviceName] = 0
+            }
+            outagesPerService[outage.serviceName]++;
+          });
+        return outagesPerService;
+      })
+      .toPromise();
+  }
+
 }

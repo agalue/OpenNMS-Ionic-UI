@@ -44,23 +44,11 @@
     </div>
     <div *ngSwitchCase="'Alarms'">
       <br>
-      <ion-grid>
-        <ion-row>
-          <ion-col><b>Severity</b></ion-col>
-          <ion-col width-20 text-right><b>Total</b></ion-col>
-          <ion-col width-20 text-right><b># Ack</b></ion-col>
-          <ion-col width-20 text-right><b># Unack</b></ion-col>
-        </ion-row>
-        <ion-row *ngFor="let alarm of alarms">
-          <ion-col [class]="alarm.severity">{{ alarm.severity }}</ion-col>
-          <ion-col width-20 text-right>{{ alarm.totalCount }}</ion-col>
-          <ion-col width-20 text-right>{{ alarm.acknowledgedCount }}</ion-col>
-          <ion-col width-20 text-right>{{ alarm.unacknowledgedCount }}</ion-col>
-        </ion-row>
-      </ion-grid>
+      <alarms-summary [alarms]="alarms"></alarms-summary>
     </div>
     <div *ngSwitchCase="'Outages'">
       <br>
+      <outages-summary [outages]="outagesPerService"></outages-summary>
       <ion-grid>
         <ion-row>
           <ion-col><b>Node</b></ion-col>

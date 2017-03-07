@@ -18,6 +18,7 @@ export class HomePage {
   sections: OnmsSlmSection[] = [];
   alarms: OnmsAlarmStats[] = [];
   outages: OnmsOutageSummary[] = [];
+  outagesPerService: { [service: string ] : number };
 
   constructor(
     private alertCtrl: AlertController,
@@ -40,11 +41,14 @@ export class HomePage {
     let availStats = this.availService.getAvailability();
     let alarmStats = this.alarmsService.getStatistics();
     let outageSummary = this.outagesService.getSumaries();
-    Promise.all([availStats, alarmStats, outageSummary])
+    let outagesPerService = this.outagesService.getCurrentOutagesPerService();
+    Promise.all([availStats, alarmStats, outageSummary, outagesPerService])
       .then((results: any[]) => {
-        this.sections = <OnmsSlmSection[]>results[0];
-        this.alarms = <OnmsAlarmStats[]>results[1];
-        this.outages = <OnmsOutageSummary[]>results[2];
+        this.sections = results[0];
+        this.alarms = results[1];
+        this.outages = results[2];
+        this.outagesPerService = results[3];
+        console.log(this.outagesPerService);
         loading.dismiss();
       })
       .catch(error => {

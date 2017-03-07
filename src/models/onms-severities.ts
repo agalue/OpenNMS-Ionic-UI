@@ -14,4 +14,16 @@ export class OnmsSeverities {
     return ONMS_SEVERITIES.indexOf(severity);
   }
 
+  static getColorMap() : { [severity: string] : string } {
+    return {
+      Critical:      '#cc0000',
+      Major:         '#ff3300',
+      Minor:         '#ff9900',
+      Warning:       '#ffcc00',
+      Indeterminate: '#999000',
+      Normal:        '#336600',
+      Cleared:       '#999'
+    }
+  }
+
 }

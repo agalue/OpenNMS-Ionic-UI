@@ -14,6 +14,12 @@ export class OnmsAlarmsService {
 
   constructor(private http: HttpService) {}
 
+  getAlarmCount() : Promise<number> {
+    return this.http.get('/rest/alarms/count', '*/*')
+      .map((response: Response) => parseInt(response.text()))
+      .toPromise()
+  }
+
   getAlarms(start: number = 0, options: AlarmOptions, filters: OnmsApiFilter[] = []) : Promise<OnmsAlarm[]> {
     let order = options.newestFirst ? 'desc' : 'asc';
     let url = `/rest/alarms?order=${order}&orderBy=lastEventTime&offset=${start}&limit=${options.limit}`;

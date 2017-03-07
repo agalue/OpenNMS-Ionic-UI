@@ -24,6 +24,8 @@ import { ElasticDirective } from '../directives/elastic';
 
 import { OnmsTitleComponent } from '../components/title';
 import { OnmsBackshiftComponent } from '../components/backshift';
+import { AlarmsSummaryComponent } from '../components/alarms-summary';
+import { OutagesSummaryComponent } from '../components/outages-summary';
 
 // Angular Services
 
@@ -93,6 +95,8 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     // Components
     OnmsTitleComponent,
     OnmsBackshiftComponent,
+    AlarmsSummaryComponent,
+    OutagesSummaryComponent,
     // Pages
     MyApp,
     SetupPage,

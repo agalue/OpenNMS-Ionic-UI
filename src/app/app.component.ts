@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar, Splashscreen, Badge } from 'ionic-native';
 import { Subscription } from 'rxjs/Rx';
 
 import { HomePage } from '../pages/home/home';
@@ -19,6 +19,7 @@ import { SetupPage } from '../pages/setup/setup';
 import { OnmsServer } from '../models/onms-server';
 import { OnmsServersService } from '../services/onms-servers';
 import { HttpService } from '../services/http';
+import { OnmsAlarmsService } from '../services/onms-alarms';
 
 @Component({
   templateUrl: 'app.html'
@@ -35,7 +36,8 @@ export class MyApp implements OnDestroy {
   constructor(
     public platform: Platform,
     private httpService: HttpService,
-    private serversConfig: OnmsServersService
+    private serversConfig: OnmsServersService,
+    private alarmsService: OnmsAlarmsService,
   ) {
     this.initializeApp();
 
@@ -80,6 +82,29 @@ export class MyApp implements OnDestroy {
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       Splashscreen.hide();
+      this.initializeBadges();
+    });
+  }
+
+  initializeBadges() {
+    if (!this.platform.is('cordova')) {
+      console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
+      return;
+    }
+    Badge.hasPermission()
+      .then(() => this.subscribeToPause())
+      .catch(() => {
+        Badge.registerPermission()
+          .then(() => this.subscribeToPause())
+          .catch(error => console.error(error));
+      });
+  }
+
+  subscribeToPause() {
+    this.platform.pause.subscribe(() => {
+      this.alarmsService.getAlarmCount()
+        .then(alarms => alarms == 0 ? Badge.clear() : Badge.set(alarms))
+        .catch(error => console.error(error));
     });
   }
 
