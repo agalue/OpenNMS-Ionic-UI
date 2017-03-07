@@ -85,7 +85,7 @@ export class AlarmsPage {
     this.onUpdate();
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     if (this.alarmFilter) {
       this.alarmFilter = null;
       this.onUpdate();

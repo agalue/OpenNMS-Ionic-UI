@@ -20,4 +20,8 @@ export class OnmsNodeAvailability {
         );
     }
 
+    static create(): OnmsNodeAvailability {
+        return new OnmsNodeAvailability(0, 0, 0, 0);
+    }
+
 }

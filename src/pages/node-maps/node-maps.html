@@ -7,7 +7,7 @@
     </ion-buttons>
     <onms-title title='Node Maps'></onms-title>
   </ion-navbar>
-  <ion-searchbar (ionInput)="onSearchNodes($event)" (ionCancel)="onCancelSearch($event)" [debounce]="500" placeholder="Search Nodes..."></ion-searchbar>
+  <ion-searchbar (ionInput)="onSearchNodes($event)" (ionClear)="onClearSearch($event)" [debounce]="500" placeholder="Search Nodes..."></ion-searchbar>
 </ion-header>
 
 <ion-content no-padding>

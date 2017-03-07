@@ -23,3 +23,13 @@
     font-weight: normal;
   }
 }
+
+ion-input {
+  .ng-valid[required], .ng-valid.required  {
+    border-right: 2px solid $text-input-highlight-color-valid;
+  }
+
+  .ng-invalid:not(form)  {
+    border-right: 2px solid $text-input-highlight-color-invalid;
+  }
+}

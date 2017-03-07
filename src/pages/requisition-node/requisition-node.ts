@@ -147,11 +147,6 @@ export class RequisitionNodePage implements OnInit {
     this.form.markAsDirty();
   }
 
-  getValidityColor(field: string) {
-    const f = this.form.controls[field];
-    return f.disabled || f.valid ? '' : 'danger';
-  }
-
   private chooseLocation(locations: string[]) {
     const options = this.alertCtrl.create({
       title: 'Choose Location',

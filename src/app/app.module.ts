@@ -19,13 +19,17 @@ import { RequisitionNodeFilterPipe } from '../pipes/req-node-filter';
 // Angular Directives
 
 import { ElasticDirective } from '../directives/elastic';
+import { IpAddressValidatorDirective } from '../directives/ip-address';
 
 // Angular Components
 
 import { OnmsTitleComponent } from '../components/title';
 import { OnmsBackshiftComponent } from '../components/backshift';
-import { AlarmsSummaryComponent } from '../components/alarms-summary';
-import { OutagesSummaryComponent } from '../components/outages-summary';
+import { AlarmsSummaryComponent } from '../components/summary-alarms';
+import { OutagesSummaryComponent } from '../components/summary-outages';
+import { NodeAvailabilityComponent } from '../components/node-availability';
+import { NodeIpInterfacesComponent } from '../components/node-ip-interfaces';
+import { NodeSnmpInterfacesComponent } from '../components/node-snmp-interfaces';
 
 // Angular Services
 
@@ -92,11 +96,15 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     RequisitionNodeFilterPipe,
     // Directives,
     ElasticDirective,
+    IpAddressValidatorDirective,
     // Components
     OnmsTitleComponent,
     OnmsBackshiftComponent,
     AlarmsSummaryComponent,
     OutagesSummaryComponent,
+    NodeAvailabilityComponent,
+    NodeIpInterfacesComponent,
+    NodeSnmpInterfacesComponent,
     // Pages
     MyApp,
     SetupPage,

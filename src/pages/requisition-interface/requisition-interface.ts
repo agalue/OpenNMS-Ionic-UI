@@ -5,6 +5,8 @@ import { ViewController, AlertController, NavParams } from 'ionic-angular';
 import { OnmsRequisitionInterface } from '../../models/onms-requisition-interface';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
+import { validateIpAddress } from '../../directives/ip-address';
+
 @Component({
   selector: 'page-requisition-interface',
   templateUrl: 'requisition-interface.html'
@@ -60,7 +62,7 @@ export class RequisitionInterfacePage implements OnInit {
     let services : FormArray = new FormArray([]);
     this.intf.services.forEach(s => services.push(this.addService(s.name)));
     this.form = new FormGroup({
-      'ipAddress' : new FormControl(this.intf.ipAddress, Validators.required),
+      'ipAddress' : new FormControl(this.intf.ipAddress, validateIpAddress),
       'description' : new FormControl(this.intf.description),
       'snmpPrimary' : new FormControl(this.intf.snmpPrimary, Validators.required),
       'services' : services

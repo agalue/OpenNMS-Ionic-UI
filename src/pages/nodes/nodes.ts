@@ -26,7 +26,7 @@ export class NodesPage {
 
   onRefresh() {
     const loading = this.loadingCtrl.create({
-      content: 'Loading nodes, please wait...'
+      content: 'Searching nodes, please wait...'
     });
     loading.present();
     this.nodes = [];
@@ -51,7 +51,7 @@ export class NodesPage {
     this.onRefresh();
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     if (this.nodeFilter) {
       this.nodeFilter = null;
       this.onRefresh();

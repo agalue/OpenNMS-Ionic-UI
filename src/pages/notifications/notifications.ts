@@ -85,7 +85,7 @@ export class NotificationsPage {
     this.onUpdate();
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     if (this.notificationFilter) {
       this.notificationFilter = null;
       this.onUpdate();

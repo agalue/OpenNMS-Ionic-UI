@@ -42,14 +42,13 @@ export class NodeMapsPage {
   }
 
   onSearchNodes(event: any) {
-    const keyword = event && event.target && event.target.value ? event.target.value : undefined;
+    const keyword = event.target.value;
     if (!keyword) return;
     const locations = this.locations.filter(l => l.contains(keyword));
-    console.log(locations);
     this.updateMap(locations);
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     this.updateMap(this.locations);
   }
 

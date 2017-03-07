@@ -12,7 +12,7 @@
     </ion-buttons>
     <onms-title title='Outages'></onms-title>
   </ion-navbar>
-  <ion-searchbar (ionInput)="onSearchOutages($event)" (ionCancel)="onCancelSearch($event)" [debounce]="500" placeholder="Search Outages..."></ion-searchbar>
+  <ion-searchbar (ionInput)="onSearchOutages($event)" (ionClear)="onClearSearch($event)" [debounce]="500" placeholder="Search Outages..."></ion-searchbar>
 </ion-header>
 
 <ion-content no-padding>

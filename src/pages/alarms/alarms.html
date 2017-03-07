@@ -12,7 +12,7 @@
     </ion-buttons>
     <onms-title title='Alarms'></onms-title>
   </ion-navbar>
-  <ion-searchbar (ionInput)="onSearchAlarms($event)" (ionCancel)="onCancelSearch($event)" [debounce]="500" placeholder="Search Alarms..."></ion-searchbar>
+  <ion-searchbar (ionInput)="onSearchAlarms($event)" (ionClear)="onClearSearch($event)" [debounce]="500" placeholder="Search Alarms..."></ion-searchbar>
 </ion-header>
 
 <ion-content no-padding>

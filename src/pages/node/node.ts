@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, ModalController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
-import { Geolocation, Keyboard } from 'ionic-native';
+import { Geolocation } from 'ionic-native';
 import * as Leaflet from 'leaflet';
 
-import { IANA_IFTYPES } from '../../models/iana-iftypes';
 import { AssetsPage } from '../assets/assets';
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
@@ -29,11 +28,8 @@ export class NodePage implements OnInit {
 
   mode: string = 'info';
   inScheduledOutage: boolean = false;
-  ipSearchKeyword: string = '';
-  snmpSearchKeyword: string = '';
-  availSearchKeyword: string = '';
   node: OnmsNode;
-  availability: OnmsNodeAvailability;
+  availability: OnmsNodeAvailability = OnmsNodeAvailability.create();
   events: OnmsEvent[] = [];
   outages: OnmsOutage[] = [];
 
@@ -73,7 +69,7 @@ export class NodePage implements OnInit {
   }
 
   // TODO Create a dedicated angular component to show the map to avoid this issue
-  onSegmentSelect() {
+  onSelectInfo() {
     this.map = undefined;
     setTimeout(() => this.drawMap(), 500);
   }
@@ -195,37 +191,12 @@ export class NodePage implements OnInit {
     modal.present();
   }
 
-  onSearchAvailInterfaces(event: any) {
-    this.availSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
-  }
-
-  onSearchIpInterfaces(event: any) {
-    this.ipSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
-  }
-
-  onSearchSnmpInterfaces(event: any) {
-    this.snmpSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
-  }
-
   formatUei(uei: string) : string {
     return this.uiService.getFormattedUei(uei);
   }
 
-  getInterfaceType(ifType: number) : string {
-    return IANA_IFTYPES[ifType];
-  }
-
   getOutageColor(outage: OnmsOutage) : string {
     return this.uiService.getOutageIconColor(outage);
-  }
-
-  getAvailabilityColor(avail: number) : string {
-    if (avail > 99) return 'Normal';
-    if (avail > 95) return 'Warning';
-    return 'Critical';
   }
 
   private updateDependencies() {

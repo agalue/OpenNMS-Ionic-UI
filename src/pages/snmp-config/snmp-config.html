@@ -15,7 +15,7 @@
       <ion-list-header>SNMP Config Lookup</ion-list-header>
       <ion-item>
         <ion-label stacked>IP Address</ion-label>
-        <ion-input type="text" name="ipAddress" ngModel required></ion-input>
+        <ion-input type="text" name="ipAddress" ngModel ipAddress></ion-input>
       </ion-item>
       <ion-item>
         <button ion-button block outline type="submit" [disabled]="!lookupForm.valid">Look Up</button>
@@ -27,7 +27,7 @@
       <ion-list-header>General Parameters</ion-list-header>
       <ion-item>
         <ion-label stacked>IP Address</ion-label>
-        <ion-input type="text" name="ipAddress" [(ngModel)]="ipAddress" required></ion-input>
+        <ion-input type="text" name="ipAddress" [(ngModel)]="ipAddress" ipAddress></ion-input>
       </ion-item>
       <ion-item>
         <ion-label stacked>Version</ion-label>

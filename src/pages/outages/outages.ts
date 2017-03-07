@@ -58,7 +58,7 @@ export class OutagesPage {
     this.onRefresh();
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     if (this.outageFilter) {
       this.outageFilter = null;
       this.onRefresh();

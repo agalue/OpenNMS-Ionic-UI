@@ -58,7 +58,7 @@ export class EventsPage {
     this.onRefresh();
   }
 
-  onCancelSearch(event: any) {
+  onClearSearch(event: any) {
     if (this.eventFilter) {
       this.eventFilter = null;
       this.onRefresh();
