@@ -10,7 +10,7 @@ import { IANA_IFTYPES } from '../models/iana-iftypes';
 })
 export class NodeSnmpInterfacesComponent {
 
-  @Input('snmpInterfaces') ipInterfaces: OnmsSnmpInterface[];
+  @Input('snmpInterfaces') snmpInterfaces: OnmsSnmpInterface[];
 
   snmpSearchKeyword: string = '';
 
