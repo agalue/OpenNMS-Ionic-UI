@@ -27,13 +27,13 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons start>
-      <button ion-button icon-left type="button" (click)="onCancel()">
+      <button ion-button icon-left type="button" color="danger" (click)="onCancel()">
         <ion-icon name="close"></ion-icon>
         Cancel
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button ion-button icon-left type="button" (click)="onSave()" [disabled]="!form.valid">
+      <button ion-button icon-left type="button" color="primary" (click)="onSave()" [disabled]="!form.valid">
         <ion-icon name="cloud-upload"></ion-icon>
         Save
       </button>

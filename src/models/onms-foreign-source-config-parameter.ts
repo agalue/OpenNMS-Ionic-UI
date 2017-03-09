@@ -5,9 +5,7 @@ export class OnmsForeignSourceConfigParameter {
     public options: string[] = [];
 
     static importParameters(rawParameters: Object[]) : OnmsForeignSourceConfigParameter[] {
-        let parameters: OnmsForeignSourceConfigParameter[] = [];
-        rawParameters.forEach(p => parameters.push(OnmsForeignSourceConfigParameter.importParameter(p)));
-        return parameters;
+        return rawParameters.map(p => OnmsForeignSourceConfigParameter.importParameter(p));
     }
 
     static importParameter(rawParameter: Object) : OnmsForeignSourceConfigParameter {

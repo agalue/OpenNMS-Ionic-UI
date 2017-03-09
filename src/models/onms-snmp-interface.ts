@@ -24,9 +24,7 @@ export class OnmsSnmpInterface {
     }
 
     static importInterfaces(rawInterfaces: Object[]) : OnmsSnmpInterface[] {
-        let interfaces: OnmsSnmpInterface[] = [];
-        rawInterfaces.forEach(i => interfaces.push(OnmsSnmpInterface.importInterface(i)));
-        return interfaces;
+        return rawInterfaces.map(i => OnmsSnmpInterface.importInterface(i));
     }
 
     getOperStatus() : string {

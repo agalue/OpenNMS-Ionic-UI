@@ -27,9 +27,7 @@ export class OnmsNotification {
     }
 
     static importNotifications(rawNotifications: Object[]): OnmsNotification[] {
-        let notifications: OnmsNotification[] = [];
-        rawNotifications.forEach(n => notifications.push(OnmsNotification.importNotification(n)));
-        return notifications;
+        return rawNotifications.map(n => OnmsNotification.importNotification(n));
     }
 
     update(ack: OnmsAck) {

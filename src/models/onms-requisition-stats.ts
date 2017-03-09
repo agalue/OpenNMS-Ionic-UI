@@ -7,18 +7,15 @@ export class OnmsRequisitionStats {
     ) {}
 
     static imporStats(rawStats: Object[]) : OnmsRequisitionStats[] {
-        let stats: OnmsRequisitionStats[] = [];
-        rawStats.forEach(r => stats.push(OnmsRequisitionStats.importSingleStats(r)));
-        return stats;
+        return rawStats.map(rs => OnmsRequisitionStats.importSingleStats(rs));
     }
 
     static importSingleStats(rawStats: Object) : OnmsRequisitionStats {
-        let stats = new OnmsRequisitionStats(
+        return new OnmsRequisitionStats(
             rawStats['name'],
             rawStats['last-imported'],
             rawStats['foreign-id']
         );
-        return stats;
     }
 
 }

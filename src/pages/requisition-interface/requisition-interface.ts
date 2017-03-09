@@ -50,7 +50,7 @@ export class RequisitionInterfacePage implements OnInit {
   }
 
   onSave() {
-    Object.assign(this.intf, this.form.value);
+    OnmsRequisitionInterface.assign(this.intf, this.form.value);
     this.viewCtrl.dismiss(this.intf);
   }
 

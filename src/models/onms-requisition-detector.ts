@@ -9,9 +9,7 @@ export class OnmsRequisitionDetector {
     ) {}
 
     static importDetectors(rawDetectors: Object[]) : OnmsRequisitionDetector[] {
-        let detectors: OnmsRequisitionDetector[] = [];
-        rawDetectors.forEach(d => detectors.push(OnmsRequisitionDetector.importDetector(d)));
-        return detectors;
+        return rawDetectors.map(d => OnmsRequisitionDetector.importDetector(d));
     }
 
     static importDetector(rawDetector: Object) : OnmsRequisitionDetector {
@@ -27,13 +25,11 @@ export class OnmsRequisitionDetector {
     }
 
     generateModel() : Object {
-        let rawModel: Object = {
+        return {
             'name': this.name,
             'class': this.className,
-            'parameter': []
+            'parameter': this.parameters.map(p => p.generateModel())
         };
-        this.parameters.forEach(p => rawModel['parameter'].push(p.generateModel()));
-        return rawModel;
     }
 
 }

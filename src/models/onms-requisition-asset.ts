@@ -8,9 +8,7 @@ export class OnmsRequisitionAsset {
     ) {}
 
     static importAssets(rawAssets: Object[]) : OnmsRequisitionAsset[] {
-        let assets: OnmsRequisitionAsset[] = [];
-        rawAssets.forEach(i => assets.push(OnmsRequisitionAsset.importAsset(i)));
-        return assets;
+        return rawAssets.map(a => OnmsRequisitionAsset.importAsset(a));
     }
 
     static importAsset(rawAsset: Object) : OnmsRequisitionAsset {
@@ -20,8 +18,7 @@ export class OnmsRequisitionAsset {
     static importAll(assetRecord: OnmsAssetRecord) : OnmsRequisitionAsset[] {
         let assets: OnmsRequisitionAsset[] = [];
         Object.keys(assetRecord).forEach(k => {
-        if (assetRecord[k])
-            assets.push(new OnmsRequisitionAsset(k, assetRecord[k]))
+            if (assetRecord[k]) assets.push(new OnmsRequisitionAsset(k, assetRecord[k]))
         });
         return assets;
     }
@@ -31,11 +28,10 @@ export class OnmsRequisitionAsset {
     }
 
     generateModel() : Object {
-        let rawAsset: Object = {
+        return {
             name: this.name,
             value: this.value
-        };
-        return rawAsset;
+        }
     }
 
 }

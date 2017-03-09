@@ -8,9 +8,7 @@ export class OnmsRequisitionParameter {
     public options: string[] = [];
 
     static importParameters(rawParameters: Object[]) : OnmsRequisitionParameter[] {
-        let parameters: OnmsRequisitionParameter[] = [];
-        rawParameters.forEach(p => parameters.push(OnmsRequisitionParameter.importParameter(p)));
-        return parameters;
+        return rawParameters.map(p => OnmsRequisitionParameter.importParameter(p));
     }
 
     static importParameter(rawParameter: Object) : OnmsRequisitionParameter {
@@ -35,11 +33,10 @@ export class OnmsRequisitionParameter {
     }
 
     generateModel() : Object {
-        let rawModel: Object = {
+        return {
             'key': this.key,
             'value': this.value
         };
-        return rawModel;
     }
 
 }

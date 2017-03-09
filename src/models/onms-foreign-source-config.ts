@@ -9,9 +9,7 @@ export class OnmsForeignSourceConfig {
     ) {}
 
     static importConfigs(rawConfigs: Object[]) : OnmsForeignSourceConfig[] {
-        let configs: OnmsForeignSourceConfig[] = [];
-        rawConfigs.forEach(c => configs.push(OnmsForeignSourceConfig.importConfig(c)));
-        return configs;
+        return rawConfigs.map(c => OnmsForeignSourceConfig.importConfig(c));
     }
 
     static importConfig(rawDetector: Object) : OnmsForeignSourceConfig {

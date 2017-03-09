@@ -86,7 +86,7 @@ export class NodePage implements OnInit {
     loading.present();
     this.nodesService.getNode(this.node.id)
       .then(node => {
-        Object.assign(this.node, node);
+        this.node = node;
         this.updateDependencies();
         loading.dismiss();
       })

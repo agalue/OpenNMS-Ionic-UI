@@ -18,16 +18,15 @@ export class OnmsNode {
     public labelSource: string;
     public assetRecord: OnmsAssetRecord;
     public categories: OnmsCategory[] = []
+
+    // The interfaces are not part of the output of the ReST API
     public ipInterfaces: OnmsIpInterface[] = [];
     public snmpInterfaces: OnmsSnmpInterface[] = [];
 
     static importNode(rawNode: Object) : OnmsNode {
         let node : OnmsNode = Object.assign(new OnmsNode(), rawNode);
         node.assetRecord = Object.assign(new OnmsAssetRecord(), rawNode['assetRecord']);
-        if (rawNode['categories'].length > 0) {
-            node.categories = [];
-            rawNode['categories'].forEach(c => node.categories.push(Object.assign(new OnmsCategory(), c)));
-        }
+        node.categories = rawNode['categories'].map(c => Object.assign(new OnmsCategory(), c));
         return node;
     }
 

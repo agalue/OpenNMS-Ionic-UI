@@ -5,9 +5,7 @@ export class OnmsRequisitionService {
     ) {}
 
     static importServices(rawServices: Object[]) : OnmsRequisitionService[] {
-        let services: OnmsRequisitionService[] = [];
-        rawServices.forEach(i => services.push(OnmsRequisitionService.importService(i)));
-        return services;
+        return rawServices.map(s => OnmsRequisitionService.importService(s));
     }
 
     static importService(rawService: Object) : OnmsRequisitionService {
@@ -15,10 +13,9 @@ export class OnmsRequisitionService {
     }
 
     generateModel() : Object {
-        let rawService: Object = {
+        return {
             'service-name': this.name,
         };
-        return rawService;
     }
 
 }

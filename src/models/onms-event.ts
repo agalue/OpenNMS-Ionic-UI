@@ -29,9 +29,7 @@ export class OnmsEvent {
     }
 
     static importEvents(rawEvents: Object[]): OnmsEvent[] {
-        let events: OnmsEvent[] = [];
-        rawEvents.forEach(e => events.push(OnmsEvent.importEvent(e)));
-        return events;
+        return rawEvents.map(e => OnmsEvent.importEvent(e));
     }
 
 }

@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{ isNew ? 'New Node' : node.nodeLabel }}</ion-title>
     <ion-buttons end>
-      <button ion-button icon-left color="danger" (click)="onSave()" *ngIf="form.valid && form.dirty">
+      <button ion-button icon-left color="primary" (click)="onSave()" [disabled]="form.invalid">
         <ion-icon name="cloud-upload"></ion-icon>
         Save
       </button>

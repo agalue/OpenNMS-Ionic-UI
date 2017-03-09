@@ -9,12 +9,8 @@ export class OnmsParameter {
     }
 
     static importParameters(rawParameters: Object[]): OnmsParameter[] {
-        if (!rawParameters || rawParameters.length == 0) {
-            return [];
-        }
-        let parameters: OnmsParameter[] = [];
-        rawParameters.forEach(p => parameters.push(OnmsParameter.importParameter(p)));
-        return parameters;
+        if (!rawParameters || rawParameters.length == 0) return [];
+        return rawParameters.map(p => OnmsParameter.importParameter(p));
     }
 
 } 

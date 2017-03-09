@@ -21,13 +21,11 @@ export class OnmsRequisitionNode {
     ) {}
 
     static importNodes(rawNodes: Object[]) : OnmsRequisitionNode[] {
-        let nodes: OnmsRequisitionNode[] = [];
-        rawNodes.forEach(n => nodes.push(OnmsRequisitionNode.importNode(n)));
-        return nodes;
+        return rawNodes.map(n => OnmsRequisitionNode.importNode(n));
     }
 
     static importNode(rawNode: Object) : OnmsRequisitionNode {
-        let node = new OnmsRequisitionNode(
+        return new OnmsRequisitionNode(
             rawNode['foreign-id'],
             rawNode['node-label'],
             rawNode['location'],
@@ -35,12 +33,11 @@ export class OnmsRequisitionNode {
             rawNode['building'],
             rawNode['parent-foreign-source'],
             rawNode['parent-foreign-id'],
-            rawNode['parent-node-label']
+            rawNode['parent-node-label'],
+            OnmsRequisitionInterface.importInterfaces(rawNode['interface']),
+            OnmsRequisitionCategory.importCategories(rawNode['category']),
+            OnmsRequisitionAsset.importAssets(rawNode['asset'])
         );
-        node.interfaces = OnmsRequisitionInterface.importInterfaces(rawNode['interface']);
-        node.categories = OnmsRequisitionCategory.importCategories(rawNode['category']);
-        node.assets = OnmsRequisitionAsset.importAssets(rawNode['asset']);
-        return node;
     }
 
     static create(): OnmsRequisitionNode {
@@ -60,8 +57,17 @@ export class OnmsRequisitionNode {
             || this.categories.filter(c => c.name.toLowerCase().includes(k)).length > 0;
     }
 
+    static assign(destination: OnmsRequisitionNode, source: OnmsRequisitionNode) {
+      Object.assign(destination, source);
+      destination.interfaces = source.interfaces.map(src => {
+        let dst = OnmsRequisitionInterface.create();
+        OnmsRequisitionInterface.assign(dst, src);
+        return dst; 
+      });
+    }
+
     generateModel() : Object {
-        let rawNode: Object = {
+        return {
             'foreign-id': this.foreignId,
             'node-label': this.nodeLabel,
             'location': this.location,
@@ -70,14 +76,10 @@ export class OnmsRequisitionNode {
             'parent-foreign-source': this.parentForeignSource,
             'parent-foreign-id': this.parentForeignId,
             'parent-node-label': this.parentNodeLabel,
-            'asset': [],
-            'interface': [],
-            'category': []
+            'asset': this.assets.map(a => a.generateModel()),
+            'interface': this.interfaces.map(i => i.generateModel()),
+            'category': this.categories.map(c => c.generateModel())
         };
-        this.assets.forEach(a => rawNode['asset'].push(a.generateModel()));
-        this.interfaces.forEach(i => rawNode['interface'].push(i.generateModel()));
-        this.categories.forEach(c => rawNode['category'].push(c.generateModel()));
-        return rawNode;
     }
 
 }

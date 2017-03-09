@@ -9,9 +9,7 @@ export class OnmsRequisitionPolicy {
     ) {}
 
     static importPolicies(rawPolicies: Object[]) : OnmsRequisitionPolicy[] {
-        let policies: OnmsRequisitionPolicy[] = [];
-        rawPolicies.forEach(p => policies.push(OnmsRequisitionPolicy.importPolicy(p)));
-        return policies;
+        return rawPolicies.map(p => OnmsRequisitionPolicy.importPolicy(p));
     }
 
     static importPolicy(rawPolicy: Object) : OnmsRequisitionPolicy {
@@ -27,13 +25,11 @@ export class OnmsRequisitionPolicy {
     }
 
     generateModel() : Object {
-        let rawModel: Object = {
+        return {
             'name': this.name,
             'class': this.className,
-            'parameter': []
+            'parameter': this.parameters.map(p => p.generateModel())
         };
-        this.parameters.forEach(p => rawModel['parameter'].push(p.generateModel()));
-        return rawModel;
     }
 
 }

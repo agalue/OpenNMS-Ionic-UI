@@ -35,10 +35,7 @@ export class DetectorPage implements OnInit {
   }
 
   onClassChange(className: string) {
-    this.detector.parameters = [];
-    this.getRequiredParameters(className).forEach(p => {
-      this.detector.parameters.push(OnmsRequisitionParameter.create(p));
-    });
+    this.detector.parameters = this.getRequiredParameters(className).map(p => OnmsRequisitionParameter.create(p));
   }
 
   onAddParameter() {

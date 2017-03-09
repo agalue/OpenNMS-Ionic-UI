@@ -25,9 +25,7 @@ export class OnmsOutage {
     }
 
     static importOutages(rawOutages: Object[]): OnmsOutage[] {
-        let outages: OnmsOutage[] = [];
-        rawOutages.forEach(o => outages.push(OnmsOutage.importOutage(o)));
-        return outages;
+        return rawOutages.map(o => OnmsOutage.importOutage(o));
     }
 
     getSeverity() {

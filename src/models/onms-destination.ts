@@ -14,9 +14,7 @@ export class OnmsDestination {
         if (!rawDestinations || rawDestinations.length == 0) {
             return [];
         }
-        let destinations: OnmsDestination[] = [];
-        rawDestinations.forEach(o => destinations.push(OnmsDestination.importDestination(o)));
-        return destinations;
+        return rawDestinations.map(d => OnmsDestination.importDestination(d));
     }
 
 }

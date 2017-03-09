@@ -3,9 +3,7 @@ export class OnmsRequisitionCategory {
     public name: string;
 
     static importCategories(rawCategories: Object[]) : OnmsRequisitionCategory[] {
-        let categories: OnmsRequisitionCategory[] = [];
-        rawCategories.forEach(c => categories.push(OnmsRequisitionCategory.importCategory(c)));
-        return categories;
+        return rawCategories.map(c => OnmsRequisitionCategory.importCategory(c));
     }
 
     static importCategory(rawCategory: Object) : OnmsRequisitionCategory {
@@ -13,10 +11,9 @@ export class OnmsRequisitionCategory {
     }
 
     generateModel() : Object {
-        let rawCategory: Object = {
+        return {
             name: this.name
         };
-        return rawCategory;
     }
 
 }

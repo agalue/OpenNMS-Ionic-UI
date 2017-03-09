@@ -14,9 +14,7 @@ export class OnmsIpInterfaceAvailability {
     }
 
     static importInterfaces(rawInterfaces: Object[]): OnmsIpInterfaceAvailability[] {
-        let interfaces: OnmsIpInterfaceAvailability[] = [];
-        rawInterfaces.forEach(i => interfaces.push(OnmsIpInterfaceAvailability.importInterface(i)));
-        return interfaces;
+        return rawInterfaces.map(i => OnmsIpInterfaceAvailability.importInterface(i));
     }
 
     contains(keyword: string) : boolean {

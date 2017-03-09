@@ -9,9 +9,7 @@ export class OnmsServiceAvailability {
     }
 
     static importServices(rawServices: Object[]): OnmsServiceAvailability[] {
-        let services: OnmsServiceAvailability[] = [];
-        rawServices.forEach(s => services.push(OnmsServiceAvailability.importService(s)));
-        return services;
+        return rawServices.map(s => OnmsServiceAvailability.importService(s));
     }
 
 }

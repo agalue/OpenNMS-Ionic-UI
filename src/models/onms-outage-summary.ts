@@ -9,9 +9,7 @@ export class OnmsOutageSummary {
     ) {}
 
     static importSummary(e: Object): OnmsOutageSummary {
-        if (!e) {
-            return null;
-        }
+        if (!e) return null;
         let outage = new OnmsOutageSummary(
             e['node-id'],
             e['node-label'],
@@ -23,9 +21,7 @@ export class OnmsOutageSummary {
     }
 
     static importSumaries(rawOutages: Object[]): OnmsOutageSummary[] {
-        let outages: OnmsOutageSummary[] = [];
-        rawOutages.forEach(o => outages.push(OnmsOutageSummary.importSummary(o)));
-        return outages;
+        return rawOutages.map(o => OnmsOutageSummary.importSummary(o));
     }
 
     getTimeInfo(): string {

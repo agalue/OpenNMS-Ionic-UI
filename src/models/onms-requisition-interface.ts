@@ -14,9 +14,7 @@ export class OnmsRequisitionInterface {
     }
 
     static importInterfaces(rawInterfaces: Object[]) : OnmsRequisitionInterface[] {
-        let interfaces: OnmsRequisitionInterface[] = [];
-        rawInterfaces.forEach(i => interfaces.push(OnmsRequisitionInterface.importInterface(i)));
-        return interfaces;
+        return rawInterfaces.map(i => OnmsRequisitionInterface.importInterface(i));
     }
 
     static importInterface(rawInterface: Object) : OnmsRequisitionInterface {
@@ -29,16 +27,21 @@ export class OnmsRequisitionInterface {
         return intf;
     }
 
+    static assign(destination: OnmsRequisitionInterface, source: OnmsRequisitionInterface) {
+        Object.assign(destination, source);
+        if (source.services) {
+            destination.services = source.services.map(s => new OnmsRequisitionService(s.name));
+        }
+    }
+
     generateModel() : Object {
-        let rawInterface: Object = {
+        return {
             'ip-addr': this.ipAddress,
             'snmp-primary': this.snmpPrimary,
             'descr': this.description,
-            'monitored-service': [],
+            'monitored-service': this.services.map(s => s.generateModel()),
             'status': 1
         };
-        this.services.forEach(s => rawInterface['monitored-service'].push(s.generateModel()));
-        return rawInterface;
     }
 
 }

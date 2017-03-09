@@ -174,11 +174,12 @@ export class RequisitionNodePage implements OnInit {
 
   private saveNode() : Promise<void> {
     return new Promise<void>((resolve,reject) => {
-      Object.assign(this.node, this.form.value);
+      OnmsRequisitionNode.assign(this.node, this.form.value);
       this.requisitionsService.saveNode(this.foreignSource, this.node)
         .then(() => {
           this.form.markAsPristine();
           this.form.markAsUntouched();
+          this.isNew = false;
           resolve();
         })
         .catch(error => reject(error));
@@ -220,7 +221,7 @@ export class RequisitionNodePage implements OnInit {
 
   private initForm() {
     this.form = new FormGroup({
-      'foreignId' : new FormControl({ value: this.node.foreignId, disabled: !this.isNew }, Validators.required),
+      'foreignId' : new FormControl({ value: this.node.foreignId, disabled: !this.isNew || this.node.deployed }, Validators.required),
       'nodeLabel' : new FormControl(this.node.nodeLabel, Validators.required),
       'location' : new FormControl(this.node.location),
       'building' : new FormControl(this.node.building),

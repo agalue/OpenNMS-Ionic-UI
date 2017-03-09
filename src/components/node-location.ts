@@ -54,7 +54,7 @@ export class NodeLocationComponent implements OnChanges {
               role: 'cancel'
             },
             {
-              text: 'Save Coordinates',
+              text: 'Save',
               handler: () => this.onSave.emit({ latitude: r.coords.latitude, longitude: r.coords.longitude})
             }
           ]

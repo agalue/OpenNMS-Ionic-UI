@@ -23,23 +23,21 @@ export class OnmsResource {
   ) {}
 
   static importResource(rawResource: Object) : OnmsResource {
-    let resource = new OnmsResource(
+    return new OnmsResource(
       rawResource['id'].replace('%3A',':'),
       rawResource['label'],
       rawResource['name'],
-      rawResource['typeLabel']);
-    resource.stringPropertyAttributes = Object.getOwnPropertyNames(rawResource['stringPropertyAttributes'])
-      .map((key: string) => new OnmsResourceAttribute(key, rawResource['stringPropertyAttributes'][key]));
-    resource.externalValueAttributes = Object.getOwnPropertyNames(rawResource['externalValueAttributes'])
-      .map((key: string) => new OnmsResourceAttribute(key, rawResource['externalValueAttributes'][key]));
-    resource.rrdGraphAttributes =  Object.getOwnPropertyNames(rawResource['rrdGraphAttributes']);
-    return resource;
+      rawResource['typeLabel'],
+      Object.getOwnPropertyNames(rawResource['stringPropertyAttributes'])
+        .map((key: string) => new OnmsResourceAttribute(key, rawResource['stringPropertyAttributes'][key])),
+      Object.getOwnPropertyNames(rawResource['externalValueAttributes'])
+        .map((key: string) => new OnmsResourceAttribute(key, rawResource['externalValueAttributes'][key])),
+      Object.getOwnPropertyNames(rawResource['rrdGraphAttributes'])
+      );
   }
 
   static importResources(rawResources: Object[]) : OnmsResource[] {
-    let resources: OnmsResource[] = [];
-    rawResources.forEach(r => resources.push(OnmsResource.importResource(r)));
-    return resources;
+    return rawResources.map(r => OnmsResource.importResource(r));
   }
 
   static groupByResourceType(resources: OnmsResource[]) : OnmsResourcesByType[] {

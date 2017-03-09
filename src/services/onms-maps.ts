@@ -37,7 +37,7 @@ export class NodeInfo {
     nodeInfo.foreignId = node.foreignId;
     nodeInfo.foreignSource = node.foreignSource;
     nodeInfo.ipAddress = node.getFirstIP(); // Not necessarily available initially
-    node.categories.forEach(c => nodeInfo.categories.push(c.name));
+    nodeInfo.categories = node.categories.map(c => c.name);
     return nodeInfo;
   }
 
@@ -107,9 +107,7 @@ export class GeolocationInfo {
   }
 
   static importLocations(rawLocations: Object[]) : GeolocationInfo[] {
-    let locations: GeolocationInfo[] = [];
-    if (rawLocations) rawLocations.forEach(l => locations.push(GeolocationInfo.importLocation(l)));
-    return locations;
+    return rawLocations.map(l => GeolocationInfo.importLocation(l));
   }
 
   static import(node: OnmsNode, alarms: OnmsAlarm[]) : GeolocationInfo {

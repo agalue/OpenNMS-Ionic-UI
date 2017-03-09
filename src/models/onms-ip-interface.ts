@@ -21,9 +21,7 @@ export class OnmsIpInterface {
     }
 
     static importInterfaces(rawInterfaces: Object[]) : OnmsIpInterface[] {
-        let interfaces: OnmsIpInterface[] = [];
-        rawInterfaces.forEach(i => interfaces.push(OnmsIpInterface.importInterface(i)));
-        return interfaces;
+        return rawInterfaces.map(i => OnmsIpInterface.importInterface(i));
     }
 
     isPrimary() : boolean {

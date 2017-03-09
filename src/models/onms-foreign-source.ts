@@ -12,9 +12,7 @@ export class OnmsForeignSource {
     ) {}
 
     static importForeignSources(rawForeignSources: Object[]) : OnmsForeignSource[] {
-        let foreignSources: OnmsForeignSource[] = [];
-        rawForeignSources.forEach(fs => foreignSources.push(OnmsForeignSource.importForeignSource(fs)));
-        return foreignSources;
+        return rawForeignSources.map(fs => OnmsForeignSource.importForeignSource(fs));
     }
 
     static importForeignSource(rawForeignSource: Object) : OnmsForeignSource {
@@ -28,16 +26,13 @@ export class OnmsForeignSource {
     }
 
     generateModel() : Object {
-        let rawModel: Object = {
+        return {
             'name': this.name,
             'date-stamp': this.dateStamp,
             'scan-interval': this.scanInterval,
-            'detectors': [],
-            'policies': []
+            'detectors': this.detectors.map(d => d.generateModel()),
+            'policies': this.policies.map(p => p.generateModel())
         };
-        this.detectors.forEach(d => rawModel['detectors'].push(d.generateModel()));
-        this.policies.forEach(p => rawModel['policies'].push(p.generateModel()));
-        return rawModel;
     }
 
 }

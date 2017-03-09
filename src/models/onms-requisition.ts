@@ -18,19 +18,16 @@ export class OnmsRequisition {
     }
 
     static importRequisitions(rawRequisitions: Object[]) : OnmsRequisition[] {
-        let requisitions: OnmsRequisition[] = [];
-        rawRequisitions.forEach(r => requisitions.push(OnmsRequisition.importRequisition(r)));
-        return requisitions;
+        return rawRequisitions.map(r => OnmsRequisition.importRequisition(r));
     }
 
     static importRequisition(rawRequisition: Object) : OnmsRequisition {
-        let requisition = new OnmsRequisition(
+        return new OnmsRequisition(
             rawRequisition['foreign-source'],
             rawRequisition['date-stamp'],
-            rawRequisition['last-import']
+            rawRequisition['last-import'],
+            OnmsRequisitionNode.importNodes(rawRequisition['node'])
         );
-        requisition.nodes = OnmsRequisitionNode.importNodes(rawRequisition['node']);
-        return requisition;
     }
 
     getNode(foreignId: string) {
@@ -77,13 +74,11 @@ export class OnmsRequisition {
     }
 
     generateModel() : Object {
-        let rawRequisition: Object = {
+        return {
             'foreign-source': this.foreignSource,
             'date-stamp': this.dateStamp,
-            'node': []
+            'node': this.nodes.map(n => n.generateModel())
         };
-        this.nodes.forEach(n => rawRequisition['node'].push(n.generateModel()));
-        return rawRequisition;
     }
 
 }

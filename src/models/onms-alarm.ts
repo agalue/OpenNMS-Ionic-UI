@@ -1,6 +1,6 @@
 import { OnmsEvent } from './onms-event';
 import { OnmsAck } from './onms-ack';
-import { OnmsAlarmMemo } from './alarm-memo';
+import { OnmsAlarmMemo } from './onms-alarm-memo';
 import { OnmsParameter } from './onms-parameter';
 import { OnmsSeverities } from './onms-severities';
 

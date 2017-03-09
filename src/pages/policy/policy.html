@@ -4,8 +4,9 @@
   </ion-navbar>
 </ion-header>
 
+
 <ion-content padding>
-  <form #f="ngForm" (ngSubmit)="onSave()">
+  <form #f="ngForm">
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -61,14 +62,23 @@
         </ion-list>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <button type="button" ion-button block color="danger" (click)="onCancel()">Cancel</button>
-      </ion-col>
-      <ion-col>
-        <button type="submit" ion-button block color="secondary" [disabled]="!f.valid">Save Policy</button>
-      </ion-col>
-    </ion-row>
   </ion-grid>
   </form>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons start>
+      <button ion-button icon-left type="button" color="danger" (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+        Cancel
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-left type="button" color="primary" (click)="onSave()" [disabled]="!f.valid">
+        <ion-icon name="cloud-upload"></ion-icon>
+        Save Policy
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
