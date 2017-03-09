@@ -173,8 +173,8 @@ export class RequisitionNodePage implements OnInit {
   }
 
   private saveNode() : Promise<void> {
+    OnmsRequisitionNode.assign(this.node, this.form.value);
     return new Promise<void>((resolve,reject) => {
-      OnmsRequisitionNode.assign(this.node, this.form.value);
       this.requisitionsService.saveNode(this.foreignSource, this.node)
         .then(() => {
           this.form.markAsPristine();

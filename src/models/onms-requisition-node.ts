@@ -59,11 +59,13 @@ export class OnmsRequisitionNode {
 
     static assign(destination: OnmsRequisitionNode, source: OnmsRequisitionNode) {
       Object.assign(destination, source);
-      destination.interfaces = source.interfaces.map(src => {
-        let dst = OnmsRequisitionInterface.create();
-        OnmsRequisitionInterface.assign(dst, src);
-        return dst; 
-      });
+      if (source.interfaces) {
+        destination.interfaces = source.interfaces.map(src => {
+            let dst = OnmsRequisitionInterface.create();
+            OnmsRequisitionInterface.assign(dst, src);
+            return dst; 
+        });
+      }
     }
 
     generateModel() : Object {

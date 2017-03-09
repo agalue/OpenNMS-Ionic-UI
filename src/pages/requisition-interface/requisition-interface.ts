@@ -59,15 +59,12 @@ export class RequisitionInterfacePage implements OnInit {
   }
 
   private initForm() {
-    let services : FormArray = new FormArray([]);
-    this.intf.services.forEach(s => services.push(this.addService(s.name)));
     this.form = new FormGroup({
       'ipAddress' : new FormControl(this.intf.ipAddress, validateIpAddress),
       'description' : new FormControl(this.intf.description),
       'snmpPrimary' : new FormControl(this.intf.snmpPrimary, Validators.required),
-      'services' : services
+      'services' : new FormArray(this.intf.services.map(s => this.addService(s.name)))
     });
-    console.log('Interface form initailized!');
   }
 
   private getServices() : FormArray {
