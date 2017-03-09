@@ -4,7 +4,7 @@
     <ion-grid no-padding>
       <ion-row>
         <ion-col width-75><b>Overall Availability</b></ion-col>
-        <ion-col width-35 text-right [class]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }}%</ion-col>
+        <ion-col width-35 text-right [ngClass]="getAvailabilityColor(availability.availability)">{{ availability.availability | number:'1.5-5' }}%</ion-col>
       </ion-row>
       <ion-row>
         <ion-col width-75><b>Services Down</b></ion-col>
@@ -16,11 +16,11 @@
     <ion-grid no-padding>
       <ion-row>
         <ion-col width-75>{{ intf.address }}</ion-col>
-        <ion-col width-25 text-right [class]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.4-4' }}%</ion-col>
+        <ion-col width-25 text-right [ngClass]="getAvailabilityColor(intf.availability)">{{ intf.availability | number:'1.4-4' }}%</ion-col>
       </ion-row>
       <ion-row *ngFor="let service of intf.services">
         <ion-col width-75>&nbsp;&nbsp;&nbsp;&nbsp;{{ service.name }}</ion-col>
-        <ion-col width-25 text-right [class]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.4-4' }}%</ion-col>
+        <ion-col width-25 text-right [ngClass]="getAvailabilityColor(service.availability)">{{ service.availability | number:'1.4-4' }}%</ion-col>
       </ion-row>
     </ion-grid>
   </ion-item>

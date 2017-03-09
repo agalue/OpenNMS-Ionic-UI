@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content [class]="notification.severity" padding>
+<ion-content [ngClass]="notification.severity" padding>
   <ion-grid>
     <ion-card *ngIf="notification.isAcknowledged()">
       <ion-card-header>Acknowledged</ion-card-header>

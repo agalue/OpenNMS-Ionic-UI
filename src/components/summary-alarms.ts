@@ -5,24 +5,7 @@ import * as C3 from 'c3';
 
 @Component({
   selector: 'alarms-summary',
-  template: `
-    <div id="alarmsChart"></div>
-    <br>
-    <ion-grid *ngIf="alarms">
-      <ion-row>
-        <ion-col><b>Severity</b></ion-col>
-        <ion-col width-20 text-right><b>Total</b></ion-col>
-        <ion-col width-20 text-right><b># Ack</b></ion-col>
-        <ion-col width-20 text-right><b># Unack</b></ion-col>
-      </ion-row>
-      <ion-row *ngFor="let alarm of alarms">
-        <ion-col [class]="alarm.severity">{{ alarm.severity }}</ion-col>
-        <ion-col width-20 text-right>{{ alarm.totalCount }}</ion-col>
-        <ion-col width-20 text-right>{{ alarm.acknowledgedCount }}</ion-col>
-        <ion-col width-20 text-right>{{ alarm.unacknowledgedCount }}</ion-col>
-      </ion-row>
-    </ion-grid>  
-  `
+  templateUrl: 'summary-alarms.html'
 })
 export class AlarmsSummaryComponent implements AfterViewInit, OnChanges {
 

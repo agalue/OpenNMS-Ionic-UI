@@ -39,8 +39,8 @@
         </ion-row>
         <ion-row *ngFor="let category of section.categories">
           <ion-col width-50>{{ category.name }}</ion-col>
-          <ion-col text-right [class]="category.outageClass">{{ category.outageText }}</ion-col>
-          <ion-col text-right [class]="category.availabilityClass">{{ category.availabilityText }}</ion-col>
+          <ion-col text-right [ngClass]="category.outageClass">{{ category.outageText }}</ion-col>
+          <ion-col text-right [ngClass]="category.availabilityClass">{{ category.availabilityText }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>

@@ -48,7 +48,7 @@ $colors: (
 );
 
 @each $name, $value in $colors {
-    .#{$name} { background-color: $value; }
+    .#{$name} { background-color: $value!important; }
 }
 
 // App iOS Variables

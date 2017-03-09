@@ -16,7 +16,7 @@ export class OnmsAvailabilityService {
 
   getAvailability() : Promise<OnmsSlmSection[]> {
     return this.http.get('/rest/availability')
-      .timeout(this.timeout, new Error('Timeout exceeded'))
+      .timeout(this.timeout)
       .map((response: Response) => OnmsSlmSection.import(response.json().section))
       .toPromise()
   }

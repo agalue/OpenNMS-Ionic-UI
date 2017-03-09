@@ -24,7 +24,8 @@
   }
 }
 
-ion-input {
+// TODO Doesn't work for ion-select
+ion-input, ion-select {
   .ng-valid[required], .ng-valid.required  {
     border-right: 2px solid $text-input-highlight-color-valid;
   }

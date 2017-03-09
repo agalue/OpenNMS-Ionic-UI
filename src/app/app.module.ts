@@ -1,6 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { IonicStorageModule } from '@ionic/storage';
 
 // Main Component
 
@@ -147,7 +147,8 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     IonicModule.forRoot(MyApp, {
       backButtonIcon: 'arrow-back',
       backButtonText: ''
-    })
+    }),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -188,7 +189,6 @@ import { SetLocationPage } from '../pages/set-location/set-location';
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Storage,
     HttpService,
     OnmsUIService,
     OnmsServersService,

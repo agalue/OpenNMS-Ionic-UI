@@ -20,7 +20,6 @@ export class OnmsEventsService {
       url += `&comparator=ilike&${OnmsApiFilter.encodeFilters(filters)}`;
     }
     return this.http.get(url)
-      .timeout(3000, new Error('Timeout exceeded'))
       .map((response: Response) => OnmsEvent.importEvents(response.json().event))
       .toPromise()
   }

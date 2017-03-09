@@ -134,7 +134,7 @@ export class OnmsServersService {
       headers.append('Authorization', 'Basic ' + btoa(server.username + ':' + server.password));
       headers.append('Accept', 'application/json');
       this.http.get(server.url + '/rest/info', new RequestOptions({ headers: headers }))
-        .timeout(this.timeout, new Error('Timeout exceeded'))
+        .timeout(this.timeout)
         .map((response: Response) => response.json())
         .toPromise()
         .then(info => {

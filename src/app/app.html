@@ -1,25 +1,27 @@
-<ion-menu [content]="content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-split-pane>
+  <!-- side menu  -->
+  <ion-menu [content]="content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list no-lines *ngIf="onmsServer">
+        <ion-item>
+          <p>{{ onmsServer?.type }} {{ onmsServer?.version }} {{ onmsServer?.name }}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list no-lines *ngFor="let g of groups">
+        <ion-list-header>{{ g.name }}</ion-list-header>
+        <button menuClose small ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
+          <ion-icon item-left [name]="p.icon"></ion-icon>
+          <p>{{ p.title }}</p>
+        </button>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
 
-  <ion-content>
-    <ion-list no-lines *ngIf="onmsServer">
-      <ion-item>
-         <p>{{ onmsServer?.type }} {{ onmsServer?.version }} {{ onmsServer?.name }}</p>
-      </ion-item>
-    </ion-list>
-    <ion-list no-lines *ngFor="let g of groups">
-      <ion-list-header>{{ g.name }}</ion-list-header>
-      <button menuClose small ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
-        <ion-icon item-left [name]="p.icon"></ion-icon>
-        <p>{{ p.title }}</p>
-      </button>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
-<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
-<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+  <!-- the main content -->
+  <ion-nav [root]="rootPage" #content main></ion-nav>
+</ion-split-pane>

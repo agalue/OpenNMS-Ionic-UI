@@ -8,11 +8,11 @@
       </ion-row>
       <ion-row>
         <ion-col width-33><b>Status</b></ion-col>
-        <ion-col width-67 [class]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
+        <ion-col width-67 [ngClass]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col width-33><b>Is Managed ?</b></ion-col>
-        <ion-col width-67 [class]="!intf.managed() ? 'Critical' : 'Normal'">{{ intf.managed() ? 'Yes' : 'No' }}</ion-col>
+        <ion-col width-67 [ngClass]="!intf.managed() ? 'Critical' : 'Normal'">{{ intf.managed() ? 'Yes' : 'No' }}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col width-33><b>Is Primary ?</b></ion-col>

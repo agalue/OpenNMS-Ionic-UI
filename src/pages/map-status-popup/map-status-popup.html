@@ -10,7 +10,7 @@
     </ion-row>
     <ion-row>
       <ion-col><b>Severity</b></ion-col>
-      <ion-col [class]="locations[0].severityInfo.label">{{ locations[0].severityInfo.label }}</ion-col>
+      <ion-col [ngClass]="locations[0].severityInfo.label">{{ locations[0].severityInfo.label }}</ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid *ngIf="locations.length > 1">
@@ -18,7 +18,7 @@
       <ion-col><b>Cluster Group</b></ion-col>
     </ion-row>
     <ion-row *ngFor="let location of locations">
-      <ion-col [class]="location.severityInfo.label">{{ location.nodeInfo.nodeLabel }}</ion-col>
+      <ion-col [ngClass]="location.severityInfo.label">{{ location.nodeInfo.nodeLabel }}</ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
