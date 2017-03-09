@@ -8,26 +8,27 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="mode">
+      <ion-segment-button value="basic">
+        Basic
+      </ion-segment-button>
+      <ion-segment-button value="interfaces">
+        Interfaces
+      </ion-segment-button>
+      <ion-segment-button value="assets">
+        Assets
+      </ion-segment-button>
+      <ion-segment-button value="categories">
+        Categories
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-segment [(ngModel)]="mode">
-    <ion-segment-button value="basic">
-      Basic
-    </ion-segment-button>
-    <ion-segment-button value="interfaces">
-      Interfaces
-    </ion-segment-button>
-    <ion-segment-button value="assets">
-      Assets
-    </ion-segment-button>
-    <ion-segment-button value="categories">
-      Categories
-    </ion-segment-button>
-  </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'basic'">
-      <br>
       <form [formGroup]="form">
         <ion-list inset>
           <ion-list-header>Basic</ion-list-header>
@@ -70,7 +71,6 @@
       </form>
     </div>
     <div *ngSwitchCase="'interfaces'">
-      <br>
       <button ion-button clear small block outline icon-left (click)="onAddInterface()">
         <ion-icon name="add"></ion-icon>
         Add Interface
@@ -93,7 +93,6 @@
       </ion-list>
     </div>
     <div *ngSwitchCase="'assets'">
-      <br>
       <button ion-button clear small block outline icon-left (click)="onAddAsset()">
         <ion-icon name="add"></ion-icon>
         Add Asset
@@ -115,7 +114,6 @@
       </ion-list>
     </div>
     <div *ngSwitchCase="'categories'">
-      <br>
       <button ion-button clear small block outline icon-left (click)="onAddCategory()">
         <ion-icon name="add"></ion-icon>
         Add Category

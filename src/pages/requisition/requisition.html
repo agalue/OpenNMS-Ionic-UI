@@ -16,7 +16,7 @@
       <button ion-item (click)="onEditNode(node)">
         <h2>{{ node.nodeLabel }}</h2>
         <p>Foreign ID: {{ node.foreignId }}</p>
-        <p>IP Address: {{ node.getPrimaryIP() }}</p>
+        <p *ngIf="node.getPrimaryIP()">IP Address: {{ node.getPrimaryIP() }}</p>
       </button>
       <ion-item-options>
         <button ion-button expandable color="danger" (click)="onRemoveNode(node)">

@@ -7,23 +7,24 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="mode">
+      <ion-segment-button value="overview">
+        Overview
+      </ion-segment-button>
+      <ion-segment-button value="detectors">
+        Detectors
+      </ion-segment-button>
+      <ion-segment-button value="policies">
+        Policies
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-segment [(ngModel)]="mode">
-    <ion-segment-button value="overview">
-      Overview
-    </ion-segment-button>
-    <ion-segment-button value="detectors">
-      Detectors
-    </ion-segment-button>
-    <ion-segment-button value="policies">
-      Policies
-    </ion-segment-button>
-  </ion-segment>
   <div [ngSwitch]="mode">
     <div *ngSwitchCase="'overview'">
-      <br>
       <h2>{{ definition.name }}</h2>
       <p>Last Update: {{ definition.dateStamp | date:'medium' }}</p>
       <form [formGroup]="form">
@@ -36,7 +37,6 @@
       </form>
     </div>
     <div *ngSwitchCase="'detectors'">
-      <br>
       <ion-grid>
         <ion-row>
           <ion-col>
@@ -66,7 +66,6 @@
       </ion-list>
     </div>
     <div *ngSwitchCase="'policies'">
-      <br>
       <ion-grid>
         <ion-row>
           <ion-col>
