@@ -45,9 +45,9 @@ export class ServerPage implements OnInit {
     })
     loading.present();
     if (this.server) {
-      promise = this.serversService.updateServer(server, this.serverIndex);
+      promise = this.serversService.saveServer(server, this.serverIndex);
     } else {
-      promise = this.serversService.addServer(server);
+      promise = this.serversService.saveServer(server);
     }
     promise
       .then(() => {

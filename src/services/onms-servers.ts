@@ -5,12 +5,13 @@ import 'rxjs/Rx';
 
 import { OnmsServer } from '../models/onms-server';
 
+const ONMS_SERVERS = 'onms-servers';
+
 @Injectable()
 export class OnmsServersService {
 
   defaultUpdated = new EventEmitter<OnmsServer>();
 
-  private servers: OnmsServer[];
   private defaultServer: OnmsServer;
   private timeout  = 3000;
 
@@ -33,97 +34,79 @@ export class OnmsServersService {
   }
 
   getServers() : Promise<OnmsServer[]> {
-    if (this.servers) {
-      return Promise.resolve(this.servers.slice());
-    }
-    return this.storage.get('onms-servers')
-      .then((servers: OnmsServer[]) => {
-        this.servers = servers == null ? [] : servers;
-        return this.servers;
-      });
+    return this.storage.get(ONMS_SERVERS)
+      .then((servers: OnmsServer[]) => servers.slice());
   }
 
-  addServer(server: OnmsServer) : Promise<any> {
-    console.debug(`saving server ${server.name}`);
+  saveServer(server: OnmsServer, index?: number) {
     return new Promise<OnmsServer>((resolve, reject) => {
       this.updateVersion(server)
         .then((updatedServer: OnmsServer) => {
-          console.debug(`adding server ${updatedServer.name} with version ${updatedServer.version}`);
-          this.servers.push(updatedServer);
-          this.storage.set('onms-servers', this.servers)
-            .then(() => resolve(updatedServer))
-            .catch(error => {
-              this.servers.pop();
-              reject(error);
-            });
+          console.debug(`saving server ${updatedServer.name} with version ${updatedServer.version}`);
+          this.getServers()
+            .then(servers => {
+              if (index && index > -1) {
+                servers[index] = updatedServer;
+              } else {
+                servers.push(updatedServer);
+              }
+              if (updatedServer.isDefault) {
+                this.defaultServer = updatedServer;
+                this.notify(updatedServer);
+              }
+              this.storage.set(ONMS_SERVERS, servers)
+                .then(() => resolve(updatedServer))
+                .catch(error => reject(error));
+            })
+            .catch(error => reject(error));
         })
         .catch(error => reject(error));
     });
   }
 
-  updateServer(server: OnmsServer, index: number) : Promise<any> {
+  setDefault(index: number) : Promise<OnmsServer> {
     return new Promise<OnmsServer>((resolve, reject) => {
-      this.updateVersion(server)
-        .then((updatedServer: OnmsServer) => {
-          console.debug(`updating server ${updatedServer.name} with version ${updatedServer.version}`);
-          const backup = this.servers.slice();
-          this.servers[index] = updatedServer;
-          if (updatedServer.isDefault) {
-            this.defaultServer = updatedServer
-          }
-          this.storage.set('onms-servers', this.servers)
-            .then(() => resolve(updatedServer))
-            .catch(error => {
-              this.servers = backup;
-              reject(error);
-            });
-        })
-        .catch(error => reject(error));
-    });
-  }
-
-  setDefault(index: number) : Promise<any> {
-    return new Promise<OnmsServer>((resolve, reject) => {
-      const currentDefault: number = this.servers.findIndex(s => s.isDefault);
-      this.servers[currentDefault].isDefault = false;
-      this.servers[index].isDefault = true;
-      this.defaultServer = this.servers[index];
-      this.notify(this.defaultServer);
-      this.storage.set('onms-servers', this.servers)
-        .then(() => resolve())
-        .catch(error => {
-          this.servers[currentDefault].isDefault = true;
-          this.servers[index].isDefault = false;
-          this.defaultServer = this.servers[currentDefault];
+      this.getServers()
+        .then(servers => {
+          const currentDefault: number = servers.findIndex(s => s.isDefault);
+          servers[currentDefault].isDefault = false;
+          servers[index].isDefault = true;
+          this.defaultServer = servers[index];
           this.notify(this.defaultServer);
-          reject(error);
-        });      
+          this.storage.set(ONMS_SERVERS, servers)
+            .then(() => resolve(this.defaultServer))
+            .catch(error => reject(error));
+        })
+        .catch(error => reject(error));
     });
   }
 
   removeServer(index: number) : Promise<any> {
-    if (this.servers.length == 1) {
-      return Promise.reject('The list of servers cannot be empty. At least one server has to exist, and at least one server has to be the default.');
-    }
-    if (this.servers[index].isDefault) {
-      return Promise.reject('The default server cannot be deleted.');
-    }
     return new Promise<OnmsServer>((resolve, reject) => {
-      const backup = this.servers.slice();
-      this.servers.splice(index, 1);
-      this.storage.set('onms-servers', this.servers)
-        .then(() => resolve())
-        .catch(error => {
-          this.servers = backup;
-          reject(error);
-        });
+      this.getServers()
+        .then(servers => {
+          if (servers.length == 1) {
+            reject('The list of servers cannot be empty. At least one server has to exist, and at least one server has to be the default.');
+            return;
+          }
+          if (servers[index].isDefault) {
+            reject('The default server cannot be deleted.');
+            return;
+          }
+          servers.splice(index, 1);
+          this.storage.set(ONMS_SERVERS, servers)
+            .then(() => resolve())
+            .catch(error => reject(error));
+        })
+        .catch(error => reject(error));
     });
   }
 
   supports(feature: string) : boolean {
+    const version: number[] = this.defaultServer.version.split(/\./).map(idx => parseInt(idx));
     switch(feature) {
       case 'location':
-        const re = /^(19|2017)\./; return re.test(this.defaultServer.version);
+        version[0] > 19 || version[0] > 2017
       default: return true;
     }
   }
