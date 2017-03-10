@@ -12,9 +12,9 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 export class RequisitionCategoryPage implements OnInit {
 
   mode: string;
-    form: FormGroup;
-
+  form: FormGroup;
   category: OnmsRequisitionCategory;
+  blacklist: string[];
   availableCategories: string[] = [];
 
   constructor(
@@ -26,6 +26,7 @@ export class RequisitionCategoryPage implements OnInit {
 
   ngOnInit() {
     this.category  = this.navParams.get('category');
+    this.blacklist = this.navParams.get('blacklist') || [];
     this.mode = this.category ? 'Edit' : 'Add';
 
     if (this.mode == 'Add') {
@@ -33,8 +34,12 @@ export class RequisitionCategoryPage implements OnInit {
     }
     
     this.requisitionsService.getAvailableCategories()
-      .then(categories => this.availableCategories = categories)
+      .then(categories => {
+        this.availableCategories = categories.filter(c => this.blacklist.indexOf(c) == -1);
+        if (this.category) this.availableCategories.push(this.category.name);
+      })
       .catch(error => console.error(error));
+
     this.initForm();    
   }
 

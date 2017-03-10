@@ -6,6 +6,7 @@ import { OnmsRequisitionInterface } from '../../models/onms-requisition-interfac
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
 import { validateIpAddress } from '../../directives/ip-address';
+import { validateUnique } from '../../directives/unique';
 
 @Component({
   selector: 'page-requisition-interface',
@@ -17,6 +18,7 @@ export class RequisitionInterfacePage implements OnInit {
   form: FormGroup;
   foreignSource: string;
   intf: OnmsRequisitionInterface;
+  blacklist: string[];
 
   constructor(
     private navParams: NavParams,
@@ -27,11 +29,17 @@ export class RequisitionInterfacePage implements OnInit {
 
   ngOnInit() {
     this.foreignSource = this.navParams.get('foreignSource');
-    this.intf  = this.navParams.get('intf');
+    this.intf = this.navParams.get('intf');
+    this.blacklist = this.navParams.get('blacklist') || [];
+
     this.mode = this.intf ? 'Edit' : 'Add';
     if (this.mode == 'Add') {
       this.intf = OnmsRequisitionInterface.create();
+    } else {
+      const idx = this.blacklist.indexOf(this.intf.ipAddress);
+      this.blacklist.splice(idx, 1);
     }
+
     this.initForm();
   }
 
@@ -60,7 +68,7 @@ export class RequisitionInterfacePage implements OnInit {
 
   private initForm() {
     this.form = new FormGroup({
-      'ipAddress' : new FormControl(this.intf.ipAddress, validateIpAddress),
+      'ipAddress' : new FormControl(this.intf.ipAddress, [validateIpAddress, validateUnique(this.blacklist)]),
       'description' : new FormControl(this.intf.description),
       'snmpPrimary' : new FormControl(this.intf.snmpPrimary, Validators.required),
       'services' : new FormArray(this.intf.services.map(s => this.addService(s.name)))

@@ -11,6 +11,8 @@ import { OnmsRequisitionAsset } from '../../models/onms-requisition-asset';
 import { OnmsRequisitionCategory } from '../../models/onms-requisition-category';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
+import { validateUnique } from '../../directives/unique';
+
 @Component({
   selector: 'page-requisition-node',
   templateUrl: 'requisition-node.html'
@@ -20,7 +22,7 @@ export class RequisitionNodePage implements OnInit {
   isNew: boolean = false;
   mode: string = 'basic';
   foreignSource: string;
-  foreignIds: string[] = [];
+  foreignIds: string[];
   node: OnmsRequisitionNode;
   form: FormGroup;
 
@@ -34,7 +36,7 @@ export class RequisitionNodePage implements OnInit {
 
   ngOnInit() {
     this.foreignSource = this.navParams.get('foreignSource');
-    this.foreignIds = this.navParams.get('foreignIds');
+    this.foreignIds = this.navParams.get('foreignIds') || [];
     this.node = this.navParams.get('node');
     if (this.node == null) {
       this.isNew = true;
@@ -187,7 +189,11 @@ export class RequisitionNodePage implements OnInit {
   }
 
   private updateInterface(intf: OnmsRequisitionInterface, handler: (updated: OnmsRequisitionInterface) => void) {
-    const modal = this.modalCtrl.create(RequisitionInterfacePage, { foreignSource: this.foreignSource, intf: intf });
+    const modal = this.modalCtrl.create(RequisitionInterfacePage, {
+      intf: intf,
+      blacklist: this.node.interfaces.map(i => i.ipAddress),
+      foreignSource: this.foreignSource,
+    });
     modal.onDidDismiss((updatedIntf:OnmsRequisitionInterface) => {
       if (updatedIntf) {
         this.form.markAsDirty();
@@ -198,7 +204,10 @@ export class RequisitionNodePage implements OnInit {
   }
 
   private updateAsset(asset: OnmsRequisitionAsset, handler: (updated: OnmsRequisitionAsset) => void) {
-    const modal = this.modalCtrl.create(RequisitionAssetPage, { asset: asset });
+    const modal = this.modalCtrl.create(RequisitionAssetPage, {
+      asset: asset,
+      blacklist: this.node.assets.map(a => a.name)
+    });
     modal.onDidDismiss((updatedAsset: OnmsRequisitionAsset) => {
       if (updatedAsset) {
         this.form.markAsDirty();
@@ -209,7 +218,10 @@ export class RequisitionNodePage implements OnInit {
   }
 
   private updateCategory(category: OnmsRequisitionCategory, handler: (updated: OnmsRequisitionCategory) => void) {
-    const modal = this.modalCtrl.create(RequisitionCategoryPage, { category: category });
+    const modal = this.modalCtrl.create(RequisitionCategoryPage, {
+      category: category,
+      blacklist: this.node.categories.map(c => c.name)
+    });
     modal.onDidDismiss((updatedCategory: OnmsRequisitionCategory) => {
       if (updatedCategory) {
         this.form.markAsDirty();
@@ -221,7 +233,7 @@ export class RequisitionNodePage implements OnInit {
 
   private initForm() {
     this.form = new FormGroup({
-      'foreignId' : new FormControl({ value: this.node.foreignId, disabled: !this.isNew || this.node.deployed }, Validators.required),
+      'foreignId' : new FormControl({ value: this.node.foreignId, disabled: !this.isNew || this.node.deployed }, [Validators.required, validateUnique(this.foreignIds)]),
       'nodeLabel' : new FormControl(this.node.nodeLabel, Validators.required),
       'location' : new FormControl(this.node.location),
       'building' : new FormControl(this.node.building),

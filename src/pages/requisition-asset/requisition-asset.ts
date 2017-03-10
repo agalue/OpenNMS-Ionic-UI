@@ -14,6 +14,7 @@ export class RequisitionAssetPage implements OnInit {
   mode: string;
   form: FormGroup;
   asset: OnmsRequisitionAsset;
+  blacklist: string[];
   availableAssets: string[] = [];
 
   constructor(
@@ -23,15 +24,21 @@ export class RequisitionAssetPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.asset  = this.navParams.get('asset');
+    this.asset = this.navParams.get('asset');
+    this.blacklist = this.navParams.get('blacklist') || [];
     this.mode = this.asset ? 'Edit' : 'Add';
+
     if (this.mode == 'Add') {
       this.asset = OnmsRequisitionAsset.create();
     }
     
     this.requisitionsService.getAvailableAssets()
-      .then(assets => this.availableAssets = assets)
+      .then(assets => {
+        this.availableAssets = assets.filter(a => this.blacklist.indexOf(a) == -1);
+        if (this.asset) this.availableAssets.push(this.asset.name);
+      })
       .catch(error => console.error(error));
+
     this.initForm();
   }
 
