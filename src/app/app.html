@@ -14,7 +14,7 @@
       </ion-list>
       <ion-list no-lines *ngFor="let g of groups">
         <ion-list-header>{{ g.name }}</ion-list-header>
-        <button menuClose small ion-item *ngFor="let p of g.pages" (click)="openPage(p)">
+        <button menuClose small ion-item *ngFor="let p of g.pages" [disabled]="!onmsServer" (click)="openPage(p)">
           <ion-icon item-left [name]="p.icon"></ion-icon>
           <p>{{ p.title }}</p>
         </button>
