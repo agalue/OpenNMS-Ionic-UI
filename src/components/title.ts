@@ -19,7 +19,7 @@ export class OnmsTitleComponent implements OnInit {
   ngOnInit() {
     this.service.getDefaultServer()
       .then(server => this.server = server)
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   }
 
 }

@@ -115,11 +115,9 @@ export class OnmsRequisitionsService {
       console.debug(`removeRequisition: removing nodes from requisition ${requisition.foreignSource}`);
       requisition.nodes = [];
       this.saveRequisition(requisition)
-        .catch(error => reject(error))
         .then(() => {
           console.debug(`removeRequisition: importing requisition ${requisition.foreignSource} to remove nodes from the database`);
           this.importRequisition(requisition, 'false')
-            .catch(error => reject(error))
             .then(() => {
               console.debug(`removeRequisition: deleting requisition ${requisition.foreignSource} and its foreign source definition`);
               let promises: Promise<any>[] = [];
@@ -128,7 +126,6 @@ export class OnmsRequisitionsService {
               promises.push(this.http.delete(`/rest/foreignSources/${requisition.foreignSource}`).toPromise());
               promises.push(this.http.delete(`/rest/foreignSources/deployed/${requisition.foreignSource}`).toPromise());
               Promise.all(promises)
-                .catch(error => reject(error))
                 .then(() => {
                   console.debug(`removeRequisition: requisition ${requisition.foreignSource} successfully removed`);
                   let requisitions = this.cache.getCachedRequisitions();
@@ -137,10 +134,13 @@ export class OnmsRequisitionsService {
                     let index = requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
                     requisitions.splice(index, 1);
                   }
-                  resolve()
-                });
+                  setTimeout(() => resolve(), 1000);
+                })
+                .catch(error => reject(error))
             })
-        });
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     });
   }
 

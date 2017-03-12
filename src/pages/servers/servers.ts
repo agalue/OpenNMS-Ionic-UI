@@ -62,13 +62,13 @@ export class ServersPage implements OnInit {
         this.loadServers();
         this.toast('Default server was changed');
       })
-      .catch(error => console.log(error));
+      .catch(error => this.alert('Error setting default', error));
   }
 
   private loadServers() {
     this.serversService.getServers()
       .then((servers:OnmsServer[]) => this.servers = servers)
-      .catch(error => console.log(error));
+      .catch(error => this.alert('Error loading servers', error));
   }
 
   private removeServer(serverIndex: number) {
@@ -78,7 +78,7 @@ export class ServersPage implements OnInit {
         this.loadServers();
         this.toast(`Server ${server.name} has been removed.`)
       })
-      .catch(error => this.alert('Delete Server', error));
+      .catch(error => this.alert('Error deleting server', error));
   }
 
   private alert(title: string, message: string) {

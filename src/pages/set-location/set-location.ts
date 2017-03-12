@@ -41,7 +41,6 @@ export class SetLocationPage {
       this.map.setView(this.location, 1);
     }
     this.map.on('click', event => {
-      console.log(event);
       if (this.marker) this.map.removeLayer(this.marker);
       this.marker = Leaflet.marker(event['latlng']);
       this.map.addLayer(this.marker);

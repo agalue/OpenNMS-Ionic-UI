@@ -30,7 +30,7 @@ export class HttpService implements OnDestroy {
   }
 
   private handleError(error: Response | any) {
-    let errMsg: string;
+    let errMsg = '';
     if (error instanceof Response) {
       if (error.status == 0) {
         errMsg = 'Remote Server Unreachable.';

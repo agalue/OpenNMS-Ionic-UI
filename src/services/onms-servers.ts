@@ -129,7 +129,6 @@ export class OnmsServersService {
           resolve(server);
         })
         .catch((error: Response|any) => {
-          console.log(error);
           let errMsg = '';
           if (error instanceof Response) {
             if (error.status == 0) {

@@ -31,7 +31,6 @@ export class MeasurementsPage {
       .then(query => {
         loading.dismiss();
         this.query = query;
-        console.log(this.query);
       })
       .catch(error => {
         loading.dismiss();

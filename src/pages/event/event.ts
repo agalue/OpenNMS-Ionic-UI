@@ -11,7 +11,7 @@ export class EventPage {
 
   event: OnmsEvent;
 
-  constructor(public navParams: NavParams) {
+  constructor(private navParams: NavParams) {
     this.event = navParams.get('event');
   }
 
