@@ -1,4 +1,4 @@
-import { Component, OnChanges, AfterViewInit, SimpleChanges, Input } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import * as C3 from 'c3';
 
 @Component({
@@ -7,13 +7,9 @@ import * as C3 from 'c3';
     <div id="outagesChart"></div>
   `
 })
-export class OutagesSummaryComponent implements AfterViewInit, OnChanges {
+export class OutagesSummaryComponent implements OnChanges {
 
   @Input('outages') outages: { [service: string] : number };
-
-  ngAfterViewInit() {
-    this.renderChart();
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     this.renderChart();

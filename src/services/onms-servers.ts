@@ -35,7 +35,7 @@ export class OnmsServersService {
 
   getServers() : Promise<OnmsServer[]> {
     return this.storage.get(ONMS_SERVERS)
-      .then((servers: OnmsServer[]) => servers.slice());
+      .then((servers: OnmsServer[]) => servers ? servers.slice() : []);
   }
 
   saveServer(server: OnmsServer, index?: number) {

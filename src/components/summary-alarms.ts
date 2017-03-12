@@ -1,4 +1,4 @@
-import { Component, OnChanges, AfterViewInit, SimpleChanges, Input } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { OnmsSeverities } from '../models/onms-severities';
 import { OnmsAlarmStats } from '../models/onms-alarm-stats';
 import * as C3 from 'c3';
@@ -7,13 +7,9 @@ import * as C3 from 'c3';
   selector: 'alarms-summary',
   templateUrl: 'summary-alarms.html'
 })
-export class AlarmsSummaryComponent implements AfterViewInit, OnChanges {
+export class AlarmsSummaryComponent implements OnChanges {
 
   @Input('alarms') alarms: OnmsAlarmStats[];
-
-  ngAfterViewInit() {
-    this.renderChart();
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     this.renderChart();

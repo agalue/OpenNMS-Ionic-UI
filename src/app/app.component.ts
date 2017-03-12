@@ -93,11 +93,7 @@ export class MyApp implements OnDestroy {
     }
     Badge.hasPermission()
       .then(() => this.subscribeToPause())
-      .catch(() => {
-        Badge.registerPermission()
-          .then(() => this.subscribeToPause())
-          .catch(error => console.error(error));
-      });
+      .catch(error => console.error(error));
   }
 
   subscribeToPause() {
