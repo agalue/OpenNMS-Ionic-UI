@@ -38,7 +38,7 @@
         <div class="event-time">at {{ alarm.lastEventTime | date:'medium' }}; ID:{{ alarm.id}}</div>
         <div class="event-time" *ngIf="alarm.isAcknowledged()">acknowledged by {{ alarm.ackUser }} at {{ alarm.ackTime | date:'medium' }}</div>
         <br>
-        <div class="event-message">{{ alarm.logMessage }}</div>
+        <div class="event-message" [innerHTML]="alarm.logMessage"></div>
         <ion-icon item-left [name]="getIcon(alarm)" [color]="getIconColor(alarm)"></ion-icon>
         <ion-badge item-right>{{ alarm.count }}</ion-badge>
       </button>

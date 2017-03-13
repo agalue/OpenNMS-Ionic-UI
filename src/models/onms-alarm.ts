@@ -3,6 +3,7 @@ import { OnmsAck } from './onms-ack';
 import { OnmsAlarmMemo } from './onms-alarm-memo';
 import { OnmsParameter } from './onms-parameter';
 import { OnmsSeverities } from './onms-severities';
+import { HtmlUtils } from './html-utils';
 
 export class OnmsAlarm {
 
@@ -37,6 +38,8 @@ export class OnmsAlarm {
         alarm.serviceName = rawAlarm['serviceType'] ? rawAlarm['serviceType']['name'] : null;
         alarm.parameters = OnmsParameter.importParameters(rawAlarm['parameters']);
         alarm.severity = OnmsSeverities.capitalize(rawAlarm['severity']);
+        alarm.description = HtmlUtils.removeLinks(alarm.description);
+        alarm.logMessage = HtmlUtils.removeLinks(alarm.logMessage);
         if (rawAlarm['stickyMemo']) alarm.stickyMemo = Object.assign(new OnmsAlarmMemo(), rawAlarm['stickyMemo']);
         if (rawAlarm['reductionKeyMemo']) alarm.journalMemo = Object.assign(new OnmsAlarmMemo(), rawAlarm['reductionKeyMemo']);
         return alarm;

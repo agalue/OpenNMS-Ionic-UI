@@ -1,5 +1,6 @@
 import { OnmsParameter } from './onms-parameter';
 import { OnmsSeverities } from './onms-severities';
+import { HtmlUtils } from './html-utils';
 
 export class OnmsEvent {
 
@@ -25,6 +26,8 @@ export class OnmsEvent {
         event.serviceName = rawEvent['serviceType'] ? rawEvent['serviceType']['name'] : null;
         event.parameters = OnmsParameter.importParameters(rawEvent['parameters']);
         event.severity = OnmsSeverities.capitalize(rawEvent['severity']);
+        event.description = HtmlUtils.removeLinks(event.description);
+        event.logMessage = HtmlUtils.removeLinks(event.logMessage);
         return event;
     }
 

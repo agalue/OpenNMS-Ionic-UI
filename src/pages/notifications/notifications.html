@@ -37,7 +37,7 @@
         <div class="event-time">generated at {{ notification.pageTime | date:'medium' }} {{ notification.nodeLabel ? ' for ' + notification.nodeLabel : ''}}</div>
         <div class="event-time" *ngIf="notification.isAcknowledged()">acknowledged by {{ notification.ackUser }} at {{ notification.ackTime | date:'medium' }}</div>
         <br>
-        <div class="event-message">{{ notification.subject }}</div>
+        <div class="event-message" [innerHTML]="notification.subject"></div>
         <ion-icon item-left [name]="getIcon(notification)" [color]="getIconColor(notification)"></ion-icon>
       </button>
       <ion-item-options>

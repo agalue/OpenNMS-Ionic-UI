@@ -1,6 +1,7 @@
 import { OnmsAck } from './onms-ack';
 import { OnmsDestination } from './onms-destination';
 import { OnmsSeverities } from './onms-severities';
+import { HtmlUtils } from './html-utils';
 
 export class OnmsNotification {
 
@@ -23,6 +24,8 @@ export class OnmsNotification {
         let notification = Object.assign(new OnmsNotification(), rawNotification);
         notification.destinations = OnmsDestination.importDestinations(rawNotification['destinations'])
         notification.severity = OnmsSeverities.capitalize(rawNotification['severity']);
+        notification.subject = HtmlUtils.removeLinks(notification.subject);
+        notification.textMessage = HtmlUtils.removeLinks(notification.textMessage);
         return notification;
     }
 
