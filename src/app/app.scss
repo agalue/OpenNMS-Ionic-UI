@@ -24,13 +24,8 @@
   }
 }
 
-// TODO Doesn't work for ion-select
-ion-input, ion-select {
-  .ng-valid[required], .ng-valid.required  {
-    border-right: 2px solid $text-input-highlight-color-valid;
-  }
-
-  .ng-invalid:not(form)  {
+ion-item {
+  .ng-invalid:not(form):not(input) {
     border-right: 2px solid $text-input-highlight-color-invalid;
   }
 }
