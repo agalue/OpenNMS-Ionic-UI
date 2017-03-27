@@ -41,8 +41,10 @@
             <ion-input type="text" formControlName="nodeLabel"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label stacked (press)="onShowLocations()">Location</ion-label>
-            <ion-input type="text" formControlName="location"></ion-input>
+            <ion-label stacked>Minion Location</ion-label>
+            <ion-select formControlName="location">
+              <ion-option *ngFor="let location of locations" [value]="location">{{ location }}</ion-option>
+            </ion-select>
           </ion-item>
           <ion-item>
             <ion-label stacked>Building</ion-label>

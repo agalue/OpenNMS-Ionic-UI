@@ -23,6 +23,7 @@ export class RequisitionNodePage implements OnInit {
   mode: string = 'basic';
   foreignSource: string;
   foreignIds: string[];
+  locations: string[];
   node: OnmsRequisitionNode;
   form: FormGroup;
 
@@ -42,6 +43,9 @@ export class RequisitionNodePage implements OnInit {
       this.isNew = true;
       this.node = OnmsRequisitionNode.create();
     }
+    this.requisitionsService.getAvailableLocations()
+      .then(locations => this.locations = locations)
+      .catch(error => this.alert('Load Locations', error));
     this.initForm();
   }
 
@@ -84,12 +88,6 @@ export class RequisitionNodePage implements OnInit {
 
   onGenerateForeignId() {
     this.form.get('foreignId').setValue(new Date().getTime());
-  }
-
-  onShowLocations() {
-    this.requisitionsService.getAvailableLocations()
-      .then((locations: string[]) => this.chooseLocation(locations))
-      .catch(error => this.alert('Load Locations', error));
   }
 
   onAddInterface() {
@@ -147,31 +145,6 @@ export class RequisitionNodePage implements OnInit {
   onRemoveCategory(index: number) {
     this.node.categories.splice(index, 1);
     this.form.markAsDirty();
-  }
-
-  private chooseLocation(locations: string[]) {
-    const options = this.alertCtrl.create({
-      title: 'Choose Location',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Ok',
-          handler: data => this.form.controls['location'].setValue(data)
-        }
-      ]
-    });
-    locations.forEach(location => {
-      options.addInput({
-        name: 'options',
-        value: location,
-        label: location,
-        type: 'radio'
-      })
-    })
-    options.present();
   }
 
   private saveNode() : Promise<void> {
