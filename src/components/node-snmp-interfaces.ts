@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Keyboard } from 'ionic-native';
+import { Keyboard } from '@ionic-native/keyboard';
 
 import { OnmsSnmpInterface } from '../models/onms-snmp-interface';
 import { IANA_IFTYPES } from '../models/iana-iftypes';
@@ -14,9 +14,11 @@ export class NodeSnmpInterfacesComponent {
 
   snmpSearchKeyword: string = '';
 
+  constructor(private keyboard: Keyboard) { }
+
   onSearchSnmpInterfaces(event: any) {
     this.snmpSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
+    setTimeout(() => this.keyboard.close(), 500);
   }
 
   getInterfaceType(ifType: number) : string {

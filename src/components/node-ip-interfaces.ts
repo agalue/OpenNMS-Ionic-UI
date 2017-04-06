@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Keyboard } from 'ionic-native';
+import { Keyboard } from '@ionic-native/keyboard';
 
 import { OnmsIpInterface } from '../models/onms-ip-interface';
 
@@ -13,9 +13,11 @@ export class NodeIpInterfacesComponent {
 
   ipSearchKeyword: string = '';
 
+  constructor(private keyboard: Keyboard) { }
+
   onSearchIpInterfaces(event: any) {
     this.ipSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
+    setTimeout(() => this.keyboard.close(), 500);
   }
 
 }

@@ -1,6 +1,15 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
+
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { Badge } from '@ionic-native/badge';
+import { Geolocation } from '@ionic-native/geolocation';
+import { Keyboard } from '@ionic-native/keyboard';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 
 // Main Component
 
@@ -144,6 +153,8 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     SetLocationPage
   ],
   imports: [
+    BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp, {
       backButtonIcon: 'arrow-back',
       backButtonText: ''
@@ -188,6 +199,12 @@ import { SetLocationPage } from '../pages/set-location/set-location';
     SetLocationPage
   ],
   providers: [
+    Badge,
+    Geolocation,
+    Keyboard,
+    SocialSharing,
+    SplashScreen,
+    StatusBar,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     HttpService,
     OnmsUIService,
