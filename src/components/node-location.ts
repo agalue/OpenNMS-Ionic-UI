@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { LoadingController, AlertController } from 'ionic-angular';
-import { Geolocation } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 import * as Leaflet from 'leaflet';
 
 import { OnmsNode } from '../models/onms-node';
@@ -29,6 +29,7 @@ export class NodeLocationComponent implements OnChanges {
   };
 
   constructor(
+    private geolocation: Geolocation,
     private mapService: OnmsMapsService
   ) {}
 
@@ -41,7 +42,7 @@ export class NodeLocationComponent implements OnChanges {
       content: 'Getting your location...'
     });
     loading.present();
-    Geolocation.getCurrentPosition()
+    this.geolocation.getCurrentPosition()
       .then(r => {
         loading.dismiss();
         const alert = this.alertCtrl.create({

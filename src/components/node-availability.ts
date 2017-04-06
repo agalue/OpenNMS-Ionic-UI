@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Keyboard } from 'ionic-native';
+import { Keyboard } from '@ionic-native/keyboard';
 
 import { OnmsNodeAvailability } from '../models/onms-node-availability';
 
@@ -13,9 +13,11 @@ export class NodeAvailabilityComponent {
 
   availSearchKeyword: string = '';
 
+  constructor(private keyboard: Keyboard) { }
+
   onSearchAvailInterfaces(event: any) {
     this.availSearchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
+    setTimeout(() => this.keyboard.close(), 500);
   }
 
   getAvailabilityColor(avail: number) : string {

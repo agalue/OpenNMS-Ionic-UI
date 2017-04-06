@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Keyboard } from 'ionic-native';
+import { Keyboard } from '@ionic-native/keyboard';
 import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
 
 import { ForeignSourcePage } from '../foreign-source/foreign-source';
@@ -19,6 +19,7 @@ export class RequisitionsPage {
   requisitions: OnmsRequisition[] = [];
 
   constructor(
+    private keyboard: Keyboard,
     private navCtrl: NavController,
     private navParams: NavParams,
     private loadingCtrl: LoadingController,
@@ -166,7 +167,7 @@ export class RequisitionsPage {
 
   onSearchRequisitions(event: any) {
     this.searchKeyword = event.target.value;
-    setTimeout(() => Keyboard.close(), 500);
+    setTimeout(() => this.keyboard.close(), 500);
   }
 
   private addRequisition(foreignSource: string) {

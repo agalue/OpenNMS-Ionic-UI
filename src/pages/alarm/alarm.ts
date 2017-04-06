@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
-import { SocialSharing } from 'ionic-native';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { OnmsAlarm } from '../../models/onms-alarm';
 import { OnmsAck } from '../../models/onms-ack';
@@ -17,6 +17,7 @@ export class AlarmPage {
   alarm: OnmsAlarm;
 
   constructor(
+    private socialSharing: SocialSharing,
     private navCtrl: NavController,
     private navParams: NavParams,
     private toastCtrl: ToastController,
@@ -60,7 +61,7 @@ export class AlarmPage {
   }
 
   onShareAlarm() {
-    SocialSharing.canShareViaEmail()
+    this.socialSharing.canShareViaEmail()
       .then(() => this.shareAlarm())
       .catch(() => this.alert('Cannot Share', 'Sorry, it is not possible to share via email.'));
   }
@@ -75,7 +76,7 @@ export class AlarmPage {
       <br><b>Description</b><br>
       ${this.alarm.description}
     `;
-    SocialSharing.shareViaEmail(body, subject, null)
+    this.socialSharing.shareViaEmail(body, subject, null)
       .catch(error => this.alert('Cannot Send Email', error));
   }
 

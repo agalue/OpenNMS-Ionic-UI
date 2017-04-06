@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { Badge } from 'ionic-native';
+import { Badge } from '@ionic-native/badge';
 
 import { NavController, ModalController } from 'ionic-angular';
 
@@ -15,14 +15,15 @@ export class SetupPage implements OnInit {
 
   constructor(
     private platform: Platform,
+    private badge: Badge,
     private navCtrl: NavController,
     private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
     if (!this.platform.is('cordova')) return;
-    Badge.registerPermission()
-      .then(() => Badge.clear())
+    this.badge.registerPermission()
+      .then(() => this.badge.clear())
       .catch(error => console.error(error));
   }
 
