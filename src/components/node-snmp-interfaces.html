@@ -3,40 +3,40 @@
   <ion-item text-wrap *ngFor="let intf of (snmpInterfaces | snmpIntfFilter:snmpSearchKeyword)">
     <ion-grid no-padding>
       <ion-row>
-        <ion-col width-33><b>Name</b></ion-col>
-        <ion-col width-67>{{ intf.ifName }}</ion-col>
+        <ion-col col-5><b>Name</b></ion-col>
+        <ion-col col-7>{{ intf.ifName }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Oper Status</b></ion-col>
-        <ion-col width-67 [ngClass]="intf.ifOperStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getOperStatus() }}</ion-col>
+        <ion-col col-5><b>Oper Status</b></ion-col>
+        <ion-col col-7 [ngClass]="intf.ifOperStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getOperStatus() }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Admin Status</b></ion-col>
-        <ion-col width-67 [ngClass]="intf.ifAdminStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getAdminStatus() }}</ion-col>
+        <ion-col col-5><b>Admin Status</b></ion-col>
+        <ion-col col-7 [ngClass]="intf.ifAdminStatus == 1 ? 'Normal' : 'Critical'">{{ intf.getAdminStatus() }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Interface Index</b></ion-col>
-        <ion-col width-67>{{ intf.ifIndex }}</ion-col>
+        <ion-col col-5><b>Interface Index</b></ion-col>
+        <ion-col col-7>{{ intf.ifIndex }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Speed</b></ion-col>
-        <ion-col width-67>{{ intf.ifSpeed || 'N/A' }}</ion-col>
+        <ion-col col-5><b>Speed</b></ion-col>
+        <ion-col col-7>{{ intf.ifSpeed || 'N/A' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Type</b></ion-col>
-        <ion-col width-67>{{ getInterfaceType(intf.ifType) }}</ion-col>
+        <ion-col col-5><b>Type</b></ion-col>
+        <ion-col col-7>{{ getInterfaceType(intf.ifType) }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Description</b></ion-col>
-        <ion-col width-67>{{ intf.ifDescr || 'N/A' }}</ion-col>
+        <ion-col col-5><b>Description</b></ion-col>
+        <ion-col col-7>{{ intf.ifDescr || 'N/A' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>Alias</b></ion-col>
-        <ion-col width-67>{{ intf.ifAlias || 'N/A' }}</ion-col>
+        <ion-col col-5><b>Alias</b></ion-col>
+        <ion-col col-7>{{ intf.ifAlias || 'N/A' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col width-33><b>MAC</b></ion-col>
-        <ion-col width-67>{{ (intf.physAddr | macAddress) || 'N/A' }}</ion-col>
+        <ion-col col-5><b>MAC</b></ion-col>
+        <ion-col col-7>{{ (intf.physAddr | macAddress) || 'N/A' }}</ion-col>
       </ion-row>
     </ion-grid>
   </ion-item>

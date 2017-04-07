@@ -8,43 +8,43 @@
   <ion-grid>
     <ion-row>
       <ion-col><b>ID</b></ion-col>
-      <ion-col width-67>{{ alarm.id }}</ion-col>
+      <ion-col col-7>{{ alarm.id }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Severity</b></ion-col>
-      <ion-col width-67>{{ alarm.severity }}</ion-col>
+      <ion-col col-7>{{ alarm.severity }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Count</b></ion-col>
-      <ion-col width-67>{{ alarm.count }}</ion-col>
+      <ion-col col-7>{{ alarm.count }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.isAcknowledged()">
       <ion-col><b>Ack Time</b></ion-col>
-      <ion-col width-67>{{ alarm.ackTime | date:'medium' }}</ion-col>
+      <ion-col col-7>{{ alarm.ackTime | date:'medium' }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.isAcknowledged()">
       <ion-col><b>Ack User</b></ion-col>
-      <ion-col width-67>{{ alarm.ackUser }}</ion-col>
+      <ion-col col-7>{{ alarm.ackUser }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Last Time</b></ion-col>
-      <ion-col width-67>{{ alarm.lastEventTime | date:'medium' }}</ion-col>
+      <ion-col col-7>{{ alarm.lastEventTime | date:'medium' }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.nodeLabel">
       <ion-col><b>Node Label</b></ion-col>
-      <ion-col width-67>{{ alarm.nodeLabel }}</ion-col>
+      <ion-col col-7>{{ alarm.nodeLabel }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.nodeId">
       <ion-col><b>Node ID</b></ion-col>
-      <ion-col width-67>{{ alarm.nodeId }}</ion-col>
+      <ion-col col-7>{{ alarm.nodeId }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.ipAddress">
       <ion-col><b>IP Address</b></ion-col>
-      <ion-col width-67>{{ alarm.ipAddress }}</ion-col>
+      <ion-col col-7>{{ alarm.ipAddress }}</ion-col>
     </ion-row>
     <ion-row *ngIf="alarm.serviceName">
       <ion-col><b>Service</b></ion-col>
-      <ion-col width-67>{{ alarm.serviceName }}</ion-col>
+      <ion-col col-7>{{ alarm.serviceName }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col>

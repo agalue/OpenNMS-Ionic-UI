@@ -8,35 +8,35 @@
   <ion-grid>
     <ion-row>
       <ion-col><b>ID</b></ion-col>
-      <ion-col width-67>{{ event.id }}</ion-col>
+      <ion-col col-7>{{ event.id }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Severity</b></ion-col>
-      <ion-col width-67>{{ event.severity }}</ion-col>
+      <ion-col col-7>{{ event.severity }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Time</b></ion-col>
-      <ion-col width-67>{{ event.time | date:'medium' }}</ion-col>
+      <ion-col col-7>{{ event.time | date:'medium' }}</ion-col>
     </ion-row>
     <ion-row>
       <ion-col><b>Created</b></ion-col>
-      <ion-col width-67>{{ event.createTime | date:'medium' }}</ion-col>
+      <ion-col col-7>{{ event.createTime | date:'medium' }}</ion-col>
     </ion-row>
     <ion-row *ngIf="event.nodeLabel">
       <ion-col><b>Node Label</b></ion-col>
-      <ion-col width-67>{{ event.nodeLabel }}</ion-col>
+      <ion-col col-7>{{ event.nodeLabel }}</ion-col>
     </ion-row>
     <ion-row *ngIf="event.nodeId">
       <ion-col><b>Node ID</b></ion-col>
-      <ion-col width-67>{{ event.nodeId }}</ion-col>
+      <ion-col col-7>{{ event.nodeId }}</ion-col>
     </ion-row>
     <ion-row *ngIf="event.ipAddress">
       <ion-col><b>IP Address</b></ion-col>
-      <ion-col width-67>{{ event.ipAddress }}</ion-col>
+      <ion-col col-7>{{ event.ipAddress }}</ion-col>
     </ion-row>
     <ion-row *ngIf="event.serviceName">
       <ion-col><b>Service</b></ion-col>
-      <ion-col width-67>{{ event.serviceName }}</ion-col>
+      <ion-col col-7>{{ event.serviceName }}</ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid>

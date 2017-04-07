@@ -33,12 +33,12 @@
       <br>
       <ion-grid *ngFor="let section of sections">
         <ion-row>
-          <ion-col width-50><b>{{ section.name }}</b></ion-col>
+          <ion-col col-6><b>{{ section.name }}</b></ion-col>
           <ion-col text-right><b>Outages</b></ion-col>
           <ion-col text-right><b>Availability</b></ion-col>
         </ion-row>
         <ion-row *ngFor="let category of section.categories">
-          <ion-col width-50>{{ category.name }}</ion-col>
+          <ion-col col-6>{{ category.name }}</ion-col>
           <ion-col text-right [ngClass]="category.outageClass">{{ category.outageText }}</ion-col>
           <ion-col text-right [ngClass]="category.availabilityClass">{{ category.availabilityText }}</ion-col>
         </ion-row>
@@ -53,12 +53,12 @@
       <outages-summary [outages]="outagesPerService"></outages-summary>
       <ion-grid *ngIf="outages">
         <ion-row>
-          <ion-col><b>Node</b></ion-col>
-          <ion-col width-33 text-right><b>Time Down</b></ion-col>
+          <ion-col col-7><b>Node</b></ion-col>
+          <ion-col col-5 text-right><b>Time Down</b></ion-col>
         </ion-row>
         <ion-row *ngFor="let outage of outages">
-          <ion-col>{{ outage.nodeLabel }}</ion-col>
-          <ion-col width-33 text-right>{{ outage.getTimeInfo() }}</ion-col>
+          <ion-col col-7>{{ outage.nodeLabel }}</ion-col>
+          <ion-col col-5 text-right>{{ outage.getTimeInfo() }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>

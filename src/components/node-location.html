@@ -4,12 +4,12 @@
     <div id="map" *ngIf="node.hasLocation()"></div>
     <ion-grid no-padding>
       <ion-row>
-        <ion-col width-50>
+        <ion-col col-6>
           <button ion-button small block outline icon-left type="button" (click)="onUseCurrentLocation()">
             <ion-icon name="locate"></ion-icon> Locate Me
           </button>
         </ion-col>
-        <ion-col width-50>
+        <ion-col col-6>
           <button ion-button small block outline icon-left type="button" (click)="onSelectOnMap()">
             <ion-icon name="map"></ion-icon> Select on Map
           </button>

@@ -39,40 +39,40 @@
       <ion-grid>
         <ion-list-header>Details</ion-list-header>
         <ion-row>
-          <ion-col width-33><b>Status</b></ion-col>
-          <ion-col width-67 [ngClass]="node.isDown() ? 'Critical' : 'Normal'">{{ node.isDown() ? 'Down' : 'Up' }}</ion-col>
+          <ion-col col-5><b>Status</b></ion-col>
+          <ion-col col-7 [ngClass]="node.isDown() ? 'Critical' : 'Normal'">{{ node.isDown() ? 'Down' : 'Up' }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>ID</b></ion-col>
-          <ion-col width-67>{{ node.id }}</ion-col>
+          <ion-col col-5><b>ID</b></ion-col>
+          <ion-col col-7>{{ node.id }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>Label</b></ion-col>
-          <ion-col width-67>{{ node.label }}</ion-col>
+          <ion-col col-5><b>Label</b></ion-col>
+          <ion-col col-7>{{ node.label }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>Foreign Source</b></ion-col>
-          <ion-col width-67>{{ node.foreignSource || 'N/A' }}</ion-col>
+          <ion-col col-5><b>Foreign Source</b></ion-col>
+          <ion-col col-7>{{ node.foreignSource || 'N/A' }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>Foreign ID</b></ion-col>
-          <ion-col width-67>{{ node.foreignId || 'N/A' }}</ion-col>
+          <ion-col col-5><b>Foreign ID</b></ion-col>
+          <ion-col col-7>{{ node.foreignId || 'N/A' }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>sysName</b></ion-col>
-          <ion-col width-67>{{ node.sysName }}</ion-col>
+          <ion-col col-5><b>sysName</b></ion-col>
+          <ion-col col-7>{{ node.sysName }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>sysObjectID</b></ion-col>
-          <ion-col width-67>{{ node.sysObjectId }}</ion-col>
+          <ion-col col-5><b>sysObjectID</b></ion-col>
+          <ion-col col-7>{{ node.sysObjectId }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>sysLocation</b></ion-col>
-          <ion-col width-67>{{ node.sysLocation }}</ion-col>
+          <ion-col col-5><b>sysLocation</b></ion-col>
+          <ion-col col-7>{{ node.sysLocation }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-33><b>sysContact</b></ion-col>
-          <ion-col width-67>{{ node.sysContact }}</ion-col>
+          <ion-col col-5><b>sysContact</b></ion-col>
+          <ion-col col-7>{{ node.sysContact }}</ion-col>
         </ion-row>
         <ion-row *ngIf="node.sysDescription">
           <ion-col><b>sysDescription</b><br><br>{{ node.sysDescription }}</ion-col>

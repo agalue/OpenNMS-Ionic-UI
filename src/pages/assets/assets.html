@@ -7,13 +7,16 @@
 <ion-content no-padding>
   <ion-grid padding>
     <ion-row>
-      <ion-col width-33><b>Node</b></ion-col><ion-col>{{ node.label }} ({{ node.id }})</ion-col>
+      <ion-col col-5><b>Node</b></ion-col>
+      <ion-col col-7>{{ node.label }} ({{ node.id }})</ion-col>
     </ion-row>
     <ion-row>
-      <ion-col width-33><b>Foreign Source</b></ion-col><ion-col>{{ node.foreignSource || 'N/A' }}</ion-col>
+      <ion-col col-5><b>Foreign Source</b></ion-col>
+      <ion-col col-7>{{ node.foreignSource || 'N/A' }}</ion-col>
     </ion-row>
     <ion-row>
-      <ion-col width-33><b>Foreign ID</b></ion-col><ion-col>{{ node.foreignId || 'N/A' }}</ion-col>
+      <ion-col col-5><b>Foreign ID</b></ion-col>
+      <ion-col col-7>{{ node.foreignId || 'N/A' }}</ion-col>
     </ion-row>
   </ion-grid>
   <br>
