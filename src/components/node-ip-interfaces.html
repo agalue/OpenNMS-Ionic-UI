@@ -3,32 +3,32 @@
   <ion-item *ngFor="let intf of (ipInterfaces | ipIntfFilter:ipSearchKeyword)">
     <ion-grid no-padding>
       <ion-row>
-        <ion-col col-5><b>IP</b></ion-col>
-        <ion-col col-7>{{ intf.ipAddress }}</ion-col>
+        <ion-col col-4><b>IP</b></ion-col>
+        <ion-col>{{ intf.ipAddress }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col col-5><b>Status</b></ion-col>
-        <ion-col col-7 [ngClass]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
+        <ion-col col-4><b>Status</b></ion-col>
+        <ion-col [ngClass]="intf.isDown ? 'Critical' : 'Normal'">{{ intf.isDown ? 'Down' : 'Up' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col col-5><b>Is Managed ?</b></ion-col>
-        <ion-col col-7 [ngClass]="!intf.managed() ? 'Critical' : 'Normal'">{{ intf.managed() ? 'Yes' : 'No' }}</ion-col>
+        <ion-col col-4><b>Is Managed ?</b></ion-col>
+        <ion-col [ngClass]="!intf.managed() ? 'Critical' : 'Normal'">{{ intf.managed() ? 'Yes' : 'No' }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col col-5><b>Is Primary ?</b></ion-col>
-        <ion-col col-7>{{ intf.isPrimary() ? 'Yes' : 'No' }}</ion-col>
+        <ion-col col-4><b>Is Primary ?</b></ion-col>
+        <ion-col>{{ intf.isPrimary() ? 'Yes' : 'No' }}</ion-col>
       </ion-row>
       <ion-row *ngIf="intf.snmpInterface">
-        <ion-col col-5><b>Interface</b></ion-col>
-        <ion-col col-7>{{ intf.snmpInterface.ifName || intf.snmpInterface.ifDescr }} ({{ intf.snmpInterface.ifIndex }})</ion-col>
+        <ion-col col-4><b>Interface</b></ion-col>
+        <ion-col>{{ intf.snmpInterface.ifName || intf.snmpInterface.ifDescr }} ({{ intf.snmpInterface.ifIndex }})</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col col-5><b>Hostname</b></ion-col>
-        <ion-col col-7>{{ intf.hostName }}</ion-col>
+        <ion-col col-4><b>Hostname</b></ion-col>
+        <ion-col>{{ intf.hostName }}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col col-5><b># Services</b></ion-col>
-        <ion-col col-7>{{ intf.monitoredServiceCount }}</ion-col>
+        <ion-col col-4><b># Services</b></ion-col>
+        <ion-col>{{ intf.monitoredServiceCount }}</ion-col>
       </ion-row>
     </ion-grid>
   </ion-item>
