@@ -18,7 +18,6 @@
     "@angular/http": "4.0.0",
     "@angular/platform-browser": "4.0.0",
     "@angular/platform-browser-dynamic": "4.0.0",
-    "@angular/platform-server": "4.0.0",
     "@ionic-native/badge": "^3.4.4",
     "@ionic-native/core": "3.4.2",
     "@ionic-native/geolocation": "^3.4.4",

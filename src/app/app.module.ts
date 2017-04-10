@@ -155,11 +155,11 @@ import { SetLocationPage } from '../pages/set-location/set-location';
   imports: [
     BrowserModule,
     HttpModule,
+    IonicStorageModule.forRoot(),
     IonicModule.forRoot(MyApp, {
       backButtonIcon: 'arrow-back',
       backButtonText: ''
-    }),
-    IonicStorageModule.forRoot()
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [

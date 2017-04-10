@@ -18,8 +18,8 @@ export class ResourceGraphsPage {
   resource: OnmsResource;
   prefabs: PrefabGraph[] = [];
   prefabGraph: PrefabGraph;
-  width: 300;
-  height: 500;
+  width: 300;  // TODO make it consistent with the current platform, for example: 0.9 * this.platform.width();
+  height: 500; // TODO make it consistent with the current platform, for example: 0.5 * this.platform.height();
   end: number;
   start: number;
   timeRanges: {range: number, title: string}[] = [
@@ -31,7 +31,7 @@ export class ResourceGraphsPage {
     { range: 604800000,  title: '1 Week'   },
     { range: 2592000000, title: '1 Month'  }
   ];
-  timeRangeSelected = this.timeRanges[3].range; // 24 Hours (default)
+  timeRangeSelected = this.timeRanges[2].range; // 6 Hours (default)
 
   constructor(
     private navParams: NavParams,
