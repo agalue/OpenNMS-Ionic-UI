@@ -12,8 +12,21 @@ import { OnmsNodesService } from '../../services/onms-nodes';
 export class MeasurementsPage {
 
   resource: OnmsResource;
-  metric: string;
   query: OnmsQueryResponse;
+
+  metrics: string[] = [];
+  metricSelected: string;
+
+  timeRanges: {range: number, title: string}[] = [
+    { range: 3600000,    title: '1 Hour'   },
+    { range: 7600000,    title: '2 Hours'  },
+    { range: 21600000,   title: '6 Hours'  },
+    { range: 86400000,   title: '24 Hours' },
+    { range: 172800000,  title: '48 Hours' },
+    { range: 604800000,  title: '1 Week'   },
+    { range: 2592000000, title: '1 Month'  }
+  ];
+  timeRangeSelected = this.timeRanges[3].range; // 24 Hours (default)
 
   constructor(
     private loadingCtrl: LoadingController,
@@ -24,10 +37,13 @@ export class MeasurementsPage {
 
   ionViewDidLoad() {
     this.resource = this.navParams.get('resource');
-    this.metric = this.navParams.get('metric');
+    this.metrics = this.navParams.get('metrics');
+  }
+
+  onSourceChange() {
     const loading = this.loadingCtrl.create({ content: 'Loading measurements data ...' });
     loading.present();
-    this.nodesService.getMetricData(this.resource.id, this.metric)
+    this.nodesService.getMetricData(this.resource.id, this.metricSelected, -this.timeRangeSelected)
       .then(query => {
         loading.dismiss();
         this.query = query;

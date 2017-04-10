@@ -9,12 +9,20 @@
 
 
 <ion-content padding>
-  <ion-list paading no-lines *ngIf="!hasData()">
-    <ion-item text-wrap>
-      <ion-icon item-left name='information-circle'></ion-icon>
-      <p>There are no data for the query...</p>
+  <ion-list paading no-lines>
+    <ion-item>
+      <ion-label stacked>Choose Range</ion-label>
+      <ion-select [(ngModel)]="timeRangeSelected" [disabled]="!timeRanges || timeRanges.length == 0" (ionChange)="onSourceChange()">
+        <ion-option *ngFor="let timeRange of timeRanges" [value]="timeRange.range">{{ timeRange.title }}</ion-option>
+      </ion-select>
     </ion-item>
-  </ion-list>  
+    <ion-item>
+      <ion-label stacked>Choose Metric</ion-label>
+      <ion-select [(ngModel)]="metricSelected" [disabled]="!metrics || metrics.length == 0" (ionChange)="onSourceChange()">
+        <ion-option *ngFor="let metric of metrics" [value]="metric">{{ metric }}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
   <ion-grid *ngIf="hasData()">
     <ion-row>
       <ion-col><b>Timestamp</b></ion-col>
