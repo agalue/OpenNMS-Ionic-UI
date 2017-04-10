@@ -10,6 +10,7 @@ import { OnmsRequisitionInterface } from '../../models/onms-requisition-interfac
 import { OnmsRequisitionAsset } from '../../models/onms-requisition-asset';
 import { OnmsRequisitionCategory } from '../../models/onms-requisition-category';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
+import { OnmsServersService, OnmsFeatures } from '../../services/onms-servers';
 
 import { validateUnique } from '../../directives/unique';
 
@@ -32,6 +33,7 @@ export class RequisitionNodePage implements OnInit {
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
+    private serversService: OnmsServersService,
     private requisitionsService: OnmsRequisitionsService
   ) {}
 
@@ -145,6 +147,10 @@ export class RequisitionNodePage implements OnInit {
   onRemoveCategory(index: number) {
     this.node.categories.splice(index, 1);
     this.form.markAsDirty();
+  }
+
+  isMinionSupported() : boolean {
+    return this.serversService.supports(OnmsFeatures.Minion);
   }
 
   private saveNode() : Promise<void> {

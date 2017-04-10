@@ -40,7 +40,7 @@
             <ion-label stacked>Node Label</ion-label>
             <ion-input type="text" formControlName="nodeLabel"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item *ngIf="isMinionSupported()">
             <ion-label stacked>Minion Location</ion-label>
             <ion-select formControlName="location">
               <ion-option *ngFor="let location of locations" [value]="location">{{ location }}</ion-option>

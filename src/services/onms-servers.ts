@@ -3,9 +3,15 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/Rx';
 
-import { OnmsServer } from '../models/onms-server';
+import { OnmsServer, ONMS_MERIDIAN, ONMS_HORIZON } from '../models/onms-server';
 
 const ONMS_SERVERS = 'onms-servers';
+
+export enum OnmsFeatures {
+  Measurements,
+  Minion,
+  RegionalStatus
+}
 
 @Injectable()
 export class OnmsServersService {
@@ -102,11 +108,16 @@ export class OnmsServersService {
     });
   }
 
-  supports(feature: string) : boolean {
+  supports(feature: OnmsFeatures) : boolean {
+    if (!this.defaultServer) return true;
+    const isMeridian = this.defaultServer.type == ONMS_MERIDIAN;
     const version: number[] = this.defaultServer.version.split(/\./).map(idx => parseInt(idx));
     switch(feature) {
-      case 'location':
-        version[0] > 19 || version[0] > 2017
+      case OnmsFeatures.Measurements:
+        return isMeridian ? version[0] >= 2016 : version[0] >= 17;
+      case OnmsFeatures.Minion:
+      case OnmsFeatures.RegionalStatus:
+        return isMeridian ? version[0] >= 2017 : version[0] >= 19;
       default: return true;
     }
   }
@@ -121,7 +132,7 @@ export class OnmsServersService {
         .map((response: Response) => response.json())
         .toPromise()
         .then(info => {
-          server.type = info.packageName == 'meridian' ? 'Meridian' : 'Horizon';
+          server.type = info.packageName == 'meridian' ? ONMS_MERIDIAN : ONMS_HORIZON;
           server.version = info.displayVersion || 'Unknown';
           if (server.isDefault) {
             this.notify(server);

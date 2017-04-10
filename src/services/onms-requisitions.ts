@@ -8,7 +8,7 @@ import { OnmsRequisitionAsset } from '../models/onms-requisition-asset';
 import { OnmsRequisitionsCache } from '../models/onms-requisitions-cache';
 import { OnmsForeignSource } from '../models/onms-foreign-source';
 import { OnmsForeignSourceConfig } from '../models/onms-foreign-source-config';
-import { OnmsServersService } from './onms-servers';
+import { OnmsServersService, OnmsFeatures } from './onms-servers';
 import { HttpService } from './http';
 
 import 'rxjs/Rx';
@@ -163,7 +163,7 @@ export class OnmsRequisitionsService {
 
   saveNode(foreignSource: string, node: OnmsRequisitionNode, force: boolean = false) : Promise<any> {
     const rawNode = node.generateModel();
-    if (!this.serverService.supports('location')) {
+    if (!this.serverService.supports(OnmsFeatures.Minion)) {
       delete rawNode['location'];
     }
     return this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode)

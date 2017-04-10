@@ -16,6 +16,7 @@ import { OnmsNodesService } from '../../services/onms-nodes';
 import { OnmsEventsService } from '../../services/onms-events';
 import { OnmsOutagesService } from '../../services/onms-outages';
 import { OnmsAvailabilityService } from '../../services/onms-availability';
+import { OnmsServersService, OnmsFeatures } from '../../services/onms-servers';
 
 @Component({
   selector: 'page-node',
@@ -42,6 +43,7 @@ export class NodePage implements OnInit {
     private nodesService: OnmsNodesService,
     private eventsService: OnmsEventsService,
     private outagesService: OnmsOutagesService,
+    private serversService: OnmsServersService,
     private availabilityService: OnmsAvailabilityService
   ) {}
 
@@ -105,7 +107,11 @@ export class NodePage implements OnInit {
   }
 
   onShowResources() {
-    this.navCtrl.push(ResourcesPage, {node: this.node});
+    if (this.serversService.supports(OnmsFeatures.Measurements)) {
+      this.navCtrl.push(ResourcesPage, {node: this.node});
+    } else {
+      this.alert('Warning', 'Feature not supported on this version.');
+    }
   }
 
   onShowAssets() {

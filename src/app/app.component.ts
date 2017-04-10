@@ -19,7 +19,7 @@ import { ServersPage } from '../pages/servers/servers';
 import { SetupPage } from '../pages/setup/setup';
 
 import { OnmsServer } from '../models/onms-server';
-import { OnmsServersService } from '../services/onms-servers';
+import { OnmsServersService, OnmsFeatures } from '../services/onms-servers';
 import { HttpService } from '../services/http';
 import { OnmsAlarmsService } from '../services/onms-alarms';
 
@@ -46,6 +46,28 @@ export class MyApp implements OnDestroy {
   ) {
     this.initializeApp();
 
+    httpService.register();
+
+    this.subscription = serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
+    serversConfig.getDefaultServer()
+      .then(defaultServer => {
+        this.initializeGroups();
+        this.rootPage = defaultServer ? HomePage : SetupPage;
+      })
+      .catch(error => console.log(error));
+  }
+
+  private initializeApp() {
+    this.platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+      this.initializeBadges();
+    });
+  }
+
+  private initializeGroups() {
     this.groups = [
       {
         name: 'Status',
@@ -60,7 +82,6 @@ export class MyApp implements OnDestroy {
       },{
         name: 'Maps',
         pages: [
-          { title: 'Regional Status', icon: 'map', component: RegionalStatusPage },
           { title: 'Node Maps', icon: 'compass', component: NodeMapsPage }
         ]
       },{
@@ -72,26 +93,12 @@ export class MyApp implements OnDestroy {
         ]
       }
     ];
-
-    httpService.register();
-
-    this.subscription = serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
-    serversConfig.getDefaultServer()
-      .then(defaultServer => this.rootPage = defaultServer ? HomePage : SetupPage)
-      .catch(error => console.log(error));
+    if (this.serversConfig.supports(OnmsFeatures.RegionalStatus)) {
+      this.groups[1].pages.push({ title: 'Regional Status', icon: 'map', component: RegionalStatusPage })
+    }
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-      this.initializeBadges();
-    });
-  }
-
-  initializeBadges() {
+  private initializeBadges() {
     if (!this.platform.is('cordova')) {
       console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
       return;
@@ -101,7 +108,7 @@ export class MyApp implements OnDestroy {
       .catch(error => console.error(error));
   }
 
-  subscribeToPause() {
+  private subscribeToPause() {
     this.platform.pause.subscribe(() => {
       this.alarmsService.getAlarmCount()
         .then(alarms => alarms == 0 ? this.badge.clear() : this.badge.set(alarms))

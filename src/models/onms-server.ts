@@ -1,3 +1,6 @@
+export const ONMS_MERIDIAN = 'Meridian';
+export const ONMS_HORIZON  = 'Horizon';
+
 export class OnmsServer {
 
     public type: string;
