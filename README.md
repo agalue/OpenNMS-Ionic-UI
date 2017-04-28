@@ -30,7 +30,7 @@ It might be possible that the following section should be added:
 </filter-mapping>
 ```
 
-First, install NodeJS on your system:
+First, install NodeJS on your system (tested against 6.x LTS, and 7.x):
 
 https://nodejs.org
 
