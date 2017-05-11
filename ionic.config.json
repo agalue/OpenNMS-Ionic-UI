@@ -1,6 +1,5 @@
 {
   "name": "OpenNMS Mobile",
   "app_id": "1de17e9e",
-  "v2": true,
-  "typescript": true
+  "type": "ionic-angular"
 }
