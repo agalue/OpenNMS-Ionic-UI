@@ -29,3 +29,32 @@ ion-item {
     border-right: 2px solid $text-input-highlight-color-invalid;
   }
 }
+
+.geomap {
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    display: block;
+}
+
+.geomap .svg {
+    stroke-width: 0px;
+}
+
+.geomap .marker-cluster div {
+    position: absolute;
+    top: 0;
+    color: white;
+}
+
+@each $severity in (Cleared, Normal, Minor, Warning, Major, Critical) {
+    .geomap .marker-cluster-#{$severity} {
+        background-color: map_get($colors,#{$severity}_);
+    }
+    .geomap .svg .#{$severity} {
+        fill: map_get($colors,#{$severity}_);
+        stroke: map_get($colors,#{$severity}_);
+    }
+}
+

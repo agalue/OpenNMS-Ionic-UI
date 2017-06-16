@@ -2,28 +2,4 @@ page-regional-status {
     .popup {
         width: 400px;
     }
-
-    .geomap {
-        height: 100%;
-        width: 100%;
-        min-height: 100%;
-        min-width: 100%;
-        display: block;
-    }
-
-    .geomap .marker-cluster div {
-        position: absolute;
-        top: 0;
-        color: white;
-    }
-
-    @each $severity in (Cleared, Normal, Minor, Warning, Major, Critical) {
-        .geomap .marker-cluster-#{$severity} {
-            background-color: map_get($colors,#{$severity}_);
-        }
-        .geomap .svg .#{$severity} {
-            fill: map_get($colors,#{$severity}_);
-            stroke: map_get($colors,#{$severity}_);
-        }
-    }
 }
