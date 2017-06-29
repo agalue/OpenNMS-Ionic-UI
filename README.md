@@ -2,6 +2,8 @@
 
 A mobile application for OpenNMS made with Ionic 2
 
+![Home Page](screenshots/ios01.png)
+
 This project has been created for the merely purpose of learning TypeScript, Angular2 and Ionic2.
 
 It was designed based on the current state of OpenNMS Horizon 19, but it could work on older versions of Horizon as well as Meridian.
@@ -69,6 +71,15 @@ https://ionicframework.com/docs/guide/testing.html
 * Visualize the Reginal Status Map (based on either alarms or outages, as it is available on Horizon 19. Older versions won't support this feature).
 * Configure SNMP Settings (if the user has the appropriate permissions).
 * Configure Requisitions and Foreign Source definitions, with the ability to view the whole content of the requisitioned inventory.
+
+# Screenshots
+
+![Outage Summary](screenshots/ios02.png)
+![Main Menu](screenshots/ios03.png)
+![Node Page](screenshots/ios04.png)
+![Graph Page](screenshots/ios05.png)
+![GeoMap Page](screenshots/ios06.png)
+![Alarms Page](screenshots/ios07.png)
 
 # Future Enhancements
 
