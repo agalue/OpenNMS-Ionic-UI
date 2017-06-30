@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 
 import { OnmsServer, ONMS_MERIDIAN, ONMS_HORIZON } from '../models/onms-server';
 
-const ONMS_SERVERS = 'onms-servers';
+export const ONMS_SERVERS = 'onms-servers';
 
 export enum OnmsFeatures {
   Measurements,
@@ -158,7 +158,7 @@ export class OnmsServersService {
   }
 
   private notify(server: OnmsServer) {
-      this.defaultUpdated.emit(server);
+    this.defaultUpdated.emit(server);
   }
 
 }
