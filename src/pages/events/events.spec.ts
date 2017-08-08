@@ -1,7 +1,5 @@
-import { async, inject, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { IonicModule, Platform, NavController, LoadingController, AlertController } from 'ionic-angular';
+import { async, inject, TestBed } from '@angular/core/testing';
+import { IonicModule, NavController, LoadingController, AlertController } from 'ionic-angular';
 
 import { HttpModule, XHRBackend, ResponseOptions, Response } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';

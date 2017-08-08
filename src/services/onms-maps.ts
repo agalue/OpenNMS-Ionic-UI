@@ -13,7 +13,6 @@ import { OnmsSeverities } from '../models/onms-severities';
 export class GeolocationQuery {
 
   public includeAcknowledgedAlarms: boolean = false;
-	public resolveMissingCoordinatesFromAddressString: boolean = false;
   public severityFilter: string = 'Normal';
   public strategy: string = 'Alarms'; // valid entries: 'Alarms', 'Outages'
 

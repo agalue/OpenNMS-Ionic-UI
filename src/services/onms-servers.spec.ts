@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { StorageMock } from '../../test-config/mocks-ionic';
 
 import { OnmsServersService, ONMS_SERVERS, OnmsFeatures } from './onms-servers';
-import { OnmsServer, ONMS_MERIDIAN, ONMS_HORIZON } from '../models/onms-server';
+import { OnmsServer, ONMS_HORIZON } from '../models/onms-server';
 
 describe('OnmsServersService', () => {
   let mockbackend: MockBackend, service: OnmsServersService, storage: Storage;
