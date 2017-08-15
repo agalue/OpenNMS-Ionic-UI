@@ -12,9 +12,11 @@ export class AlarmsOptionsPage {
   options: AlarmOptions
   private onChange: (options:AlarmOptions) => void;
 
-  constructor(private navParams: NavParams) {
-    this.options = navParams.get('options');
-    this.onChange = navParams.get('onChange');
+  constructor(private navParams: NavParams) {}
+
+  ionViewWillLoad() {
+    this.options = this.navParams.get('options');
+    this.onChange = this.navParams.get('onChange');
   }
 
   onOptionChange() {

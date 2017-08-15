@@ -2,33 +2,37 @@ import { Component } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
 import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { ForeignSourcePage } from '../foreign-source/foreign-source';
 import { RequisitionNodePage } from '../requisition-node/requisition-node';
 import { OnmsRequisition } from '../../models/onms-requisition';
 import { OnmsRequisitionNode } from '../../models/onms-requisition-node';
-import { OnmsForeignSource } from '../../models/onms-foreign-source';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
 @Component({
   selector: 'page-requisition',
   templateUrl: 'requisition.html'
 })
-export class RequisitionPage {
+export class RequisitionPage extends AbstractPage {
 
   searchKeyword: string = '';
   requisition: OnmsRequisition;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private keyboard: Keyboard,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
     private requisitionsService: OnmsRequisitionsService
   ) {
-    this.requisition = navParams.get('requisition');
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
+
+  ionViewWillLoad() {
+    this.requisition = this.navParams.get('requisition');
   }
 
   onShowOptions() {
@@ -87,27 +91,23 @@ export class RequisitionPage {
         },
         {
           text: 'Delete',
-          handler: () => this.removeNode(node)
+          handler: () => { this.removeNode(node) }
         }
       ]
     });
     alert.present();
   }
 
-  onEditForeignSourceDefinition() {
-    const loading = this.loadingCtrl.create({
-      content: `Loading foreign source definition for requisition ${this.requisition.foreignSource} ...`
-    });
-    loading.present();
-    return this.requisitionsService.getForeignSourceDefinition(this.requisition.foreignSource)
-      .then((definition:OnmsForeignSource) => {
-        loading.dismiss();
-        this.navCtrl.push(ForeignSourcePage, { definition: definition });
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error)
-      });
+  async onEditForeignSourceDefinition() {
+    const loading = this.loading(`Loading foreign source definition for requisition ${this.requisition.foreignSource} ...`);
+    try {
+      let definition = await this.requisitionsService.getForeignSourceDefinition(this.requisition.foreignSource);
+      this.navCtrl.push(ForeignSourcePage, { definition: definition });
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onImportRequisition() {
@@ -117,15 +117,15 @@ export class RequisitionPage {
       buttons: [
         {
           text: 'Yes (full sync)',
-          handler: () => this.importRequisition(this.requisition, 'true')
+          handler: () => { this.importRequisition(this.requisition, 'true') }
         },
         {
           text: 'No (skip scan phase)',
-          handler: () => this.importRequisition(this.requisition, 'false')
+          handler: () => { this.importRequisition(this.requisition, 'false') }
         },
         {
           text: 'DB Only (skip scan phase)',
-          handler: () => this.importRequisition(this.requisition, 'dbonly')
+          handler: () => { this.importRequisition(this.requisition, 'dbonly') }
         },
         {
           text: 'Cancel',
@@ -148,7 +148,7 @@ export class RequisitionPage {
         },
         {
           text: 'Delete',
-          handler: () => this.deleteRequisition()
+          handler: () => { this.deleteRequisition() }
         }
       ]
     });
@@ -160,70 +160,40 @@ export class RequisitionPage {
     setTimeout(() => this.keyboard.close(), 500);
   }
 
-  private importRequisition(requisition: OnmsRequisition, rescanExisting: string) {
-    const loading = this.loadingCtrl.create({
-      content: `Requesting an import of ${requisition.foreignSource}...`
-    });
-    loading.present();
-    this.requisitionsService.importRequisition(requisition, rescanExisting)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Import has started!');
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Import Error', error)
-      });
-  }
-
-  private deleteRequisition() {
-    const loading = this.loadingCtrl.create({
-      content: `Removing requisition ${this.requisition.foreignSource}...`
-    });
-    loading.present();
-    this.requisitionsService.removeRequisition(this.requisition)
-      .then(() => {
-        loading.dismiss();
-        this.navCtrl.pop();
-      })
-    .catch(error => {
+  private async importRequisition(requisition: OnmsRequisition, rescanExisting: string) {
+    const loading = this.loading(`Requesting an import of ${requisition.foreignSource}...`);
+    try {
+      await this.requisitionsService.importRequisition(requisition, rescanExisting);
+      this.toast('Import has started!');
+    } catch (error) {
+      this.alert('Import Error', error);
+    } finally {
       loading.dismiss();
-      this.alert('Remove Requisition Error', error)
-    });
+    }
   }
 
-  private removeNode(node: OnmsRequisitionNode) {
-    const loading = this.loadingCtrl.create({
-      content: `Removing node ${node.foreignId}...`
-    });
-    loading.present();
-    this.requisitionsService.removeNode(this.requisition.foreignSource, node)
-      .then(() => {
-        loading.dismiss();
-        this.toast(`Node ${node.foreignId} has been removed!`);
-      })
-    .catch(error => {
+  private async deleteRequisition() {
+    const loading = this.loading(`Removing requisition ${this.requisition.foreignSource}...`);
+    try {
+      await this.requisitionsService.removeRequisition(this.requisition);
+      this.navCtrl.pop();
+    } catch (error) {
+      this.alert('Remove Requisition Error', error);
+    } finally {
       loading.dismiss();
-      this.alert('Remove Node Error', error)
-    });
+    }
   }
 
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const alert = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    alert.present();
+  private async removeNode(node: OnmsRequisitionNode) {
+    const loading = this.loading(`Removing node ${node.foreignId}...`);
+    try {
+      await this.requisitionsService.removeNode(this.requisition.foreignSource, node);
+      this.toast(`Node ${node.foreignId} has been removed!`);
+    } catch (error) {
+      this.alert('Remove Node Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

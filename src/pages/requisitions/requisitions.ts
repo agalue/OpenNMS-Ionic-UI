@@ -2,53 +2,50 @@ import { Component } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
 import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { ForeignSourcePage } from '../foreign-source/foreign-source';
 import { RequisitionPage } from '../requisition/requisition';
 import { OnmsRequisition } from '../../models/onms-requisition';
-import { OnmsForeignSource } from '../../models/onms-foreign-source';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
 @Component({
   selector: 'page-requisitions',
   templateUrl: 'requisitions.html'
 })
-export class RequisitionsPage {
+export class RequisitionsPage extends AbstractPage {
 
   noRequisitions = false;
   searchKeyword: string = '';
   requisitions: OnmsRequisition[] = [];
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private keyboard: Keyboard,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,    
     private actionSheetCtrl: ActionSheetController,
     private requisitionsService: OnmsRequisitionsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
     this.onRefresh();
   }
 
-  onRefresh(force: boolean = false) {
-    const loading = this.loadingCtrl.create({
-      content: 'Loading requisitions. This could take a while, please wait...'
-    });
-    loading.present();
+  async onRefresh(force: boolean = false) {
+    const loading = this.loading('Loading requisitions. This could take a while, please wait...');
     this.requisitions = [];
-    this.requisitionsService.getRequisitions(force)
-      .then((requisitions: OnmsRequisition[]) => {
-        this.requisitions = requisitions;
-        this.noRequisitions = requisitions.length == 0;
-        loading.dismiss();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error)
-      });
+    try {
+      this.requisitions = await this.requisitionsService.getRequisitions(force);
+      this.noRequisitions = this.requisitions.length == 0;
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onShowOptions() {
@@ -96,28 +93,26 @@ export class RequisitionsPage {
         },
         {
           text: 'Add',
-          handler: data => this.addRequisition(data.name)
+          handler: data => { this.addRequisition(data.name) }
         }
       ]
     });
     alert.present();
   }
 
-  onEditForeignSource(foreignSource: string) {
+  async onEditForeignSource(foreignSource: string) {
     const content = foreignSource == 'default' ?
       'Loading defult foreign source definition...' :
-      `Loading foreign source definition for requisition ${foreignSource} ...`
-    const loading = this.loadingCtrl.create({ content: content });
-    loading.present();
-    return this.requisitionsService.getForeignSourceDefinition(foreignSource)
-      .then((definition:OnmsForeignSource) => {
-        loading.dismiss();
-        this.navCtrl.push(ForeignSourcePage, { definition: definition });
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error)
-      });
+      `Loading foreign source definition for requisition ${foreignSource} ...`;
+    const loading = this.loading(content);
+    try {
+      const definition = await this.requisitionsService.getForeignSourceDefinition(foreignSource);
+      this.navCtrl.push(ForeignSourcePage, { definition: definition });
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onImportRequisition(requisition: OnmsRequisition) {
@@ -127,15 +122,15 @@ export class RequisitionsPage {
       buttons: [
         {
           text: 'Yes (full sync)',
-          handler: () => this.importRequisition(requisition, 'true')
+          handler: () => { this.importRequisition(requisition, 'true') }
         },
         {
           text: 'No (skip scan phase)',
-          handler: () => this.importRequisition(requisition, 'false')
+          handler: () => { this.importRequisition(requisition, 'false') }
         },
         {
           text: 'DB Only (skip scan phase)',
-          handler: () => this.importRequisition(requisition, 'dbonly')
+          handler: () => { this.importRequisition(requisition, 'dbonly') }
         },
         {
           text: 'Cancel',
@@ -158,7 +153,7 @@ export class RequisitionsPage {
         },
         {
           text: 'Delete',
-          handler: () => this.deleteRequisition(requisition)
+          handler: () => { this.deleteRequisition(requisition) }
         }
       ]
     });
@@ -170,77 +165,47 @@ export class RequisitionsPage {
     setTimeout(() => this.keyboard.close(), 500);
   }
 
-  private addRequisition(foreignSource: string) {
+  private async addRequisition(foreignSource: string) {
     if (this.requisitions.find(r => r.foreignSource == foreignSource)) {
       this.alert('Add Requisition', `There is a requisition called ${foreignSource}, please use a different name`);
     } else {
-      const loading = this.loadingCtrl.create({
-        content: `Creating requisition ${foreignSource}...`
-      });
-      loading.present();      
-      const requisition = OnmsRequisition.create(foreignSource);
-      this.requisitionsService.saveRequisition(requisition)
-        .then(() => {
-          loading.dismiss();
-          this.onShowRequisition(requisition);
-        })
-      .catch(error => {
+      const loading = this.loading(`Creating requisition ${foreignSource}...`);
+      try {
+        const requisition = OnmsRequisition.create(foreignSource);
+        await this.requisitionsService.saveRequisition(requisition);
+        this.onShowRequisition(requisition);
+      } catch (error) {
+        this.alert('Add Requisition Error', error);
+      } finally {
         loading.dismiss();
-        this.alert('Add Requisition Error', error)
-      });
+      }
     }
   }
 
-  private deleteRequisition(requisition: OnmsRequisition) {
-    const loading = this.loadingCtrl.create({
-      content: `Removing requisition ${requisition.foreignSource}...`
-    });
-    loading.present();
-    this.requisitionsService.removeRequisition(requisition)
-      .then(() => {
-        loading.dismiss();
-        let index = this.requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
-        this.requisitions.splice(index, 1);
-        this.toast(`Requisition ${requisition.foreignSource} has been removed!`);
-      })
-    .catch(error => {
+  private async deleteRequisition(requisition: OnmsRequisition) {
+    const loading = this.loading(`Removing requisition ${requisition.foreignSource}...`);
+    try {
+      await this.requisitionsService.removeRequisition(requisition);
+      let index = this.requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
+      this.requisitions.splice(index, 1);
+      this.toast(`Requisition ${requisition.foreignSource} has been removed!`);
+    } catch (error) {
+      this.alert('Remove Requisition Error', error);
+    } finally {
       loading.dismiss();
-      this.alert('Remove Requisition Error', error)
-    });
+    }
   }
 
-  private importRequisition(requisition: OnmsRequisition, rescanExisting: string) {
-    const loading = this.loadingCtrl.create({
-      content: `Requesting an import of ${requisition.foreignSource}...`
-    });
-    loading.present();    
-    this.requisitionsService.importRequisition(requisition, rescanExisting)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Import has started!');
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Import Error', error)
-      });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const alert = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    alert.present();
+  private async importRequisition(requisition: OnmsRequisition, rescanExisting: string) {
+    const loading = this.loading(`Requesting an import of ${requisition.foreignSource}...`);
+    try {
+      await this.requisitionsService.importRequisition(requisition, rescanExisting);
+      this.toast('Import has started!');
+    } catch (error) {
+      this.alert('Import Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

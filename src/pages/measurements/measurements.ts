@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { LoadingController, AlertController, NavParams } from 'ionic-angular';
+import { LoadingController, AlertController, ToastController, NavParams } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { OnmsQueryResponse } from '../../models/onms-query-response';
 import { OnmsResource } from '../../models/onms-resource';
 import { OnmsNodesService } from '../../services/onms-nodes';
@@ -9,7 +10,7 @@ import { OnmsNodesService } from '../../services/onms-nodes';
   selector: 'page-measurements',
   templateUrl: 'measurements.html'
 })
-export class MeasurementsPage {
+export class MeasurementsPage extends AbstractPage {
 
   resource: OnmsResource;
   query: OnmsQueryResponse;
@@ -29,29 +30,29 @@ export class MeasurementsPage {
   timeRangeSelected = this.timeRanges[3].range; // 24 Hours (default)
 
   constructor(
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navParams: NavParams,
     private nodesService: OnmsNodesService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewDidLoad() {
     this.resource = this.navParams.get('resource');
     this.metrics = this.navParams.get('metrics');
   }
 
-  onSourceChange() {
-    const loading = this.loadingCtrl.create({ content: 'Loading measurements data ...' });
-    loading.present();
-    this.nodesService.getMetricData(this.resource.id, this.metricSelected, -this.timeRangeSelected)
-      .then(query => {
-        loading.dismiss();
-        this.query = query;
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Measurements Error', error);
-      })
+  async onSourceChange() {
+    const loading = this.loading('Loading measurements data ...' );
+    try {
+      this.query = await this.nodesService.getMetricData(this.resource.id, this.metricSelected, -this.timeRangeSelected);
+    } catch (error) {
+      this.alert('Measurements Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   hasData() {
@@ -60,15 +61,6 @@ export class MeasurementsPage {
 
   getValue(index: number) {
     return this.query.columns[0].values[index];
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
   }
 
 }

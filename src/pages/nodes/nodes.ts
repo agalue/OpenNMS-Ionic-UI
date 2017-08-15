@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { NodePage } from '../node/node';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsNodesService } from '../../services/onms-nodes';
@@ -9,7 +10,7 @@ import { OnmsNodesService } from '../../services/onms-nodes';
   selector: 'page-nodes',
   templateUrl: 'nodes.html'
 })
-export class NodesPage {
+export class NodesPage extends AbstractPage {
 
   noNodes = false;
   nodes: OnmsNode[] = [];
@@ -18,28 +19,27 @@ export class NodesPage {
   private start: number = 0;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
     private nodesService: OnmsNodesService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  onRefresh() {
-    const loading = this.loadingCtrl.create({
-      content: 'Searching nodes, please wait...'
-    });
-    loading.present();
+  async onRefresh() {
+    const loading = this.loading('Searching nodes, please wait...');
     this.nodes = [];
     this.start = 0;
-    this.loadNodes()
-      .then(() => {
-        loading.dismiss();
-        this.noNodes = this.nodes.length == 0
-      })
-      .catch(error => {
-        loading.dismiss()
-        this.alert('Load Error', error);
-      });
+    try {
+      await this.loadNodes();
+      this.noNodes = this.nodes.length == 0
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onShowNode(node: OnmsNode) {
@@ -58,34 +58,21 @@ export class NodesPage {
     }
   }
 
-  onInfiniteScroll(infiniteScroll: any) {
+  async onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadNodes()
-      .then((canScroll: boolean) => {
-        infiniteScroll.complete();
-        infiniteScroll.enable(canScroll);
-      })
-      .catch(error => this.alert('Load Error', error));
+    try {
+      let canScroll = await this.loadNodes();
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    } catch (error) {
+      this.alert('Load Error', error);
+    }
   }
 
-  private loadNodes() : Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.nodesService.getNodes(this.start, this.nodeFilter)
-        .then((nodes: OnmsNode[]) => {
-          nodes.forEach(n => this.nodes.push(n));
-          resolve(nodes.length > 0);
-        })
-        .catch(error => reject(error));
-    });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadNodes() : Promise<boolean> {
+    let nodes = await this.nodesService.getNodes(this.start, this.nodeFilter);
+    this.nodes.push(...nodes);
+    return nodes.length > 0;
   }
 
 }

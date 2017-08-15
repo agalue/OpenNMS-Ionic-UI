@@ -14,8 +14,11 @@ export class RegionalStatusOptionsPage {
   private onChange: (query:GeolocationQuery) => void;
 
   constructor(private navParams: NavParams) {
-    this.query = navParams.get('query');
-    this.onChange = navParams.get('onChange');
+  }
+
+  ionViewWillLoad() {
+    this.query = this.navParams.get('query');
+    this.onChange = this.navParams.get('onChange');
     this.strategyValue = this.query.strategy == 'Outages';
   }
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { OutagePage } from '../outage/outage';
 import { OnmsOutage } from '../../models/onms-outage';
 import { OnmsApiFilter } from '../../models/onms-api-filter';
@@ -11,7 +12,7 @@ import { OnmsOutagesService } from '../../services/onms-outages';
   selector: 'page-outages',
   templateUrl: 'outages.html'
 })
-export class OutagesPage {
+export class OutagesPage extends AbstractPage {
 
   noOutages = false;
   outages: OnmsOutage[] = [];
@@ -20,33 +21,32 @@ export class OutagesPage {
   private start: number = 0;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
     private uiService: OnmsUIService,
     private outagesService: OnmsOutagesService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
     this.onRefresh();
   }
 
-  onRefresh() {
-    const loading = this.loadingCtrl.create({
-      content: 'Loading outages, please wait...'
-    });
-    loading.present();
+  async onRefresh() {
+    const loading = this.loading('Loading outages, please wait...');
     this.outages = [];
     this.start = 0;
-    this.loadOutages()
-      .then(() => {
-        loading.dismiss();
-        this.noOutages = this.outages.length == 0
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error);
-      });
+    try {
+      await this.loadOutages();
+      this.noOutages = this.outages.length == 0;
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onShowOutage(outage: OnmsOutage) {
@@ -65,14 +65,15 @@ export class OutagesPage {
     }
   }
 
-  onInfiniteScroll(infiniteScroll: any) {
+  async onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadOutages()
-      .then((canScroll: boolean) => {
-        infiniteScroll.complete();
-        infiniteScroll.enable(canScroll);
-      })
-      .catch(error => this.alert('Load Error', error));
+    try {
+      let canScroll = await this.loadOutages();
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    } catch (error) {
+      this.alert('Load Error', error);
+    }
   }
 
   formatUei(uei: string) {
@@ -83,25 +84,11 @@ export class OutagesPage {
     return this.uiService.getOutageIconColor(outage, strong);
   }
 
-  private loadOutages() {
-    return new Promise((resolve, reject) => {
-      const filter = new OnmsApiFilter('serviceLostEvent.eventDescr', this.outageFilter);
-      this.outagesService.getOutages(this.start, [filter])
-        .then(outages => {
-          outages.forEach(e => this.outages.push(e));
-          resolve(true);
-        })
-        .catch(error => reject(error))
-    });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadOutages() : Promise<boolean> {
+    const filter = new OnmsApiFilter('serviceLostEvent.eventDescr', this.outageFilter);
+    let outages = await this.outagesService.getOutages(this.start, [filter]);
+    this.outages.push(...outages);
+    return true;
   }
 
 }

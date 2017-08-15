@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NavParams, ViewController, AlertController } from 'ionic-angular';
 
@@ -9,7 +9,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
   selector: 'page-requisition-category',
   templateUrl: 'requisition-category.html'
 })
-export class RequisitionCategoryPage implements OnInit {
+export class RequisitionCategoryPage {
 
   mode: string;
   form: FormGroup;
@@ -24,7 +24,7 @@ export class RequisitionCategoryPage implements OnInit {
     private requisitionsService: OnmsRequisitionsService
   ) {}
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.category  = this.navParams.get('category');
     this.blacklist = this.navParams.get('blacklist') || [];
     this.mode = this.category ? 'Edit' : 'Add';
@@ -32,15 +32,7 @@ export class RequisitionCategoryPage implements OnInit {
     if (this.mode == 'Add') {
       this.category = new OnmsRequisitionCategory();
     }
-    
-    this.requisitionsService.getAvailableCategories()
-      .then(categories => {
-        this.availableCategories = categories.filter(c => this.blacklist.indexOf(c) == -1);
-        if (this.category) this.availableCategories.push(this.category.name);
-      })
-      .catch(error => console.error(error));
-
-    this.initForm();    
+    this.initialize();
   }
 
   onShowCategories() {
@@ -75,6 +67,17 @@ export class RequisitionCategoryPage implements OnInit {
 
   onCancel() {
     this.viewCtrl.dismiss();
+  }
+
+  private async initialize() {
+    try {
+      let categories = await this.requisitionsService.getAvailableCategories();
+      this.availableCategories = categories.filter(c => this.blacklist.indexOf(c) == -1);
+      if (this.category) this.availableCategories.push(this.category.name);
+      this.initForm();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   private initForm() {

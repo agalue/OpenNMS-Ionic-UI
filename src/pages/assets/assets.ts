@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsRequisitionAsset } from '../../models/onms-requisition-asset';
 import { OnmsAssetConfig, OnmsAssetConfigGroups } from '../../models/onms-asset-config';
@@ -12,38 +13,38 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
   selector: 'page-assets',
   templateUrl: 'assets.html'
 })
-export class AssetsPage {
+export class AssetsPage extends AbstractPage {
 
   node: OnmsNode;
   configGroups: OnmsAssetConfig[] = OnmsAssetConfigGroups;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController,
     private nodesService: OnmsNodesService,
     private requisitionsService: OnmsRequisitionsService
   ) {
-    this.node = navParams.get('node');
+    super(loadingCtrl, alertCtrl, toastCtrl);
   }
 
-  onSave(form: NgForm) {
-    const loading = this.loadingCtrl.create({
-      content: `Saving assets for ${this.node.label} ...`
-    });
-    loading.present();
-    this.nodesService.updateAssets(this.node.id, this.node.assetRecord)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Assets has been updated successfully!');
-        this.onUpdateRequisition();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Save Error', error);
-      });
+  ionViewWillLoad() {
+    this.node = this.navParams.get('node');
+  }
+
+  async onSave(form: NgForm) {
+    const loading = this.loading(`Saving assets for ${this.node.label} ...`);
+    try {
+      await this.nodesService.updateAssets(this.node.id, this.node.assetRecord)
+      this.toast('Assets has been updated successfully!');
+      this.onUpdateRequisition();
+    } catch (error) {
+      loading.dismiss();
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onUpdateRequisition() {
@@ -59,7 +60,7 @@ export class AssetsPage {
           },
           {
             text: 'Update Requisition',
-            handler: () => this.updateRequisition()
+            handler: () => { this.updateRequisition() }
           }
         ]
       });
@@ -67,39 +68,17 @@ export class AssetsPage {
     }
   }
 
-  private updateRequisition() {
-    const loading = this.loadingCtrl.create({
-      content: `Saving assets on requisition ${this.node.foreignSource} ...`
-    });
-    loading.present();
-    let assets = OnmsRequisitionAsset.importAll(this.node.assetRecord);
-    this.requisitionsService.updateAssets(this.node.foreignSource, this.node.foreignId, assets)
-      .then(() => {
-        loading.dismiss();
-        this.toast(`Requisition ${this.node.foreignSource} updated!`);
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Update Error', error);
-      });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const toast = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
+  private async updateRequisition() {
+    const loading = this.loading(`Saving assets on requisition ${this.node.foreignSource} ...`);
+    try {
+      let assets = OnmsRequisitionAsset.importAll(this.node.assetRecord);
+      await this.requisitionsService.updateAssets(this.node.foreignSource, this.node.foreignId, assets);
+      this.toast(`Requisition ${this.node.foreignSource} updated!`);
+    } catch (error) {
+      this.alert('Update Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NavParams, ModalController, AlertController, ToastController } from 'ionic-angular';
+import { NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { RequisitionInterfacePage } from '../requisition-interface/requisition-interface';
 import { RequisitionAssetPage } from '../requisition-asset/requisition-asset';
 import { RequisitionCategoryPage } from '../requisition-category/requisition-category';
@@ -18,7 +19,7 @@ import { validateUnique } from '../../directives/unique';
   selector: 'page-requisition-node',
   templateUrl: 'requisition-node.html'
 })
-export class RequisitionNodePage implements OnInit {
+export class RequisitionNodePage extends AbstractPage {
 
   isNew: boolean = false;
   mode: string = 'basic';
@@ -29,15 +30,18 @@ export class RequisitionNodePage implements OnInit {
   form: FormGroup;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
     private serversService: OnmsServersService,
     private requisitionsService: OnmsRequisitionsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.foreignSource = this.navParams.get('foreignSource');
     this.foreignIds = this.navParams.get('foreignIds') || [];
     this.node = this.navParams.get('node');
@@ -45,17 +49,14 @@ export class RequisitionNodePage implements OnInit {
       this.isNew = true;
       this.node = OnmsRequisitionNode.create();
     }
-    this.requisitionsService.getAvailableLocations()
-      .then(locations => this.locations = locations)
-      .catch(error => this.alert('Load Locations', error));
-    this.initForm();
+    this.initialize();
   }
 
-  ionViewCanLeave() : Promise<void> {
+  ionViewCanLeave() : Promise<boolean> {
     if (this.form.valid && !this.form.dirty) {
-      return Promise.resolve();
+      return Promise.resolve(true);
     }
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       const alert = this.alertCtrl.create({
         title: 'Save requisition before leaving',
         subTitle: 'Are you sure you discard all your changes ?',
@@ -63,13 +64,14 @@ export class RequisitionNodePage implements OnInit {
         buttons: [
           {
             text: 'Save Node',
-            handler: () => {
-              this.saveNode()
-                .then(() => {
-                  this.toast('Node has been saved!');
-                  resolve()
-                })
-                .catch(error => reject(error))
+            handler: async() => {
+              try {
+                await this.saveNode();
+                resolve(true);
+              } catch (error) {
+                this.alert('Save Node', error);
+                reject(error);
+              }
             }
           },
           {
@@ -82,10 +84,12 @@ export class RequisitionNodePage implements OnInit {
     });
   }
 
-  onSave() {
-    this.saveNode()
-      .then(() => this.toast('Node has been saved!'))
-      .catch(error => this.alert('Save Node', error));
+  async onSave() {
+    try {
+      await this.saveNode();
+    } catch (error) {
+      this.alert('Save Node', error);
+    }
   }
 
   onGenerateForeignId() {
@@ -153,18 +157,22 @@ export class RequisitionNodePage implements OnInit {
     return this.serversService.supports(OnmsFeatures.Minion);
   }
 
-  private saveNode() : Promise<void> {
+  private async initialize() {
+    try {
+      this.locations = await this.requisitionsService.getAvailableLocations();
+      this.initForm();
+    } catch (error) {
+      this.alert('Load Locations', error);
+    }
+  }
+
+  private async saveNode() : Promise<void> {
     OnmsRequisitionNode.assign(this.node, this.form.value);
-    return new Promise<void>((resolve,reject) => {
-      this.requisitionsService.saveNode(this.foreignSource, this.node)
-        .then(() => {
-          this.form.markAsPristine();
-          this.form.markAsUntouched();
-          this.isNew = false;
-          resolve();
-        })
-        .catch(error => reject(error));
-    });
+    await this.requisitionsService.saveNode(this.foreignSource, this.node)
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.isNew = false;
+    this.toast('Node has been saved!');
   }
 
   private updateInterface(intf: OnmsRequisitionInterface, handler: (updated: OnmsRequisitionInterface) => void) {
@@ -221,24 +229,6 @@ export class RequisitionNodePage implements OnInit {
       'parentForeignId' : new FormControl(this.node.parentForeignId),
       'parentNodeLabel' : new FormControl(this.node.parentNodeLabel)
     });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const alert = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    alert.present();
   }
 
 }

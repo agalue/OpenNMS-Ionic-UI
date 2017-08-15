@@ -37,35 +37,36 @@ export class NodeLocationComponent implements OnChanges {
     setTimeout(() => this.drawMap(), 500); // The DIV has to exist prior rendering the map
   }
 
-  onUseCurrentLocation() {
+  async onUseCurrentLocation() {
     const loading = this.loadingCtrl.create({
       content: 'Getting your location...'
     });
     loading.present();
-    this.geolocation.getCurrentPosition()
-      .then(r => {
-        loading.dismiss();
-        const alert = this.alertCtrl.create({
-          title: 'Set Node Location',
-          subTitle: `latitude=${r.coords.latitude}, longitude=${r.coords.longitude}`,
-          message: 'Are you want to override the node location? This cannot be undone.',
-          buttons: [
-            {
-              text: 'Cancel',
-              role: 'cancel'
-            },
-            {
-              text: 'Save',
-              handler: () => this.onSave.emit({ latitude: r.coords.latitude, longitude: r.coords.longitude})
-            }
-          ]
-        });
-        alert.present();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Could not get location', error.message)
-      });
+    let coords = null;
+    try {
+      let position = await this.geolocation.getCurrentPosition();
+      coords = position.coords;
+    } catch (error) {
+      this.alert('Could not get location', error.message);
+    } finally {
+      loading.dismiss();
+    }
+    const alert = this.alertCtrl.create({
+      title: 'Set Node Location',
+      subTitle: `latitude=${coords.latitude}, longitude=${coords.longitude}`,
+      message: 'Are you want to override the node location? This cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Save',
+          handler: () => this.onSave.emit({ latitude: coords.latitude, longitude: coords.longitude})
+        }
+      ]
+    });
+    alert.present();
   }
 
   onSelectOnMap() {

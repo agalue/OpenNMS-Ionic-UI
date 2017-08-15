@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, PopoverController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { NotificationPage } from '../notification/notification';
 import { AlarmsOptionsPage } from '../alarms-options/alarms-options';
-import { OnmsAck } from '../../models/onms-ack';
 import { OnmsNotification } from '../../models/onms-notification';
 import { OnmsApiFilter, AlarmOptions } from '../../models/onms-api-filter';
 import { OnmsUIService } from '../../services/onms-ui';
@@ -13,7 +13,7 @@ import { OnmsNotificationsService } from '../../services/onms-notifications';
   selector: 'page-notifications',
   templateUrl: 'notifications.html'
 })
-export class NotificationsPage {
+export class NotificationsPage extends AbstractPage {
 
   noNotifications = false;
   notifications: OnmsNotification[] = [];
@@ -27,42 +27,41 @@ export class NotificationsPage {
   private start: number = 0;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController,
     private popoverCtrl: PopoverController,
     private uiService: OnmsUIService,
     private notifyService: OnmsNotificationsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
     this.onUpdate();
   }
 
-  onRefresh(refresher: any) {
-    this.onUpdate(false).then(() => refresher.complete());
+  async onRefresh(refresher: any) {
+    await this.onUpdate(false);
+    refresher.complete();
   }
 
-  onUpdate(showLoading: boolean = true) : Promise<any> {
+  async onUpdate(showLoading: boolean = true) : Promise<any> {
     let loading = null;
     if (showLoading) {
-      loading = this.loadingCtrl.create({
-        content: 'Loading notifications, please wait...'
-      });
-      loading.present();
+      loading = this.loading('Loading notifications, please wait...');
     }
     this.notifications = [];
     this.start = 0;
-    return this.loadNotifications()
-      .then(() => {
-        if (showLoading) loading.dismiss();
-        this.noNotifications = this.notifications.length == 0
-      })
-      .catch(error => {
-        if (showLoading) loading.dismiss();
-        this.alert('Load Error', error);
-      });
+    try {
+      await this.loadNotifications();
+      this.noNotifications = this.notifications.length == 0
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      if (showLoading) loading.dismiss();
+    }
   }
 
   onShowOptions(event: any) {
@@ -92,25 +91,28 @@ export class NotificationsPage {
     }
   }
 
-  onAckNotification(notification: OnmsNotification) {
+  async onAckNotification(notification: OnmsNotification) {
     const acknowledge = ! notification.isAcknowledged();
     let promise = acknowledge ? this.notifyService.acknowledgeNotification(notification) : this.notifyService.unacknowledgeNotification(notification);
     let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
-    promise.then((ack: OnmsAck) => {
-        notification.update(ack);
-        this.toast(`Notification ${title}!`);
-      })
-      .catch(error => this.alert(`${title} Error`, error));
+    try {
+      let ack = await promise;
+      notification.update(ack);
+      this.toast(`Notification ${title}!`);
+    } catch (error) {
+      this.alert(`${title} Error`, error);
+    }
   }
 
-  onInfiniteScroll(infiniteScroll: any) {
+  async onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadNotifications()
-      .then((canScroll: boolean) => {
-        infiniteScroll.complete();
-        infiniteScroll.enable(canScroll);
-      })
-      .catch(error => this.alert('Load Error', error));
+    try {
+      let canScroll = await this.loadNotifications();
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    } catch (error) {
+      error => this.alert('Load Error', error);
+    }
   }
 
   formatUei(uei: string) {
@@ -125,34 +127,11 @@ export class NotificationsPage {
     return this.uiService.getNotificationIcon(notification);
   }
 
-  private loadNotifications() : Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const filter = new OnmsApiFilter('textMessage', this.notificationFilter);
-      this.notifyService.getNotifications(this.start, this.options, [filter])
-        .then((notifications: OnmsNotification[]) => {
-          notifications.forEach(n => this.notifications.push(n));
-          resolve(notifications.length > 0);
-        })
-        .catch(error => reject(error))
-    });
-  }
-
-  private toast(message: string) {
-    const toast = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadNotifications() : Promise<boolean> {
+    const filter = new OnmsApiFilter('textMessage', this.notificationFilter);
+    let notifications = await this.notifyService.getNotifications(this.start, this.options, [filter]);
+    this.notifications.push(...notifications);
+    return notifications.length > 0;
   }
 
 }

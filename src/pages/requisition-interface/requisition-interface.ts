@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
-import { ViewController, AlertController, NavParams } from 'ionic-angular';
+import { NavParams, ViewController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { OnmsRequisitionInterface } from '../../models/onms-requisition-interface';
 import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
+import { AbstractPage } from '../abstract-page';
 import { validateIpAddress } from '../../directives/ip-address';
 import { validateUnique } from '../../directives/unique';
 
@@ -12,7 +13,7 @@ import { validateUnique } from '../../directives/unique';
   selector: 'page-requisition-interface',
   templateUrl: 'requisition-interface.html'
 })
-export class RequisitionInterfacePage implements OnInit {
+export class RequisitionInterfacePage extends AbstractPage {
 
   mode: string;
   form: FormGroup;
@@ -21,13 +22,17 @@ export class RequisitionInterfacePage implements OnInit {
   blacklist: string[];
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navParams: NavParams,
     private viewCtrl: ViewController,
-    private alertCtrl: AlertController,
     private requisitionsService: OnmsRequisitionsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.foreignSource = this.navParams.get('foreignSource');
     this.intf = this.navParams.get('intf');
     this.blacklist = this.navParams.get('blacklist') || [];
@@ -51,10 +56,13 @@ export class RequisitionInterfacePage implements OnInit {
     this.getServices().removeAt(index);
   }
 
-  onShowServices(index: number) {
-    this.requisitionsService.getAvailableServices(this.foreignSource)
-      .then((services: string[]) => this.chooseService(services, index))
-      .catch(error => this.alert('Load Services', error));
+  async onShowServices(index: number) {
+    try {
+      let services = await this.requisitionsService.getAvailableServices(this.foreignSource);
+      this.chooseService(services, index);
+    } catch (error) {
+      this.alert('Load Services', error);
+    }
   }
 
   onSave() {
@@ -108,15 +116,6 @@ export class RequisitionInterfacePage implements OnInit {
       })
     })
     options.present();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
   }
 
 }
