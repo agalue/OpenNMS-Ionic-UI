@@ -49,7 +49,8 @@ export class RequisitionNodePage extends AbstractPage {
       this.isNew = true;
       this.node = OnmsRequisitionNode.create();
     }
-    this.initialize();
+    this.initializeLocations();
+    this.initForm();
   }
 
   ionViewCanLeave() : Promise<boolean> {
@@ -157,10 +158,9 @@ export class RequisitionNodePage extends AbstractPage {
     return this.serversService.supports(OnmsFeatures.Minion);
   }
 
-  private async initialize() {
+  private async initializeLocations() {
     try {
       this.locations = await this.requisitionsService.getAvailableLocations();
-      this.initForm();
     } catch (error) {
       this.alert('Load Locations', error);
     }

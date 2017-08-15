@@ -39,7 +39,8 @@ export class ForeignSourcePage extends AbstractPage {
 
   ionViewWillLoad() {
     this.definition = this.navParams.get('definition');
-    this.initialize();
+    this.initializeConfig();
+    this.initForm();
   }
 
   ionViewCanLeave() : Promise<boolean> {
@@ -128,11 +129,10 @@ export class ForeignSourcePage extends AbstractPage {
     this.form.markAsDirty();
   }
 
-  private async initialize() {
+  private async initializeConfig() {
     try {
       this.policiesConfig = await this.requisitionsService.getPoliciesConfig();
       this.detectorsConfig = await this.requisitionsService.getDetectorsConfig();
-      this.initForm();
     } catch (error) {
       this.alert('Config Error', error);
     }

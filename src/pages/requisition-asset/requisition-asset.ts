@@ -32,6 +32,7 @@ export class RequisitionAssetPage {
       this.asset = OnmsRequisitionAsset.create();
     }
     this.initialize();
+    this.initForm();
   }
 
   onSave() {
@@ -48,7 +49,6 @@ export class RequisitionAssetPage {
       let assets = await this.requisitionsService.getAvailableAssets();
       this.availableAssets = assets.filter(a => this.blacklist.indexOf(a) == -1);
       if (this.asset) this.availableAssets.push(this.asset.name);
-      this.initForm();
     } catch (error) {
       error => console.error(error);
     }

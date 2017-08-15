@@ -33,6 +33,7 @@ export class RequisitionCategoryPage {
       this.category = new OnmsRequisitionCategory();
     }
     this.initialize();
+    this.initForm();
   }
 
   onShowCategories() {
@@ -74,7 +75,6 @@ export class RequisitionCategoryPage {
       let categories = await this.requisitionsService.getAvailableCategories();
       this.availableCategories = categories.filter(c => this.blacklist.indexOf(c) == -1);
       if (this.category) this.availableCategories.push(this.category.name);
-      this.initForm();
     } catch (error) {
       console.error(error);
     }
