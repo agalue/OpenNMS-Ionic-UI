@@ -97,6 +97,16 @@ export class ForeignSourcePage extends AbstractPage {
     });
   }
 
+  onRemoveDetector(index: number) {
+    this.definition.detectors.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
+  onRemovePolicy(index: number) {
+    this.definition.policies.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
   onEditPolicy(policy: OnmsRequisitionPolicy, index: number) {
     this.updatePolicy(policy, (policyUpdated) => {
       this.definition.policies[index] = policyUpdated;

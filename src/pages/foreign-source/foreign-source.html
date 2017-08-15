@@ -59,10 +59,18 @@
       </ion-grid>
       <br>
       <ion-list [reorder]="reorderDetectors" (ionItemReorder)="onReorderDetectors($event)">
-        <button ion-item *ngFor="let detector of definition.detectors; let i = index" (click)="onEditDetector(detector,i)">
-          <h2>{{ detector.name }}</h2>
-          <p>{{ detector.className | className }}</p>
-        </button>
+        <ion-item-sliding *ngFor="let detector of definition.detectors; let i = index">
+          <button ion-item (click)="onEditDetector(detector,i)">
+            <h2>{{ detector.name }}</h2>
+            <p>{{ detector.className | className }}</p>
+          </button>
+          <ion-item-options>
+            <button ion-button expandable color="danger" (click)="onRemoveDetector(i)">
+              <ion-icon name="trash"></ion-icon>
+              Remove
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
     <div *ngSwitchCase="'policies'">
@@ -88,10 +96,18 @@
       </ion-grid>
       <br>
       <ion-list [reorder]="reorderPolicies" (ionItemReorder)="onReorderPolicies($event)">
-        <button ion-item type="button" *ngFor="let policy of definition.policies; let i = index" (click)="onEditPolicy(policy,i)">
-          <h2>{{ policy.name }}</h2>
-          <p>{{ policy.className | className }}</p>
-        </button>
+        <ion-item-sliding *ngFor="let policy of definition.policies; let i = index">
+          <button ion-item (click)="onEditPolicy(policy,i)">
+            <h2>{{ policy.name }}</h2>
+            <p>{{ policy.className | className }}</p>
+          </button>
+          <ion-item-options>
+            <button ion-button expandable color="danger" (click)="onRemovePolicy(i)">
+              <ion-icon name="trash"></ion-icon>
+              Remove
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </div>
   </div>
