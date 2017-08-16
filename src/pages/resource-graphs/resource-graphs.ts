@@ -42,19 +42,21 @@ export class ResourceGraphsPage {
   ionViewWillLoad() {
     this.resource = this.navParams.get('resource');
     this.onTimeRangeChange();
-    this.nodesService.getAvailableGraphs(this.resource.id)
-      .then((prefabs: PrefabGraph[]) => {
-        this.prefabs = prefabs;
-        this.prefabGraph = prefabs[0];
-      })
-      .catch(error => {
-        this.alert('Load Error', error)
-      });
+    this.initialize();
   }
 
   onTimeRangeChange() {
     if (!this.end) this.end = Date.now();
     this.start = this.end - this.timeRangeSelected;
+  }
+
+  private async initialize() {
+    try {
+      this.prefabs = await this.nodesService.getAvailableGraphs(this.resource.id);
+      this.prefabGraph = this.prefabs[0];
+    } catch (error) {
+      this.alert('Load Error', error);
+    }
   }
 
   private alert(title: string, message: string) {

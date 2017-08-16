@@ -17,9 +17,15 @@ export class OnmsTitleComponent implements OnInit {
   constructor(private service: OnmsServersService) {}
 
   ngOnInit() {
-    this.service.getDefaultServer()
-      .then(server => this.server = server)
-      .catch(error => console.error(error));
+    this.initialize();
+  }
+
+  private async initialize() {
+    try {
+      this.server = await this.service.getDefaultServer();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 }

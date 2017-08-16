@@ -84,24 +84,23 @@ export abstract class Graph {
     this.refresh();
   }
 
-  refresh() {
+  async refresh() {
     var timeSpan = this.getTimeSpan();
     this.queryInProgress = true;
     this.onBeforeQuery();
-    this.dataSource.query(timeSpan.start, timeSpan.end, this.getResolution())
-      .then(results => {
-        this.queryInProgress = false;
-        this.lastSuccessfulQuery = Date.now();
-        this.updateValues(results);
-        this.updateTextFields(results);
-        this.onQuerySuccess(results);
-        this.onAfterQuery();
-      })
-      .catch(reason => {
-        this.queryInProgress = false;
-        this.onQueryFailed(reason);
-        this.onAfterQuery();
-      });
+    try {
+      let results = await this.dataSource.query(timeSpan.start, timeSpan.end, this.getResolution());
+      this.queryInProgress = false;
+      this.lastSuccessfulQuery = Date.now();
+      this.updateValues(results);
+      this.updateTextFields(results);
+      this.onQuerySuccess(results);
+      this.onAfterQuery();
+    } catch (error) {
+      this.queryInProgress = false;
+      this.onQueryFailed(error);
+      this.onAfterQuery();
+    }
   }
 
   updateValues(results) {

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { ResourceGraphsPage } from '../resource-graphs/resource-graphs';
 import { OnmsNode } from '../../models/onms-node';
 import { OnmsResource, OnmsResourcesByType } from '../../models/onms-resource';
@@ -10,47 +11,41 @@ import { OnmsNodesService } from '../../services/onms-nodes';
   selector: 'page-resources',
   templateUrl: 'resources.html'
 })
-export class ResourcesPage {
+export class ResourcesPage extends AbstractPage {
 
   node: OnmsNode;
   resourceGroups: OnmsResourcesByType[] = [];
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
     private nodesService: OnmsNodesService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
-    const loading = this.loadingCtrl.create({
-      content: 'Loading resources...'
-    })
-    loading.present();
     this.node = this.navParams.get('node');
-    this.nodesService.getResources(this.node.id)
-      .then(resources => {
-        this.resourceGroups = OnmsResource.groupByResourceType(resources);
-        loading.dismiss();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error)
-      });
+    this.initialize();
   }
 
   onShowGraphs(resource: OnmsResource) {
     this.navCtrl.push(ResourceGraphsPage, { resource: resource });
   }
 
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async initialize() {
+    const loading = this.loading('Loading resources...');
+    try {
+      const resources = await this.nodesService.getResources(this.node.id);
+      this.resourceGroups = OnmsResource.groupByResourceType(resources);
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

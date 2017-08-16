@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NavController, NavParams, ModalController, AlertController, ToastController, reorderArray } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController, AlertController, ToastController, reorderArray } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { DetectorPage } from '../detector/detector';
 import { PolicyPage } from '../policy/policy';
 import { OnmsRequisitionDetector } from '../../models/onms-requisition-detector';
@@ -14,7 +15,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
   selector: 'page-foreign-source',
   templateUrl: 'foreign-source.html'
 })
-export class ForeignSourcePage implements OnInit {
+export class ForeignSourcePage extends AbstractPage {
 
   mode = 'overview';
   definition: OnmsForeignSource;
@@ -25,30 +26,28 @@ export class ForeignSourcePage implements OnInit {
   form: FormGroup;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,    
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,    
     private requisitionsService: OnmsRequisitionsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.definition = this.navParams.get('definition');
-    this.requisitionsService.getPoliciesConfig()
-      .then(configs => this.policiesConfig = configs)
-      .catch(error => console.error(error));
-    this.requisitionsService.getDetectorsConfig()
-      .then(configs => this.detectorsConfig = configs)
-      .catch(error => console.error(error));
+    this.initializeConfig();
     this.initForm();
   }
 
-  ionViewCanLeave() : Promise<void> {
+  ionViewCanLeave() : Promise<boolean> {
     if (this.form.valid && !this.form.dirty) {
-      return Promise.resolve();
+      return Promise.resolve(true);
     }
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       const alert = this.alertCtrl.create({
         title: 'Save Definition',
         subTitle: 'Are you sure you discard all your changes ?',
@@ -56,10 +55,14 @@ export class ForeignSourcePage implements OnInit {
         buttons: [
           {
             text: 'Save Definition',
-            handler: () => {
-              this.saveDefinition()
-                .then(() => resolve())
-                .catch(error => reject(error))
+            handler: async() => {
+              try {
+                await this.saveDefinition();
+                resolve(true);
+              } catch (error) {
+                this.alert('Save Definition', error);
+                reject(error);
+              }
             }
           },
           {
@@ -72,10 +75,12 @@ export class ForeignSourcePage implements OnInit {
     });
   }
 
-  onSave() {
-    this.saveDefinition()
-      .then(() => this.toast('Foreign Source definition has been saved!'))
-      .catch(error => this.alert('Save Definition', error));
+  async onSave() {
+    try {
+      await this.saveDefinition();
+    } catch (error) {
+      this.alert('Save Definition', error);
+    }
   }
 
   onAddPolicy() {
@@ -90,6 +95,16 @@ export class ForeignSourcePage implements OnInit {
       this.definition.detectors.push(newDetector);
       this.toast(`Detector ${newDetector.name} added!`);
     });
+  }
+
+  onRemoveDetector(index: number) {
+    this.definition.detectors.splice(index, 1);
+    this.form.markAsDirty();
+  }
+
+  onRemovePolicy(index: number) {
+    this.definition.policies.splice(index, 1);
+    this.form.markAsDirty();
   }
 
   onEditPolicy(policy: OnmsRequisitionPolicy, index: number) {
@@ -122,6 +137,15 @@ export class ForeignSourcePage implements OnInit {
   onReorderDetectors(indexes) {
     this.definition.detectors = reorderArray(this.definition.detectors, indexes);
     this.form.markAsDirty();
+  }
+
+  private async initializeConfig() {
+    try {
+      this.policiesConfig = await this.requisitionsService.getPoliciesConfig();
+      this.detectorsConfig = await this.requisitionsService.getDetectorsConfig();
+    } catch (error) {
+      this.alert('Config Error', error);
+    }
   }
 
   private updatePolicy(policy: OnmsRequisitionPolicy, handler: (updated: OnmsRequisitionPolicy) => void) {
@@ -160,34 +184,11 @@ export class ForeignSourcePage implements OnInit {
     });
   }
 
-  private saveDefinition() : Promise<void> {
-    return new Promise<void>((resolve,reject) => {
-      Object.assign(this.definition, this.form.value);
-      this.requisitionsService.saveForeignSourceDefinition(this.definition)
-        .then(() => {
-          this.form.markAsPristine();
-          resolve();
-        })
-        .catch(error => reject(error));
-    });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const alert = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    alert.present();
+  private async saveDefinition() : Promise<void> {
+    Object.assign(this.definition, this.form.value);
+    await this.requisitionsService.saveForeignSourceDefinition(this.definition)
+    this.form.markAsPristine();
+    this.toast('Foreign Source definition has been saved!');
   }
 
 }

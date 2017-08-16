@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController, PopoverController } from 'ionic-angular';
+import { AlertController, LoadingController, ToastController, PopoverController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { MapStatusPopupPage } from '../map-status-popup/map-status-popup';
 import { RegionalStatusOptionsPage } from '../regional-status-options/regional-status-options';
 import { GeolocationQuery, GeolocationInfo, SeverityLegendControl, OnmsMapsService } from '../../services/onms-maps';
@@ -12,7 +13,7 @@ import 'leaflet.markercluster';
   selector: 'page-regional-status',
   templateUrl: 'regional-status.html'
 })
-export class RegionalStatusPage {
+export class RegionalStatusPage extends AbstractPage {
 
   query: GeolocationQuery = new GeolocationQuery();
 
@@ -28,10 +29,14 @@ export class RegionalStatusPage {
   };
 
   constructor(
-    private alertCtrl: AlertController,
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private popoverCtrl: PopoverController,
     private mapService: OnmsMapsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewDidLoad() {
     this.initMap();
@@ -66,27 +71,21 @@ export class RegionalStatusPage {
     });
   }
 
-  private loadGeolocations() {
-    this.mapService.getAlarmGeolocations(this.query)
-      .then(locations => {
-        this.mapService.resetMap(this.markersGroup, locations, event => {
-          let location: GeolocationInfo = event.target['data'] as GeolocationInfo;
-          const popup = this.popoverCtrl.create(MapStatusPopupPage, { locations: [location] });
-          popup.present({ ev: event['originalEvent'] });
-        });
-        this.onCenter();
-      })
-      .catch(error => this.alert('Load Map', error));
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadGeolocations() {
+    const loading = this.loading('Loading alarms...');
+    try {
+      let locations = await this.mapService.getAlarmGeolocations(this.query);
+      this.mapService.resetMap(this.markersGroup, locations, event => {
+        let location: GeolocationInfo = event.target['data'] as GeolocationInfo;
+        const popup = this.popoverCtrl.create(MapStatusPopupPage, { locations: [location] });
+        popup.present({ ev: event['originalEvent'] });
+      });
+      this.onCenter();
+    } catch (error) {
+      this.alert('Load Map', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

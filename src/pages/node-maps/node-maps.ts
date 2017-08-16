@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController, PopoverController, LoadingController } from 'ionic-angular';
+import { LoadingController, AlertController, ToastController, PopoverController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { MapStatusPopupPage } from '../map-status-popup/map-status-popup';
 import { GeolocationInfo, SeverityLegendControl, OnmsMapsService } from '../../services/onms-maps';
 
@@ -11,7 +12,7 @@ import 'leaflet.markercluster';
   selector: 'page-node-maps',
   templateUrl: 'node-maps.html'
 })
-export class NodeMapsPage {
+export class NodeMapsPage extends AbstractPage {
 
   private map: Leaflet.Map;
   private markersGroup: Leaflet.MarkerClusterGroup;
@@ -26,11 +27,14 @@ export class NodeMapsPage {
   private locations: GeolocationInfo[] = [];
 
   constructor(
-    private alertCtrl: AlertController,
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private popoverCtrl: PopoverController,
-    private loadingCtrl: LoadingController,
     private mapService: OnmsMapsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewDidLoad() {
     this.initMap();
@@ -65,21 +69,16 @@ export class NodeMapsPage {
     });
   }
 
-  private loadGeolocations() {
-    const loading = this.loadingCtrl.create({
-      content: 'Loading nodes, please wait...'
-    });
-    loading.present();
-    this.mapService.getNodeGeolocations()
-      .then(locations => {
-        this.locations = locations;
-        this.updateMap(this.locations);
-        loading.dismiss();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Nodes', error);
-      });
+  private async loadGeolocations() {
+    const loading = this.loading('Loading nodes, please wait...');
+    try {
+      this.locations = await this.mapService.getNodeGeolocations();
+      this.updateMap(this.locations);
+    } catch (error) {
+      this.alert('Load Nodes', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   private updateMap(locations: GeolocationInfo[]) {
@@ -89,16 +88,6 @@ export class NodeMapsPage {
       popup.present({ ev: event['originalEvent'] });
     });
     this.onCenter();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
   }
 
 }

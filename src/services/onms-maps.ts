@@ -13,7 +13,6 @@ import { OnmsSeverities } from '../models/onms-severities';
 export class GeolocationQuery {
 
   public includeAcknowledgedAlarms: boolean = false;
-	public resolveMissingCoordinatesFromAddressString: boolean = false;
   public severityFilter: string = 'Normal';
   public strategy: string = 'Alarms'; // valid entries: 'Alarms', 'Outages'
 
@@ -176,22 +175,17 @@ export class OnmsMapsService {
 
   // NOTE: At this level, the IP interfaces for each node are unknown.
   //       It seems expensive to retrieve the primary interface for each node.
-  getNodeGeolocations() : Promise<GeolocationInfo[]> {
-    return new Promise<GeolocationInfo[]>((resolve, reject) => {
-      const nodesPromise = this.http.get('/rest/nodes?limit=0')
-        .map((response: Response) => OnmsNode.importNodes(response.json().node))
-        .toPromise();
-      const alarmsPromise = this.http.get('/rest/alarms?limit=0')
-        .map((response: Response) => OnmsAlarm.importAlarms(response.json().alarm))
-        .toPromise();
-      Promise.all([nodesPromise, alarmsPromise])
-        .then((results: any[]) => {
-          let locations: GeolocationInfo[] = [];
-          results[0].filter(n => n.hasLocation()).forEach(n => locations.push(GeolocationInfo.import(n, results[1])));
-          resolve(locations);
-        })
-        .catch(error => reject(error))
-    });
+  async getNodeGeolocations() : Promise<GeolocationInfo[]> {
+    const nodesPromise = this.http.get('/rest/nodes?limit=0')
+      .map((response: Response) => OnmsNode.importNodes(response.json().node))
+      .toPromise();
+    const alarmsPromise = this.http.get('/rest/alarms?limit=0')
+      .map((response: Response) => OnmsAlarm.importAlarms(response.json().alarm))
+      .toPromise();
+    const [nodes, alarms] = await Promise.all([nodesPromise, alarmsPromise]);
+    let locations: GeolocationInfo[] = [];
+    nodes.filter(n => n.hasLocation()).forEach(n => locations.push(GeolocationInfo.import(n, alarms)));
+    return locations;
   }
 
   createMap(mapId: string, options: Leaflet.MapOptions) : Leaflet.Map {
@@ -252,12 +246,12 @@ export class OnmsMapsService {
   private getIcon(severityInfo: SeverityInfo) : Leaflet.Icon {
     let severity = severityInfo && severityInfo.label ? severityInfo.label : 'Normal';
     return Leaflet.icon({
-        iconUrl: `assets/images/severity${severity}.png`,
-        iconRetinaUrl: `assets/images/${severity}@2x.png`,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+      iconUrl: `assets/images/severity${severity}.png`,
+      iconRetinaUrl: `assets/images/${severity}@2x.png`,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
     });
   }
 

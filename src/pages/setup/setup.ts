@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { Badge } from '@ionic-native/badge';
 
@@ -11,7 +11,7 @@ import { HomePage } from '../../pages/home/home';
   selector: 'page-setup',
   templateUrl: 'setup.html'
 })
-export class SetupPage implements OnInit {
+export class SetupPage {
 
   constructor(
     private platform: Platform,
@@ -20,17 +20,24 @@ export class SetupPage implements OnInit {
     private modalCtrl: ModalController
   ) {}
 
-  ngOnInit() {
-    if (!this.platform.is('cordova')) return;
-    this.badge.registerPermission()
-      .then(() => this.badge.clear())
-      .catch(error => console.error(error));
+  ionViewWillLoad() {
+    this.initialize();
   }
 
   onAddServer() {
     const modal = this.modalCtrl.create(ServerPage, { forceDefault: true });
     modal.present();
     modal.onDidDismiss(updated => { if (updated) this.navCtrl.setRoot(HomePage) });
+  }
+
+  private async initialize() {
+    if (!this.platform.is('cordova')) return;
+    try {
+      await this.badge.registerPermission()
+      this.badge.clear();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 }

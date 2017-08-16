@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ViewController, NavParams } from 'ionic-angular';
 
 import { OnmsRequisitionPolicy } from '../../models/onms-requisition-policy';
@@ -11,7 +11,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
   selector: 'page-policy',
   templateUrl: 'policy.html'
 })
-export class PolicyPage implements OnInit {
+export class PolicyPage {
 
   mode: string;
   policy: OnmsRequisitionPolicy;
@@ -24,7 +24,7 @@ export class PolicyPage implements OnInit {
     private requisitionsService: OnmsRequisitionsService
   ) {}
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.policy  = this.navParams.get('policy');
     this.configs = this.navParams.get('configs');
     this.mode = this.policy ? 'Edit' : 'Add';

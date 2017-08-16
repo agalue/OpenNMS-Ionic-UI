@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { NavParams, ModalController, AlertController, ToastController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { ServerPage } from '../server/server';
 import { OnmsServer } from '../../models/onms-server';
 import { OnmsServersService } from '../../services/onms-servers';
@@ -9,19 +10,22 @@ import { OnmsServersService } from '../../services/onms-servers';
   selector: 'page-servers',
   templateUrl: 'servers.html'
 })
-export class ServersPage implements OnInit {
+export class ServersPage extends AbstractPage {
 
   servers: OnmsServer[] = [];
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
     private serversService: OnmsServersService    
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.loadServers();
   }
 
@@ -49,55 +53,40 @@ export class ServersPage implements OnInit {
         },
         {
           text: 'Delete',
-          handler: () => this.removeServer(serverIndex)
+          handler: () => { this.removeServer(serverIndex) }
         }
       ]
     });
     alert.present();
   }
 
-  onSetDefault(serverIndex: number) {
-    this.serversService.setDefault(serverIndex)
-      .then(() => {
-        this.loadServers();
-        this.toast('Default server was changed');
-      })
-      .catch(error => this.alert('Error setting default', error));
+  async onSetDefault(serverIndex: number) {
+    try {
+      await this.serversService.setDefault(serverIndex)
+      await this.loadServers();
+      this.toast('Default server was changed');
+    } catch (error) {
+      this.alert('Error setting default', error);
+    }
   }
 
-  private loadServers() {
-    this.serversService.getServers()
-      .then((servers:OnmsServer[]) => this.servers = servers)
-      .catch(error => this.alert('Error loading servers', error));
+  private async loadServers() {
+    try {
+      this.servers = await this.serversService.getServers();
+    } catch (error) {
+      this.alert('Error loading servers', error);
+    }
   }
 
-  private removeServer(serverIndex: number) {
+  private async removeServer(serverIndex: number) {
     const server = this.servers[serverIndex];
-    this.serversService.removeServer(serverIndex)
-      .then(() => {
-        this.loadServers();
-        this.toast(`Server ${server.name} has been removed.`)
-      })
-      .catch(error => this.alert('Error deleting server', error));
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
-  }
-
-  private toast(message: string) {
-    const alert = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    alert.present();
+    try {
+      await this.serversService.removeServer(serverIndex)
+      await this.loadServers();
+      this.toast(`Server ${server.name} has been removed.`);
+    } catch (error) {
+      error => this.alert('Error deleting server', error);
+    }
   }
 
 }
