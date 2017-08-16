@@ -1,4 +1,4 @@
-# OpenNMS-Ionic2-UI
+# OpenNMS-Ionic-UI
 
 A mobile application for OpenNMS made with Ionic 3
 
