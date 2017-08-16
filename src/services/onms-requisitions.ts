@@ -20,74 +20,57 @@ export class OnmsRequisitionsService {
 
   constructor(private http: HttpService, private serverService: OnmsServersService) {}
   
-  private updateDeployedStats(requisitions: OnmsRequisition[]) : Promise<any> {
+  private async updateDeployedStats(requisitions: OnmsRequisition[]) : Promise<any> {
     console.debug('updateDeployedStats: getting deployed stats');
-    return this.getRequisitionStats()
-      .then((requisitionsStats: OnmsRequisitionStats[]) => {
-        console.debug('updateDeployedStats: updating requisitions with deployed stats');
-        requisitionsStats.forEach(requisitionStats => {
-          const req = requisitions.find(r => r.foreignSource == requisitionStats.foreignSource);
-          if (req) req.update(requisitionStats);
-        });
-        return Promise.resolve(requisitions);
-      });
+    const requisitionsStats = await this.getRequisitionStats();
+    console.debug('updateDeployedStats: updating requisitions with deployed stats');
+    requisitionsStats.forEach(requisitionStats => {
+      const req = requisitions.find(r => r.foreignSource == requisitionStats.foreignSource);
+      if (req) req.update(requisitionStats);
+    });
+    return requisitions;
   }
 
-  private removeForeignSource(requisition: OnmsRequisition) : Promise<any> {
+  private async removeForeignSource(requisition: OnmsRequisition) : Promise<any> {
     let promises: Promise<any>[] = [];
     promises.push(this.http.delete(`/rest/requisitions/${requisition.foreignSource}`).toPromise());
     promises.push(this.http.delete(`/rest/requisitions/deployed/${requisition.foreignSource}`).toPromise());
     promises.push(this.http.delete(`/rest/foreignSources/${requisition.foreignSource}`).toPromise());
     promises.push(this.http.delete(`/rest/foreignSources/deployed/${requisition.foreignSource}`).toPromise());
-    return Promise.all(promises)
-      .then(() => {
-        console.debug(`removeForeignSource: requisition ${requisition.foreignSource} successfully removed`);
-        let requisitions = this.cache.getCachedRequisitions();
-        if (requisitions) {
-          console.debug(`removeForeignSource: removing ${requisition.foreignSource} from the cache`);
-          let index = requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
-          requisitions.splice(index, 1);
-        }
-      })
-      .then(() => {
-        return setTimeout(() => console.debug("removeForeignSource: done", 1000));
-      });
+    await Promise.all(promises);
+    console.debug(`removeForeignSource: requisition ${requisition.foreignSource} successfully removed`);
+    let requisitions = this.cache.getCachedRequisitions();
+    if (requisitions) {
+      console.debug(`removeForeignSource: removing ${requisition.foreignSource} from the cache`);
+      let index = requisitions.findIndex(r => r.foreignSource == requisition.foreignSource);
+      requisitions.splice(index, 1);
+    }
+    return setTimeout(() => console.debug("removeForeignSource: done", 1000));
   }
 
-  importRequisition(requisition: OnmsRequisition, rescanExisting: string = 'true') : Promise<OnmsRequisition> {
-    return this.http.put(`/rest/requisitions/${requisition.foreignSource}/import?importRescanExisting=${rescanExisting}`)
-      .toPromise()
-      .then(() => {
-        requisition.markAsDeployed();
-        return Promise.resolve(requisition);
-      })
+  async importRequisition(requisition: OnmsRequisition, rescanExisting: string = 'true') : Promise<OnmsRequisition> {
+    await this.http.put(`/rest/requisitions/${requisition.foreignSource}/import?importRescanExisting=${rescanExisting}`).toPromise();
+    requisition.markAsDeployed();
+    return requisition;
   }
 
-  getRequisitions(force: boolean = false) : Promise<OnmsRequisition[]> {
-    return new Promise((resolve, reject) => {
-      if (!force) {
-        let requisitions = this.cache.getCachedRequisitions();
-        if (requisitions) {
-          console.debug('getRequisitions: returning requisitions from the cache');
-          resolve(requisitions);
-          return;
-        }
+  async getRequisitions(force: boolean = false) : Promise<OnmsRequisition[]> {
+    if (!force) {
+      const requisitions = this.cache.getCachedRequisitions();
+      if (requisitions) {
+        console.debug('getRequisitions: returning requisitions from the cache');
+        return requisitions;
       }
-      console.debug('getRequisitions: loading requisitions');
-      this.http.get('/rest/requisitions')
+    }
+    console.debug('getRequisitions: loading requisitions');
+    const requisitions = await this.http.get('/rest/requisitions')
       .map((response: Response) => OnmsRequisition.importRequisitions(response.json()['model-import']))
-      .toPromise()
-      .then(requisitions => {
-        console.debug('getRequisitions: requisitions loaded');
-        return this.updateDeployedStats(requisitions)
-      })
-      .then(requisitions => {
-        console.debug('getRequisitions: requisitions updated');
-        this.cache.setCachedRequisitions(requisitions);
-        resolve(requisitions);
-      })
-      .catch(error => reject(error))
-     });
+      .toPromise();
+    console.debug('getRequisitions: requisitions loaded');
+    await this.updateDeployedStats(requisitions);
+    console.debug('getRequisitions: requisitions updated');
+    this.cache.setCachedRequisitions(requisitions);
+    return requisitions;
   }
 
   getRequisitionNames() : Promise<string[]> {
@@ -109,35 +92,30 @@ export class OnmsRequisitionsService {
   }
 
   getRequisition(foreignSource: string) : Promise<OnmsRequisition> {
-      let requisition = this.cache.getCachedRequisition(foreignSource);
-      if (requisition) return Promise.resolve(requisition);
-      return this.http.get(`/rest/requisitions/${foreignSource}`)
-        .map((response: Response) => {
-          const requisition = OnmsRequisition.importRequisition(response.json());
-          this.cache.setCachedRequisition(requisition);
-          return requisition;
-        })
-        .toPromise();
+    let requisition = this.cache.getCachedRequisition(foreignSource);
+    if (requisition) return Promise.resolve(requisition);
+    return this.http.get(`/rest/requisitions/${foreignSource}`)
+      .map((response: Response) => {
+        const requisition = OnmsRequisition.importRequisition(response.json());
+        this.cache.setCachedRequisition(requisition);
+        return requisition;
+      })
+      .toPromise();
   }
 
   saveRequisition(requisition: OnmsRequisition) : Promise<any> {
     const rawRequisition = requisition.generateModel();
-    return this.http.post('/rest/requisitions', 'application/json', rawRequisition)
-      .toPromise();
+    return this.http.post('/rest/requisitions', 'application/json', rawRequisition).toPromise();
   }
 
-  removeRequisition(requisition: OnmsRequisition) : Promise<any> {
+  async removeRequisition(requisition: OnmsRequisition) : Promise<any> {
     console.debug(`removeRequisition: removing nodes from requisition ${requisition.foreignSource}`);
     requisition.nodes = [];
-    return this.saveRequisition(requisition)
-      .then(() => {
-        console.debug(`removeRequisition: importing requisition ${requisition.foreignSource} to remove nodes from the database`);
-        return this.importRequisition(requisition, 'false')
-      })
-      .then(() => {
-        console.debug(`removeRequisition: deleting requisition ${requisition.foreignSource} and its foreign source definition`);
-        return this.removeForeignSource(requisition);
-      });
+    await this.saveRequisition(requisition);
+    console.debug(`removeRequisition: importing requisition ${requisition.foreignSource} to remove nodes from the database`);
+    await this.importRequisition(requisition, 'false')
+    console.debug(`removeRequisition: deleting requisition ${requisition.foreignSource} and its foreign source definition`);
+    return this.removeForeignSource(requisition);
   }
 
   getNode(foreignSource: string, foreignId: string, force: boolean = false) : Promise<OnmsRequisitionNode> {
@@ -154,37 +132,29 @@ export class OnmsRequisitionsService {
       .toPromise();
   }
 
-  saveNode(foreignSource: string, node: OnmsRequisitionNode, force: boolean = false) : Promise<any> {
+  async saveNode(foreignSource: string, node: OnmsRequisitionNode, force: boolean = false) : Promise<any> {
     const rawNode = node.generateModel();
     if (!this.serverService.supports(OnmsFeatures.Minion)) {
       delete rawNode['location'];
     }
-    return this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode)
-      .toPromise()
-      .then(() => {
-        if (!force) {
-          const requisition = this.cache.getCachedRequisition(foreignSource);
-          requisition.updateNode(node);
-        }
-        return Promise.resolve(node);
-      });
+    await this.http.post(`/rest/requisitions/${foreignSource}/nodes`, 'application/json', rawNode).toPromise();
+    if (!force) {
+      const requisition = this.cache.getCachedRequisition(foreignSource);
+      requisition.updateNode(node);
+    }
+    return Promise.resolve(node);
   }
 
-  updateAssets(foreignSource: string, foreignId: string, assets: OnmsRequisitionAsset[]) {
-    return this.getNode(foreignSource, foreignId, true)
-      .then(node => {
-        node.assets = assets;
-        return this.saveNode(foreignSource, node, true)
-      });
+  async updateAssets(foreignSource: string, foreignId: string, assets: OnmsRequisitionAsset[]) {
+    const node = await this.getNode(foreignSource, foreignId, true);
+    node.assets = assets;
+    return this.saveNode(foreignSource, node, true)
   }
 
-  removeNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
-    return this.http.delete(`/rest/requisitions/${foreignSource}/nodes/${node.foreignId}`)
-      .toPromise()
-      .then(() => {
-        const requisition = this.cache.getCachedRequisition(foreignSource);
-        requisition.removeNode(node);
-      });
+  async removeNode(foreignSource: string, node: OnmsRequisitionNode) : Promise<any> {
+    await this.http.delete(`/rest/requisitions/${foreignSource}/nodes/${node.foreignId}`).toPromise();
+    const requisition = this.cache.getCachedRequisition(foreignSource);
+    return requisition.removeNode(node);
   }
 
   getForeignSourceDefinition(foreignSource: string) : Promise<OnmsForeignSource> {
