@@ -1,10 +1,10 @@
 # OpenNMS-Ionic2-UI
 
-A mobile application for OpenNMS made with Ionic 2
+A mobile application for OpenNMS made with Ionic 3
 
 ![Home Page](screenshots/ios01.png)
 
-This project has been created for the merely purpose of learning TypeScript, Angular2 and Ionic2.
+This project has been created for the merely purpose of learning TypeScript, Angular 4 and Ionic 3. It also takes advantages of the async/await available on newer TypeScript thanks to ES7.
 
 It was designed based on the current state of OpenNMS Horizon 19, but it could work on older versions of Horizon as well as Meridian.
 
@@ -32,11 +32,11 @@ It might be possible that the following section should be added:
 </filter-mapping>
 ```
 
-First, install NodeJS on your system (tested against 6.x LTS, and 7.x):
+First, install NodeJS on your system (tested against 6.x LTS, and 7.x or greater):
 
 https://nodejs.org
 
-Then, Ionic2 should be installed on your system as well, in order to compile and use this project locally or on your device:
+Then, Ionic should be installed on your system as well, in order to compile and use this project locally or on your device:
 
 ```
 sudo npm install -g cordova ionic
