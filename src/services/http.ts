@@ -7,6 +7,21 @@ import 'rxjs/Rx';
 import { OnmsServersService } from '../services/onms-servers';
 import { OnmsServer } from '../models/onms-server';
 
+export function handleError(error: Response | any) {
+  let errMsg = '';
+  if (error instanceof Response) {
+    if (error.status == 0) {
+      errMsg = 'Remote Server Unreachable.';
+    } else {
+      errMsg = `${error.status} - ${error.statusText}`;
+    }
+  } else {
+    errMsg = error.message ? error.message : error.toString();
+  }
+  console.error(errMsg);
+  return Observable.throw(errMsg);
+}
+
 @Injectable()
 export class HttpService implements OnDestroy {
 
@@ -29,21 +44,6 @@ export class HttpService implements OnDestroy {
     return this.defaultServer.url;
   }
 
-  private handleError(error: Response | any) {
-    let errMsg = '';
-    if (error instanceof Response) {
-      if (error.status == 0) {
-        errMsg = 'Remote Server Unreachable.';
-      } else {
-        errMsg = `${error.status} - ${error.statusText}`;
-      }
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    return Observable.throw(errMsg);
-  }
-
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
@@ -55,7 +55,7 @@ export class HttpService implements OnDestroy {
 
   get(url: string, accept?: string) : Observable<Response> {
     return this.http.get(this.getBaseUrl() + url, this.getOptions(accept))
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   put(url: string, contentType?: string, data?: any) : Observable<Response> {
@@ -68,7 +68,7 @@ export class HttpService implements OnDestroy {
       body = typeof data === 'string' ? data : JSON.stringify(data);
     }
     return this.http.put(this.getBaseUrl() + url, body, options)
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   post(url: string, contentType: string, data: any) : Observable<Response> {
@@ -76,13 +76,13 @@ export class HttpService implements OnDestroy {
     options.headers.append('Content-Type', contentType);
     let body = typeof data === "string" ? data : JSON.stringify(data);
     return this.http.post(this.getBaseUrl() + url, body, options)
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   delete(url: string) : Observable<Response> {
     let options: RequestOptions = this.getOptions();
     return this.http.delete(this.getBaseUrl() + url, options)
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   encodeParams(data: Object) : string {

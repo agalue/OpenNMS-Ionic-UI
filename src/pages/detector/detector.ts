@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ViewController, NavParams } from 'ionic-angular';
 
 import { OnmsRequisitionDetector } from '../../models/onms-requisition-detector';
@@ -11,7 +11,7 @@ import { OnmsRequisitionsService } from '../../services/onms-requisitions';
   selector: 'page-detector',
   templateUrl: 'detector.html'
 })
-export class DetectorPage implements OnInit {
+export class DetectorPage {
 
   mode: string;
   detector: OnmsRequisitionDetector;
@@ -24,7 +24,7 @@ export class DetectorPage implements OnInit {
     private requisitionsService: OnmsRequisitionsService
   ) {}
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.detector  = this.navParams.get('detector');
     this.configs = this.navParams.get('configs');
     this.mode = this.detector ? 'Edit' : 'Add';

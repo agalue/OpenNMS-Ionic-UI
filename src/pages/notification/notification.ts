@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
-import { OnmsEvent } from '../../models/onms-event';
+import { AbstractPage } from '../abstract-page';
 import { OnmsNotification } from '../../models/onms-notification';
-import { OnmsAck } from '../../models/onms-ack';
 import { EventPage } from '../event/event';
 import { OnmsEventsService } from '../../services/onms-events';
 import { OnmsNotificationsService } from '../../services/onms-notifications';
@@ -12,55 +11,48 @@ import { OnmsNotificationsService } from '../../services/onms-notifications';
   selector: 'page-notification',
   templateUrl: 'notification.html'
 })
-export class NotificationPage {
+export class NotificationPage extends AbstractPage {
 
   notification: OnmsNotification;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController,
     private eventsService: OnmsEventsService,
     private notifyService: OnmsNotificationsService
   ) {
-    this.notification = navParams.get('notification');
+    super(loadingCtrl, alertCtrl, toastCtrl);
   }
 
-  onShowEvent() {
-    this.eventsService.getEvent(this.notification.eventId)
-      .then((event: OnmsEvent) => {
-        this.navCtrl.push(EventPage, { event: event });
-      })
-      .catch(error => this.alert('Event Error', error));
+  ionViewWillLoad() {
+    this.notification = this.navParams.get('notification');
   }
 
-  onAckNotification(acknowledge: boolean) {
+  async onShowEvent() {
+    const loading = this.loading('Loading event...');
+    try {
+      let event = await this.eventsService.getEvent(this.notification.eventId);
+      this.navCtrl.push(EventPage, { event: event });
+    } catch (error) {
+      error => this.alert('Event Error', error);
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  async onAckNotification(acknowledge: boolean) {
     let promise = acknowledge ? this.notifyService.acknowledgeNotification(this.notification) : this.notifyService.unacknowledgeNotification(this.notification);
     let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
-    promise.then((ack: OnmsAck) => {
-        this.notification.update(ack);
-        this.toast(`Notification ${title}!`);
-      })
-      .catch(error => this.alert(`${title} Error`, error));
-  }
-
-  private toast(message: string) {
-    const toast = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+    try {
+      let ack = await promise;
+      this.notification.update(ack);
+      this.toast(`Notification ${title}!`);
+    } catch (error) {
+      this.alert(`${title} Error`, error);
+    }
   }
 
 }

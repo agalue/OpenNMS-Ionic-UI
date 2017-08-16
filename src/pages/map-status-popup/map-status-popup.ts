@@ -12,7 +12,10 @@ export class MapStatusPopupPage {
  locations: GeolocationInfo[] = [];
 
   constructor(private navParams: NavParams) {
-    this.locations = navParams.get('locations');
+  }
+
+  ionViewWillLoad() {
+    this.locations = this.navParams.get('locations');
   }
 
 }

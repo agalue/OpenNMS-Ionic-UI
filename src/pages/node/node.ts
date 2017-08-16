@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, ModalController, AlertController, LoadingController, ActionSheetController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { AssetsPage } from '../assets/assets';
 import { EventPage } from '../event/event';
 import { OutagePage } from '../outage/outage';
@@ -22,7 +23,7 @@ import { OnmsServersService, OnmsFeatures } from '../../services/onms-servers';
   selector: 'page-node',
   templateUrl: 'node.html'
 })
-export class NodePage implements OnInit {
+export class NodePage extends AbstractPage {
 
   mode: string = 'info';
   inScheduledOutage: boolean = false;
@@ -32,12 +33,12 @@ export class NodePage implements OnInit {
   outages: OnmsOutage[] = [];
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
     private navParams: NavParams,
-    private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
     private actionSheetCtrl: ActionSheetController,
     private uiService: OnmsUIService,
     private nodesService: OnmsNodesService,
@@ -45,10 +46,15 @@ export class NodePage implements OnInit {
     private outagesService: OnmsOutagesService,
     private serversService: OnmsServersService,
     private availabilityService: OnmsAvailabilityService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.node = this.navParams.get('node');
+  }
+
+  ionViewDidLoad() {
     this.updateDependencies();
   }
 
@@ -58,7 +64,7 @@ export class NodePage implements OnInit {
       buttons: [
         {
           text: 'Refresh Content',
-          handler: () => this.onRefresh()
+          handler: () => { this.onRefresh() }
         },
         {
           text: 'Show Assets',
@@ -81,21 +87,16 @@ export class NodePage implements OnInit {
     actionSheet.present();
   }
 
-  onRefresh() {
-    const loading = this.loadingCtrl.create({
-      content: 'Refreshing node ...'
-    });
-    loading.present();
-    this.nodesService.getNode(this.node.id)
-      .then(node => {
-        this.node = node;
-        this.updateDependencies();
-        loading.dismiss();
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Refresh Node', error)
-      });
+  async onRefresh() {
+    const loading = this.loading('Refreshing node ...');
+    try {
+      this.node = await this.nodesService.getNode(this.node.id);
+      this.updateDependencies();
+    } catch (error) {
+      this.alert('Refresh Node', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onShowEvent(event: OnmsEvent) {
@@ -118,19 +119,17 @@ export class NodePage implements OnInit {
     this.navCtrl.push(AssetsPage, {node: this.node});
   }
 
-  onForceRescan() {
-    const loading = this.loadingCtrl.create({ content: 'Sending force rescan...'});
-    loading.present();
-    const event = { uei: 'uei.opennms.org/internal/capsd/forceRescan', nodeid: this.node.id };
-    this.eventsService.sendEvent(event)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Force rescan event has been sent!');
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Force Rescan Error', error)
-      });
+  async onForceRescan() {
+    const loading = this.loading('Sending force rescan...');
+    try {
+      const event = { uei: 'uei.opennms.org/internal/capsd/forceRescan', nodeid: this.node.id };
+      await this.eventsService.sendEvent(event);
+      this.toast('Force rescan event has been sent!');
+    } catch (error) {
+      this.alert('Force Rescan Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onSelectOnMap() {
@@ -149,71 +148,33 @@ export class NodePage implements OnInit {
     return this.uiService.getOutageIconColor(outage);
   }
 
-  private updateDependencies() {
-    // Load IP Interfaces
-    if (this.node.ipInterfaces.length == 0) {
-      this.nodesService.getIpInterfaces(this.node.id)
-        .then(interfaces => this.node.ipInterfaces = interfaces)
-        .catch(error => console.error(`Cannot retrieve IP interfaces: ${error}`));
+  private async updateDependencies() {
+    try {
+      this.node.ipInterfaces = await this.nodesService.getIpInterfaces(this.node.id);
+      this.node.snmpInterfaces = await this.nodesService.getSnmpInterfaces(this.node.id)
+      this.availability = await this.availabilityService.getAvailabilityForNode(this.node.id);
+      const labelFilter = new OnmsApiFilter('node.label', this.node.label);
+      this.events = await this.eventsService.getEvents(0, [labelFilter], 5);
+      const outstanding = new OnmsApiFilter('ifRegainedService', 'null');
+      this.outages = await this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
+      this.inScheduledOutage = await this.nodesService.isNodeAffectedByScheduledOutage(this.node.id);
+    } catch (error) {
+      this.alert('Error', `Cannot update dependencies: ${error}`);
     }
-    // Load SNMP Interfaces
-    if (this.node.snmpInterfaces.length == 0) {
-      this.nodesService.getSnmpInterfaces(this.node.id)
-        .then(interfaces => this.node.snmpInterfaces = interfaces)
-        .catch(error => console.error(`Cannot retrieve SNMP interfaces: ${error}`));
-    }
-    // Load Availability Information
-    this.availabilityService.getAvailabilityForNode(this.node.id)
-      .then(availability => this.availability = availability)
-      .catch(error => console.error(`Cannot retrieve availability information: ${error}`));
-    // Load Recent Events
-    const labelFilter = new OnmsApiFilter('node.label', this.node.label);
-    this.eventsService.getEvents(0, [labelFilter], 5)
-      .then(events => this.events = events)
-      .catch(error => console.error(`Cannot retrieve events: ${error}`));
-    // Load Recent Outages
-    const outstanding = new OnmsApiFilter('ifRegainedService', 'null');
-    this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
-      .then(outages => this.outages = outages)
-      .catch(error => console.error(`Cannot retrieve outages: ${error}`));
-    // In scheduled outage
-    this.nodesService.isNodeAffectedByScheduledOutage(this.node.id)
-      .then(inScheduledOutage => this.inScheduledOutage = inScheduledOutage)
-      .catch(error => console.error(`Cannot retrieve scheduled outage information: ${error}`));
   }
 
-  private saveCoordinates(coords: {latitude: number, longitude: number}) {
+  private async saveCoordinates(coords: {latitude: number, longitude: number}) {
     this.node.assetRecord.latitude = coords.latitude;
     this.node.assetRecord.longitude = coords.longitude;
-    const loading = this.loadingCtrl.create({ content: 'Updating node assets...' });
-    loading.present();
-    this.nodesService.updateAssets(this.node.id, coords)
-      .then(() => {
-        loading.dismiss();
-        this.toast('Coordinates updated!');
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Update Assets Error', error);
-      });
-  }
-
-  private toast(message: string) {
-    const toast = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+    const loading = this.loading('Updating node assets...');
+    try {
+      await this.nodesService.updateAssets(this.node.id, coords);
+      this.toast('Coordinates updated!');
+    } catch (error) {
+      this.alert('Update Assets Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
 }

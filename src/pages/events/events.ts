@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { EventPage } from '../event/event';
 import { OnmsEvent } from '../../models/onms-event';
 import { OnmsApiFilter } from '../../models/onms-api-filter';
@@ -11,7 +12,7 @@ import { OnmsEventsService } from '../../services/onms-events';
   selector: 'page-events',
   templateUrl: 'events.html'
 })
-export class EventsPage {
+export class EventsPage extends AbstractPage {
 
   noEvents = false;
   events: OnmsEvent[] = [];
@@ -20,33 +21,32 @@ export class EventsPage {
   private start: number = 0;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController,
     private uiService: OnmsUIService,
     private eventsService: OnmsEventsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
     this.onRefresh();
   }
 
-  onRefresh() {
-    const loading = this.loadingCtrl.create({
-      content: 'Loading events, please wait...'
-    });
-    loading.present();
+  async onRefresh() {
+    const loading = this.loading('Loading events, please wait...');
     this.events = [];
     this.start = 0;
-    this.loadEvents()
-      .then(() => {
-        loading.dismiss();
-        this.noEvents = this.events.length == 0
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Load Error', error);
-      });
+    try {
+      await this.loadEvents();
+      this.noEvents = this.events.length == 0
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onShowEvent(event: OnmsEvent) {
@@ -65,14 +65,15 @@ export class EventsPage {
     }
   }
 
-  onInfiniteScroll(infiniteScroll: any) {
+  async onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadEvents()
-      .then((canScroll: boolean) => {
-        infiniteScroll.complete();
-        infiniteScroll.enable(canScroll);
-      })
-      .catch(error => this.alert('Load Error', error));
+    try {
+      let canScroll = await this.loadEvents();
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    } catch (error) {
+      this.alert('Load Error', error);
+    }
   }
 
   formatUei(uei: string) {
@@ -87,25 +88,11 @@ export class EventsPage {
     return this.uiService.getEventIconColor(event);
   }
 
-  private loadEvents() : Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const filter = new OnmsApiFilter('eventDescr', this.eventFilter);
-      this.eventsService.getEvents(this.start, [filter])
-        .then((events: OnmsEvent[]) => {
-          events.forEach(e => this.events.push(e));
-          resolve(events.length > 0);
-        })
-        .catch(error => reject(error))
-    });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadEvents() : Promise<boolean> {
+    const filter = new OnmsApiFilter('eventDescr', this.eventFilter);
+    let events = await this.eventsService.getEvents(this.start, [filter]);
+    this.events.push(...events);
+    return events.length > 0;
   }
 
 }

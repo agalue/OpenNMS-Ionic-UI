@@ -34,16 +34,20 @@ export class OnmsBackshiftComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    this.serversService.getDefaultServer()
-      .then(server => {
-        this.server = server as Server;
-        this.renderGraph();
-      })
-      .catch(error => console.error(error));
+    this.initialize();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.server) this.renderGraph();
+  }
+
+  private async initialize() {
+    try {
+      this.server = await this.serversService.getDefaultServer() as Server;
+      this.renderGraph();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   private renderGraph() {

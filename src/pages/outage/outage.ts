@@ -12,8 +12,13 @@ export class OutagePage {
 
   outage: OnmsOutage;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.outage = navParams.get('outage');
+  constructor(
+    private navCtrl: NavController,
+    private navParams: NavParams
+  ) {}
+
+  ionViewWillLoad() {
+    this.outage = this.navParams.get('outage');
   }
 
   onShowLostEvent() {

@@ -54,24 +54,16 @@ export class OnmsNodesService {
       .toPromise()
   }
 
-  getAvailableGraphs(resourceId: string) : Promise<PrefabGraph[]> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`/rest/graphs/for/${escape(resourceId)}`)
-        .map((response: Response) => response.json().name as string[])
+  async getAvailableGraphs(resourceId: string) : Promise<PrefabGraph[]> {
+    const reports = await this.http.get(`/rest/graphs/for/${escape(resourceId)}`)
+      .map((response: Response) => response.json().name as string[])
+      .toPromise();
+    let promises: Promise<PrefabGraph>[] = reports.map(report => 
+      this.http.get(`/rest/graphs/${report}`)
+        .map((response: Response) => response.json() as PrefabGraph)
         .toPromise()
-        .then((reports: string[]) => {
-          let promises: Promise<PrefabGraph>[] = [];
-          reports.forEach(report =>
-            promises.push(this.http.get(`/rest/graphs/${report}`)
-              .map((response: Response) => response.json() as PrefabGraph)
-              .toPromise())
-          );
-          Promise.all(promises)
-            .then((prefabs: PrefabGraph[]) => resolve(prefabs))
-            .catch(error => reject(error));
-        })
-        .catch(error => reject(error))
-    })
+    );
+    return Promise.all(promises)
   }
 
   getMetricData(resourceId: string, metricId: string, start: number = -7200000) : Promise<OnmsQueryResponse> {

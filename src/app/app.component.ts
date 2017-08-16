@@ -44,27 +44,29 @@ export class MyApp implements OnDestroy {
     private serversConfig: OnmsServersService,
     private alarmsService: OnmsAlarmsService,
   ) {
-    this.initializeApp();
-
     httpService.register();
-
-    this.subscription = serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
-    serversConfig.getDefaultServer()
-      .then(defaultServer => {
-        this.initializeGroups();
-        this.rootPage = defaultServer ? HomePage : SetupPage;
-      })
-      .catch(error => console.log(error));
+    this.initializeServer();
+    this.initializeApp();
   }
 
-  private initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-      this.initializeBadges();
-    });
+  private async initializeApp() {
+    await this.platform.ready();
+    // Okay, so the platform is ready and our plugins are available.
+    // Here you can do any higher level native things you might need.
+    this.statusBar.styleDefault();
+    this.splashScreen.hide();
+    this.initializeBadges();
+  }
+
+  private async initializeServer() {
+    this.subscription = this.serversConfig.defaultUpdated.subscribe(defaultServer => this.onmsServer = defaultServer);
+    try {
+      let defaultServer = await this.serversConfig.getDefaultServer();
+      this.initializeGroups();
+      this.rootPage = defaultServer ? HomePage : SetupPage;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   private initializeGroups() {
@@ -98,21 +100,27 @@ export class MyApp implements OnDestroy {
     }
   }
 
-  private initializeBadges() {
+  private async initializeBadges() {
     if (!this.platform.is('cordova')) {
       console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
       return;
     }
-    this.badge.hasPermission()
-      .then(() => this.subscribeToPause())
-      .catch(error => console.error(error));
+    try {
+      await this.badge.hasPermission();
+      this.subscribeToPause();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   private subscribeToPause() {
-    this.platform.pause.subscribe(() => {
-      this.alarmsService.getAlarmCount()
-        .then(alarms => alarms == 0 ? this.badge.clear() : this.badge.set(alarms))
-        .catch(error => console.error(error));
+    this.platform.pause.subscribe(async() => {
+      try {
+        let alarms = await this.alarmsService.getAlarmCount();
+        alarms == 0 ? this.badge.clear() : this.badge.set(alarms);
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 

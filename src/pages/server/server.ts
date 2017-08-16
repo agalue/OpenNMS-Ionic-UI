@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ViewController, AlertController, LoadingController, NavParams } from 'ionic-angular';
+import { NavParams, ViewController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { OnmsServer } from '../../models/onms-server';
 import { OnmsServersService } from '../../services/onms-servers';
 
@@ -9,7 +10,7 @@ import { OnmsServersService } from '../../services/onms-servers';
   selector: 'page-server',
   templateUrl: 'server.html'
 })
-export class ServerPage implements OnInit {
+export class ServerPage extends AbstractPage {
 
   mode: string;
   server: OnmsServer;
@@ -20,14 +21,17 @@ export class ServerPage implements OnInit {
   private forceDefault: boolean;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private viewCtrl: ViewController,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
     private navParams: NavParams,
     private serversService: OnmsServersService    
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
-  ngOnInit() {
+  ionViewWillLoad() {
     this.server = this.navParams.get('server');
     this.serverIndex = this.navParams.get('serverIndex');
     this.forceDefault = this.navParams.get('forceDefault') || false;
@@ -36,28 +40,24 @@ export class ServerPage implements OnInit {
     this.initForm();
   }
 
-  onSave() {
+  async onSave() {
     const v = this.serverForm.value;
     const server = new OnmsServer(v.name, v.url, v.username, v.password, this.isDefault);
     let promise: Promise<any>;
-    const loading = this.loadingCtrl.create({
-      content: this.server ? 'Updating Server ...' : 'Adding Server ...'
-    })
-    loading.present();
+    const loading = this.loading(this.server ? 'Updating Server ...' : 'Adding Server ...');
     if (this.server) {
       promise = this.serversService.saveServer(server, this.serverIndex);
     } else {
       promise = this.serversService.saveServer(server);
     }
-    promise
-      .then(() => {
-        loading.dismiss();
-        this.viewCtrl.dismiss(true)
-      })
-      .catch(error => {
-        loading.dismiss();
-        this.alert('Save Server', error)
-      });
+    try {
+      await promise;
+      this.viewCtrl.dismiss(true);
+    } catch (error) {
+      this.alert('Save Server', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
   onDelete() {
@@ -71,11 +71,7 @@ export class ServerPage implements OnInit {
         },
         {
           text: 'Delete',
-          handler: () => {
-            this.serversService.removeServer(this.serverIndex)
-              .then(() => this.viewCtrl.dismiss(true))
-              .catch(error => this.alert('Delete Server', error));
-          }
+          handler: () => { this.deleteHandler() }
         }
       ]
     });
@@ -86,6 +82,18 @@ export class ServerPage implements OnInit {
     this.viewCtrl.dismiss();
   }
 
+  private async deleteHandler() {
+    const loading = this.loading('Deleting ...');
+    try {
+      await this.serversService.removeServer(this.serverIndex);
+      this.viewCtrl.dismiss(true);
+    } catch (error) {
+      this.alert('Delete Server', error);
+    } finally {
+      loading.dismiss();
+    }
+  }
+
   private initForm() {
     this.serverForm = new FormGroup({
       'name'     : new FormControl(this.server ? this.server.name     : null, Validators.required),
@@ -93,16 +101,6 @@ export class ServerPage implements OnInit {
       'username' : new FormControl(this.server ? this.server.username : null, Validators.required),
       'password' : new FormControl(this.server ? this.server.password : null, Validators.required)
     });
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: 'Error',
-      subTitle: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
   }
 
 }

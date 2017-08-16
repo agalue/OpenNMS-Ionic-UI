@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, PopoverController } from 'ionic-angular';
 
+import { AbstractPage } from '../abstract-page';
 import { AlarmPage } from '../alarm/alarm';
 import { AlarmsOptionsPage } from '../alarms-options/alarms-options';
-import { OnmsAck } from '../../models/onms-ack';
 import { OnmsAlarm } from '../../models/onms-alarm';
 import { OnmsApiFilter, AlarmOptions } from '../../models/onms-api-filter';
 import { OnmsUIService } from '../../services/onms-ui';
@@ -13,7 +13,7 @@ import { OnmsAlarmsService } from '../../services/onms-alarms';
   selector: 'page-alarms',
   templateUrl: 'alarms.html'
 })
-export class AlarmsPage {
+export class AlarmsPage extends AbstractPage {
 
   noAlarms = false;
   alarms: OnmsAlarm[] = [];
@@ -27,42 +27,41 @@ export class AlarmsPage {
   private start: number = 0;
 
   constructor(
+    loadingCtrl: LoadingController,
+    alertCtrl: AlertController,
+    toastCtrl: ToastController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController,
     private popoverCtrl: PopoverController,
     private uiService: OnmsUIService,
     private alarmsService: OnmsAlarmsService
-  ) {}
+  ) {
+    super(loadingCtrl, alertCtrl, toastCtrl);
+  }
 
   ionViewWillLoad() {
     this.onUpdate();
   }
 
-  onRefresh(refresher: any) {
-    this.onUpdate(false).then(() => refresher.complete());
+  async onRefresh(refresher: any) {
+    await this.onUpdate(false);
+    refresher.complete();
   }
 
-  onUpdate(showLoading: boolean = true) : Promise<any> {
+  async onUpdate(showLoading: boolean = true) : Promise<any> {
     let loading = null;
     if (showLoading) {
-      loading = this.loadingCtrl.create({
-        content: 'Loading alarms, please wait...'
-      });
-      loading.present();
+      loading = this.loading('Loading alarms, please wait...');
     }
     this.alarms = [];
     this.start = 0;
-    return this.loadAlarms()
-      .then(() => {
-        if (showLoading) loading.dismiss();
-        this.noAlarms = this.alarms.length == 0
-      })
-      .catch(error => {
-        if (showLoading) loading.dismiss();
-        this.alert('Load Error', error);
-      });
+    try {
+      await this.loadAlarms();
+      this.noAlarms = this.alarms.length == 0
+    } catch (error) {
+      this.alert('Load Error', error);
+    } finally {
+      if (showLoading) loading.dismiss();
+    }
   }
 
   onShowOptions(event: any) {
@@ -92,43 +91,48 @@ export class AlarmsPage {
     }
   }
 
-  onAckAlarm(alarm: OnmsAlarm) {
+  async onAckAlarm(alarm: OnmsAlarm) {
     const acknowledge = ! alarm.isAcknowledged();
     let promise = acknowledge ? this.alarmsService.acknowledgeAlarm(alarm) : this.alarmsService.unacknowledgeAlarm(alarm);
     let title = `${acknowledge ? 'Ack' : 'Unack'}nowledged!`;
-    promise.then((ack: OnmsAck) => {
-        alarm.update(ack);
-        this.toast(`Alarm ${title}!`);
-      })
-      .catch(error => this.alert(`${title} Error`, error));
+    try {
+      let ack = await promise;
+      alarm.update(ack);
+      this.toast(`Alarm ${title}!`);
+    } catch (error) {
+      this.alert(`${title} Error`, error);
+    }
   }
 
-  onClearAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.clearAlarm(alarm)
-      .then((ack: OnmsAck) => {
-        alarm.update(ack);
-        this.toast('Alarm cleared!');
-      })
-      .catch(error => this.alert('Clear Error', error));
+  async onClearAlarm(alarm: OnmsAlarm) {
+    try {
+      let ack = await this.alarmsService.clearAlarm(alarm)
+      alarm.update(ack);
+      this.toast('Alarm cleared!');
+    } catch (error) {
+      this.alert('Clear Error', error);
+    }
   }
 
-  onEscalateAlarm(alarm: OnmsAlarm) {
-    this.alarmsService.escalateAlarm(alarm)
-      .then((ack: OnmsAck) => {
-        alarm.update(ack);
-        this.toast('Alarm escalated!');
-      })
-      .catch(error => this.alert('Escalate Error', error));
+  async onEscalateAlarm(alarm: OnmsAlarm) {
+    try {
+      let ack = await this.alarmsService.escalateAlarm(alarm);
+      alarm.update(ack);
+      this.toast('Alarm escalated!');
+    } catch (error) {
+      this.alert('Escalate Error', error);
+    }
   }
 
-  onInfiniteScroll(infiniteScroll: any) {
+  async onInfiniteScroll(infiniteScroll: any) {
     this.start += 10;
-    this.loadAlarms()
-      .then((canScroll: boolean) => {
-        infiniteScroll.complete();
-        infiniteScroll.enable(canScroll);
-      })
-      .catch(error => this.alert('Load Error', error));
+    try {
+      let canScroll = await this.loadAlarms();
+      infiniteScroll.complete();
+      infiniteScroll.enable(canScroll);
+    } catch (error) {
+      this.alert('Load Error', error);
+    }
   }
 
   formatUei(uei: string) {
@@ -143,34 +147,11 @@ export class AlarmsPage {
     return this.uiService.getAlarmIcon(alarm);
   }
 
-  private loadAlarms() : Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const filter = new OnmsApiFilter('description', this.alarmFilter);
-      this.alarmsService.getAlarms(this.start, this.options, [filter])
-        .then((alarms: OnmsAlarm[]) => {
-          alarms.forEach(e => this.alarms.push(e));
-          resolve(alarms.length > 0);
-        })
-        .catch(error => reject(error))
-    });
-  }
-
-  private toast(message: string) {
-    const toast = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
-  }
-
-  private alert(title: string, message: string) {
-    const alert = this.alertCtrl.create({
-      title: title,
-      message: message,
-      buttons: ['Ok']
-    });
-    alert.present();
+  private async loadAlarms() : Promise<boolean> {
+    const filter = new OnmsApiFilter('description', this.alarmFilter);
+    let alarms = await this.alarmsService.getAlarms(this.start, this.options, [filter]);
+    this.alarms.push(...alarms);
+    return alarms.length > 0;
   }
 
 }
