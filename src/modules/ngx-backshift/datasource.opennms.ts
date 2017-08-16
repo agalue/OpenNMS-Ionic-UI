@@ -1,6 +1,7 @@
 /*
  * Original JavaScript source:
  * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.DataSource.OpenNMS.js
+ * Version: 1.2.2
  */
 
 import { Http, Headers, Response, RequestOptions } from '@angular/http';

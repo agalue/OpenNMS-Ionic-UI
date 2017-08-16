@@ -1,6 +1,7 @@
 /*
  * Original JavaScript source:
  * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Utilities.RpnToJexlConverter.js
+ * Version: 1.2.2
  */
 
 import { fail } from './models';

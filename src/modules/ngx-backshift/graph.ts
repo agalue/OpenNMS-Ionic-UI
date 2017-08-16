@@ -1,6 +1,7 @@
 /*
  * Original JavaScript source:
  * https://github.com/OpenNMS/backshift/blob/master/src/Backshift.Graph.js
+ * Version: 1.2.2
  */
 
 import { GraphOptions, DataSource, GraphModel, TimeSpan, fail } from './models';
