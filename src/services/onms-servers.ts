@@ -81,7 +81,7 @@ export class OnmsServersService {
     }
   }
 
-  private async storeServer(updatedServer: OnmsServer, index: number) {
+  private async storeServer(updatedServer: OnmsServer, index: number) : Promise<OnmsServer> {
     const servers = await this.getServers();
     if (index && index > -1) {
       servers[index] = updatedServer;
@@ -96,7 +96,7 @@ export class OnmsServersService {
     return updatedServer;
   }
 
-  private async updateVersion(server: OnmsServer) : Promise<any> {
+  private async updateVersion(server: OnmsServer) : Promise<OnmsServer> {
     let headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(server.username + ':' + server.password));
     headers.append('Accept', 'application/json');

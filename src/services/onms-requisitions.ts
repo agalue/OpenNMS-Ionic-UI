@@ -145,7 +145,7 @@ export class OnmsRequisitionsService {
     return Promise.resolve(node);
   }
 
-  async updateAssets(foreignSource: string, foreignId: string, assets: OnmsRequisitionAsset[]) {
+  async updateAssets(foreignSource: string, foreignId: string, assets: OnmsRequisitionAsset[]) : Promise<any> {
     const node = await this.getNode(foreignSource, foreignId, true);
     node.assets = assets;
     return this.saveNode(foreignSource, node, true)

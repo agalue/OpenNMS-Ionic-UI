@@ -78,7 +78,7 @@ export class OnmsNodesService {
       .toPromise()
   }
 
-  updateAssets(nodeId: number, asset: Object) {
+  updateAssets(nodeId: number, asset: Object) : Promise<any> {
     const assetParams =  this.http.encodeParams(asset);
     return this.http.put(`/rest/nodes/${nodeId}/assetRecord`, 'application/x-www-form-urlencoded', assetParams)
       .toPromise();
