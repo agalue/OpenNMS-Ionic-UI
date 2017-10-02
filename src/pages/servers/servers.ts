@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { AbstractPage } from '../abstract-page';
 import { ServerPage } from '../server/server';
@@ -18,7 +18,6 @@ export class ServersPage extends AbstractPage {
     loadingCtrl: LoadingController,
     alertCtrl: AlertController,
     toastCtrl: ToastController,
-    private navParams: NavParams,
     private modalCtrl: ModalController,
     private serversService: OnmsServersService    
   ) {

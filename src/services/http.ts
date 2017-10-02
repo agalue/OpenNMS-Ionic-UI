@@ -25,8 +25,7 @@ export function handleError(error: Response | any) {
 @Injectable()
 export class HttpService implements OnDestroy {
 
-  defaultServer: OnmsServer;
-
+  private defaultServer: OnmsServer;
   private subscription: Subscription;
 
   constructor(private http: Http, private serversService: OnmsServersService) {
@@ -37,7 +36,7 @@ export class HttpService implements OnDestroy {
     let headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(this.defaultServer.username + ':' + this.defaultServer.password));
     headers.append('Accept', accept);
-    return new RequestOptions({ headers: headers });
+    return new RequestOptions({ headers: headers, withCredentials: true });
   }
 
   private getBaseUrl() : string {
@@ -49,8 +48,10 @@ export class HttpService implements OnDestroy {
   }
 
   register() {
-    this.subscription = this.serversService.defaultUpdated
-      .subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
+    if (!this.subscription) {
+      this.subscription = this.serversService.defaultUpdated
+        .subscribe((defaultServer:OnmsServer) => this.defaultServer = defaultServer);
+    }
   }
 
   get(url: string, accept?: string) : Observable<Response> {

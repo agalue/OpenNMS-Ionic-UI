@@ -40,9 +40,9 @@ export class MyApp implements OnDestroy {
     private statusBar: StatusBar,
     private badge: Badge,
     private splashScreen: SplashScreen,
-    private httpService: HttpService,
     private serversConfig: OnmsServersService,
     private alarmsService: OnmsAlarmsService,
+    httpService: HttpService
   ) {
     httpService.register();
     this.initializeServer();

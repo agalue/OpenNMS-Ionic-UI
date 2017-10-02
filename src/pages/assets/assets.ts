@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
+import { NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 
 import { AbstractPage } from '../abstract-page';
 import { OnmsNode } from '../../models/onms-node';
@@ -22,7 +22,6 @@ export class AssetsPage extends AbstractPage {
     loadingCtrl: LoadingController,
     alertCtrl: AlertController,
     toastCtrl: ToastController,
-    private navCtrl: NavController,
     private navParams: NavParams,
     private nodesService: OnmsNodesService,
     private requisitionsService: OnmsRequisitionsService

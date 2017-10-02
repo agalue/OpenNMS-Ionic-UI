@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
-import { NavController, NavParams, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
 
 import { AbstractPage } from '../abstract-page';
 import { ForeignSourcePage } from '../foreign-source/foreign-source';
@@ -24,7 +24,6 @@ export class RequisitionsPage extends AbstractPage {
     toastCtrl: ToastController,
     private keyboard: Keyboard,
     private navCtrl: NavController,
-    private navParams: NavParams,
     private actionSheetCtrl: ActionSheetController,
     private requisitionsService: OnmsRequisitionsService
   ) {
