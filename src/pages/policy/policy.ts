@@ -5,7 +5,6 @@ import { OnmsRequisitionPolicy } from '../../models/onms-requisition-policy';
 import { OnmsRequisitionParameter } from '../../models/onms-requisition-parameter';
 import { OnmsForeignSourceConfig } from '../../models/onms-foreign-source-config';
 import { OnmsForeignSourceConfigParameter } from '../../models/onms-foreign-source-config-parameter';
-import { OnmsRequisitionsService } from '../../services/onms-requisitions';
 
 @Component({
   selector: 'page-policy',
@@ -20,8 +19,7 @@ export class PolicyPage {
 
   constructor(
     private navParams: NavParams,
-    private viewCtrl : ViewController,
-    private requisitionsService: OnmsRequisitionsService
+    private viewCtrl : ViewController
   ) {}
 
   ionViewWillLoad() {

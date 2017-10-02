@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NavController, NavParams, ModalController, LoadingController, AlertController, ToastController, reorderArray } from 'ionic-angular';
+import { NavParams, ModalController, LoadingController, AlertController, ToastController, reorderArray } from 'ionic-angular';
 
 import { AbstractPage } from '../abstract-page';
 import { DetectorPage } from '../detector/detector';
@@ -29,7 +29,6 @@ export class ForeignSourcePage extends AbstractPage {
     loadingCtrl: LoadingController,
     alertCtrl: AlertController,
     toastCtrl: ToastController,
-    private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,    
     private requisitionsService: OnmsRequisitionsService

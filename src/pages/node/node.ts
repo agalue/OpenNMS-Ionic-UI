@@ -150,14 +150,21 @@ export class NodePage extends AbstractPage {
 
   private async updateDependencies() {
     try {
-      this.node.ipInterfaces = await this.nodesService.getIpInterfaces(this.node.id);
-      this.node.snmpInterfaces = await this.nodesService.getSnmpInterfaces(this.node.id)
-      this.availability = await this.availabilityService.getAvailabilityForNode(this.node.id);
       const labelFilter = new OnmsApiFilter('node.label', this.node.label);
-      this.events = await this.eventsService.getEvents(0, [labelFilter], 5);
       const outstanding = new OnmsApiFilter('ifRegainedService', 'null');
-      this.outages = await this.outagesService.getOutages(0, [labelFilter, outstanding], 5)
-      this.inScheduledOutage = await this.nodesService.isNodeAffectedByScheduledOutage(this.node.id);
+      let promises = [];
+      promises.push(this.nodesService.getIpInterfaces(this.node.id));
+      promises.push(this.nodesService.getSnmpInterfaces(this.node.id));
+      promises.push(this.availabilityService.getAvailabilityForNode(this.node.id));
+      promises.push(this.eventsService.getEvents(0, [labelFilter], 5));
+      promises.push(this.outagesService.getOutages(0, [labelFilter, outstanding], 5));
+      promises.push(this.nodesService.isNodeAffectedByScheduledOutage(this.node.id));
+      [ this.node.ipInterfaces,
+        this.node.snmpInterfaces,
+        this.availability,
+        this.events,
+        this.outages,
+        this.inScheduledOutage ] = await Promise.all(promises);
     } catch (error) {
       this.alert('Error', `Cannot update dependencies: ${error}`);
     }
