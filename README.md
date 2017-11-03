@@ -46,6 +46,7 @@ To test the application using your browser, clone the project and then execute t
 
 ```
 npm install
+ionic build
 ionic serve
 ```
 
