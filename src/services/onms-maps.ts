@@ -221,7 +221,7 @@ export class OnmsMapsService {
     });
   }
 
-  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[], onClickHandler?: Leaflet.EventHandlerFn) {
+  resetMap(markersGroup: Leaflet.MarkerClusterGroup, locations: GeolocationInfo[], onClickHandler?: Leaflet.LeafletEventHandlerFn) {
     markersGroup.clearLayers();
     locations.forEach(location => {
       if (location.coordinates) {
