@@ -28,8 +28,7 @@ export class SnmpConfigPage extends AbstractPage {
     const loading = this.loading('Looking...');
     this.ipAddress = form.value.ipAddress;
     try {
-      let config = await this.configService.getSnmpConfig(this.ipAddress);
-      Object.assign(this.config, config);
+      this.config = await this.configService.getSnmpConfig(this.ipAddress);
       this.toast(`Loopup completed for ${this.ipAddress}!`);
     } catch (error) {
       this.alert('Lookup Error', error);

@@ -184,7 +184,7 @@ export class ForeignSourcePage extends AbstractPage {
   }
 
   private async saveDefinition() : Promise<void> {
-    Object.assign(this.definition, this.form.value);
+    this.definition = {...this.form.value};
     await this.requisitionsService.saveForeignSourceDefinition(this.definition)
     this.form.markAsPristine();
     this.toast('Foreign Source definition has been saved!');
