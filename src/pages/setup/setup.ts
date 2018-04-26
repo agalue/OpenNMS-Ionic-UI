@@ -33,7 +33,7 @@ export class SetupPage {
   private async initialize() {
     if (!this.platform.is('cordova')) return;
     try {
-      await this.badge.registerPermission()
+      await this.badge.requestPermission()
       this.badge.clear();
     } catch (error) {
       console.error(error);
