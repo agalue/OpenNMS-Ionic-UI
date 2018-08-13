@@ -1,8 +1,8 @@
 {
   "name": "OpenNMS Mobile",
-  "app_id": "1de17e9e",
-  "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "type": "ionic-angular",
+  "pro_id": "1de17e9e"
 }
